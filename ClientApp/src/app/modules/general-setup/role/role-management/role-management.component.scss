@@ -1,0 +1,333 @@
+//:host {
+//    display: block;
+//
+//    .card {
+//        background: #fff;
+//        border-radius: 10px;
+//        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+//        padding: 1rem;
+//        margin-bottom: 1rem;
+//    }
+//
+//    h5 {
+//        font-size: 1.3rem;
+//        font-weight: 600;
+//        margin-bottom: 1.5rem;
+//    }
+//
+//    // Create button styling
+//    .create-button {
+//        background: #fff !important;
+//        color: #6c3880 !important;
+//        font-size: 16px;
+//        font-weight: 600;
+//        &:active {
+//            background: #f1f1f1 !important;
+//            border: 1px solid #6c3880 !important;
+//        }
+//        &:hover {
+//            background: #f8f8f8 !important;
+//            border: 1px solid #6c3880 !important;
+//        }
+//    }
+//
+//    // Filter styling
+//    .filter-container {
+//        display: flex;
+//        align-items: center;
+//        gap: 12px;
+//
+//        .filter-label {
+//            color: #0A0A0A;
+//            font-size: 16px;
+//            font-weight: 600;
+//            margin-bottom: 0;
+//            white-space: nowrap;
+//        }
+//
+//        .p-dropdown {
+//            width: 205px !important;
+//        }
+//    }
+//
+//    // Status badge styling
+//    .status-badge {
+//        display: inline-block;
+//        padding: 6px 12px;
+//        border-radius: 4px;
+//        font-size: 14px;
+//        font-weight: 500;
+//        text-align: center;
+//        min-width: 80px;
+//    }
+//
+//    .active-status {
+//        background-color: #00A300;
+//        color: white;
+//    }
+//
+//    .inactive-status {
+//        background-color: #8A8A8A;
+//        color: white;
+//    }
+//
+//    // Action icons styling
+//    .actions-column {
+//        text-align: center;
+//    }
+//
+//    .actions-header {
+//        justify-content: center !important;
+//    }
+//
+//    .action-icons {
+//        display: flex;
+//        justify-content: center;
+//        gap: 10px;
+//    }
+//
+//    .edit-icon, .delete-icon {
+//        cursor: pointer;
+//        font-size: 18px;
+//    }
+//
+//    .edit-icon {
+//        color: #333;
+//    }
+//
+//    .delete-icon {
+//        color: #FF0000;
+//    }
+//
+//    // Pagination styles
+//    .pagination-container {
+//        display: flex;
+//        align-items: center;
+//        justify-content: space-between;
+//        margin: 1rem 0;
+//        font-size: 14px;
+//        color: #666;
+//        flex-wrap: wrap;
+//        gap: 1rem;
+//
+//        @media (max-width: 700px) {
+//            flex-direction: column;
+//            align-items: stretch;
+//            text-align: center;
+//            gap: 0.75rem;
+//        }
+//    }
+//
+//    .pagination-controls {
+//        display: flex;
+//        gap: 16px;
+//        align-items: center;
+//        justify-content: center;
+//        margin-top: 8px;
+//        flex-shrink: 0;
+//
+//        @media (max-width: 700px) {
+//            width: 100%;
+//        }
+//    }
+//
+//    .pagination-button {
+//        background: none;
+//        border: none;
+//        color: #444;
+//        font-size: 18px;
+//        min-width: 32px;
+//        min-height: 32px;
+//        border-radius: 50%;
+//        display: flex;
+//        align-items: center;
+//        justify-content: center;
+//        cursor: pointer;
+//        outline: none;
+//
+//        &.active {
+//            color: #b55ca4;
+//            border: 2px solid #b55ca4;
+//            font-weight: 600;
+//        }
+//
+//        &:disabled {
+//            opacity: 0.4;
+//            cursor: not-allowed;
+//        }
+//
+//        &:not(.active):hover {
+//            color: #b55ca4;
+//        }
+//    }
+//
+//    .entries-selector {
+//        display: flex;
+//        align-items: center;
+//        gap: 5px;
+//
+//        @media (max-width: 576px) {
+//            justify-content: center;
+//            width: 100%;
+//        }
+//    }
+//
+//    // Utility classes
+//    .flex {
+//        display: flex;
+//    }
+//
+//    .justify-between {
+//        justify-content: space-between;
+//    }
+//
+//    .items-center {
+//        align-items: center;
+//    }
+//
+//    .mb-4 {
+//        margin-bottom: 1rem;
+//    }
+//
+//    .px-4 {
+//        padding-left: 1rem;
+//        padding-right: 1rem;
+//    }
+//
+//    .pt-4 {
+//        padding-top: 1rem;
+//    }
+//
+//    .header-flex {
+//        display: flex;
+//        align-items: center;
+//        justify-content: space-between;
+//        gap: 6px;
+//    }
+//
+//    // Override PrimeNG styles
+//    :host ::ng-deep {
+//        // Table styles
+//        .p-datatable {
+//            .p-datatable-thead > tr > th {
+//                background: #F2F2F2 !important;
+//                font-weight: 600;
+//                color: #343a40;
+//                border-bottom: 2px solid #e7eaf3;
+//                padding: 0.7rem 1rem;
+//                text-align: left;
+//                display: flex;
+//                justify-content: space-between;
+//            }
+//
+//            .p-datatable-tbody > tr {
+//                border-bottom: 1px solid #e7eaf3;
+//
+//                &:hover {
+//                    background: #f9fafb;
+//                }
+//
+//                > td {
+//                    padding: 0.7rem 1rem;
+//                    border-bottom: 1px solid #e7eaf3;
+//                    vertical-align: middle;
+//                }
+//            }
+//        }
+//
+//        // Entries dropdown styling
+//        .entries-dropdown {
+//            min-width: 60px;
+//
+//            .p-component {
+//                width: 100%;
+//            }
+//
+//            .p-select-panel {
+//                min-width: 60px !important;
+//            }
+//        }
+//
+//        .p-select-panel {
+//            .p-select-items {
+//                width: 60px !important;
+//
+//                .p-select-item {
+//                    width: 100% !important;
+//                    box-sizing: border-box;
+//                    text-align: center;
+//                }
+//            }
+//        }
+//
+//        // Make dropdown items the same width as the dropdown
+//        .p-dropdown-panel {
+//            .p-dropdown-items {
+//                width: 100% !important;
+//
+//                .p-dropdown-item {
+//                    width: 100% !important;
+//                    box-sizing: border-box;
+//                }
+//            }
+//        }
+//
+//        // Comprehensive fix for input switch outlines
+//        .p-inputswitch,
+//        .p-inputswitch-slider,
+//        .p-inputswitch-slider:before,
+//        .p-inputswitch:focus-visible,
+//        .p-inputswitch.p-focus,
+//        .p-inputswitch-slider:focus-visible,
+//        .p-inputswitch-input:focus-visible,
+//        .p-toggleswitch-checked,
+//        .p-toggleswitch-checked:focus,
+//        .p-toggleswitch-checked:focus-visible,
+//        .p-toggleswitch-checked.p-focus {
+//            outline: none !important;
+//            box-shadow: none !important;
+//            border: none !important;
+//        }
+//
+//        // Status filter dropdown styling
+//        .status-filter-dropdown {
+//            width: 205px !important;
+//
+//            .p-dropdown {
+//                border: 1px solid #ced4da;
+//                border-radius: 4px;
+//                background-color: #fff;
+//                width: 100% !important;
+//
+//                &:hover {
+//                    border-color: #ced4da;
+//                }
+//
+//                &.p-focus {
+//                    box-shadow: none;
+//                    border-color: #ced4da;
+//                }
+//            }
+//
+//            .p-dropdown-label {
+//                padding: 0.5rem 0.75rem;
+//                font-size: 14px;
+//            }
+//
+//            .p-dropdown-trigger {
+//                width: 2.5rem;
+//            }
+//        }
+//    }
+//    .mr-2 {
+//        margin-right: 0.25rem;
+//        background: #F2F2F2;
+//        color: #0A0A0A;
+//        border:none !important;
+//    }
+//    .mr-2:hover{
+//        border: none !important;
+//        background: #F2F2F2;
+//        color: #0A0A0A;
+//    }
+//}

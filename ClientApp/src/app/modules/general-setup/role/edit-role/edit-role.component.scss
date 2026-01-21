@@ -1,0 +1,427 @@
+:host {
+    display: block;
+
+    .card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    label {
+        display: block;
+        color: #0A0A0A;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        margin-bottom: 0.5rem;
+    }
+
+    h5 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    // Role form styling
+    .role-form-container {
+        width: 100%;
+    }
+
+    .role-form-row {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 1.5rem;
+        align-items: flex-start;
+        width: 100%;
+
+        @media (max-width: 992px) {
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+    }
+
+    .field {
+        margin-bottom: 0;
+        display: flex;
+        flex-direction: column;
+
+        label {
+            margin-bottom: 0.5rem;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        &.role-name-field {
+            width: 25%;
+            min-width: 200px;
+
+            @media (max-width: 992px) {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+
+        &.description-field {
+            width: 50%;
+            min-width: 300px;
+
+            @media (max-width: 992px) {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .description-input,
+            input[type="text"] {
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+        }
+
+        &.status-field {
+            width: 25%;
+            min-width: 200px;
+
+            @media (max-width: 992px) {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .status-input-container {
+                height: 38px;
+                display: flex;
+                align-items: center;
+                
+                @media (max-width: 992px) {
+                    height: auto;
+                }
+            }
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9rem;
+
+            &:focus {
+                outline: none;
+                border-color: #6366f1;
+                box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+            }
+
+            &::placeholder {
+                color: #aaa;
+            }
+        }
+    }
+
+    .role-status-options {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+
+        @media (max-width: 576px) {
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .p-field-radiobutton {
+            display: flex;
+            align-items: center;
+            margin-right: 12px;
+            
+            .radio-label {
+                margin-left: 8px;
+                margin-bottom: 0;
+                font-weight: 400;
+                font-size: 15px;
+                color: #222;
+                height: auto;
+            }
+        }
+    }
+
+    // Search box styling
+    .search-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 1rem;
+        width: 100%;
+
+        @media (max-width: 576px) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+    }
+
+    .search-label {
+        margin-bottom: 0;
+        white-space: nowrap;
+
+        @media (max-width: 576px) {
+            margin-bottom: 5px;
+        }
+    }
+
+    .search-field {
+        width: 300px;
+
+        @media (max-width: 768px) {
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+        }
+    }
+
+    // Pagination styles
+    .pagination-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1rem 0;
+        font-size: 14px;
+        color: #666;
+        flex-wrap: wrap;
+        gap: 1rem;
+
+        @media (max-width: 700px) {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            gap: 0.75rem;
+        }
+    }
+
+    .pagination-controls {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 8px;
+        flex-shrink: 0;
+
+        @media (max-width: 700px) {
+            width: 100%;
+        }
+    }
+
+    .pagination-button {
+        background: none;
+        border: none;
+        color: #444;
+        font-size: 18px;
+        min-width: 32px;
+        min-height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        outline: none;
+
+        &.active {
+            color: #b55ca4;
+            border: 2px solid #b55ca4;
+            font-weight: 600;
+        }
+
+        &:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        &:not(.active):hover {
+            color: #b55ca4;
+        }
+    }
+
+    .pagination-icon {
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .entries-selector {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        @media (max-width: 576px) {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+
+    // Utility classes
+    .flex {
+        display: flex;
+    }
+
+    .justify-content-end {
+        justify-content: flex-end;
+    }
+
+    .mt-4 {
+        margin-top: 1.5rem;
+    }
+
+    .mr-2 {
+        margin-right: 0.75rem;
+        background: #F2F2F2;
+        color: #0A0A0A;
+        border: none !important;
+        
+        &:hover {
+            border: none !important;
+            background: #F2F2F2;
+            color: #0A0A0A;
+        }
+    }
+
+    .p-button {
+        min-width: 100px;
+    }
+
+    .header-flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+    }
+
+    // Override PrimeNG styles
+    :host ::ng-deep {
+        .p-iconfield {
+            width: 100%;
+
+            input {
+                width: 100%;
+            }
+        }
+        
+        // Radio button styling
+        .p-radiobutton {
+            .p-radiobutton-box {
+                border-color: #ced4da;
+                
+                &:not(.p-disabled):not(.p-highlight):hover {
+                    border-color: var(--p-button-primary-background, #363763);
+                }
+                
+                &.p-highlight {
+                    border-color: var(--p-button-primary-background, #363763);
+                    background: var(--p-button-primary-background, #363763);
+                    
+                    &:hover {
+                        border-color: var(--p-button-primary-background, #363763);
+                        background: var(--p-button-primary-background, #363763);
+                    }
+                }
+                
+                &:focus {
+                    box-shadow: none;
+                    border-color: var(--p-button-primary-background, #363763);
+                }
+            }
+            
+            &:focus-visible, &:focus {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+        
+        // Table styles
+        .p-datatable {
+            .p-datatable-thead > tr > th {
+                background: #F2F2F2 !important;
+                font-weight: 600;
+                color: #343a40;
+                border-bottom: 2px solid #e7eaf3;
+                padding: 0.7rem 1rem;
+                text-align: left;
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .p-datatable-tbody > tr {
+                border-bottom: 1px solid #e7eaf3;
+
+                &:hover {
+                    background: #f9fafb;
+                }
+
+                > td {
+                    padding: 0.7rem 1rem;
+                    border-bottom: 1px solid #e7eaf3;
+                    vertical-align: middle;
+                }
+                
+                &:last-child {
+                    border-bottom: none;
+                }
+            }
+        }
+
+        // Remove hover effect from table rows
+        .p-datatable-hoverable .p-datatable-tbody > tr:not(.p-datatable-row-selected):hover {
+            background: none !important;
+        }
+
+        // Custom switch styling - no outlines or borders
+        .custom-switch {
+            .p-inputswitch {
+                border: none !important;
+
+                &.p-focus .p-inputswitch-slider {
+                    box-shadow: none !important;
+                    outline: none !important;
+                }
+            }
+
+            &.p-element {
+                outline: none !important;
+            }
+
+            &, &:focus, &:active, &:hover {
+                outline: none !important;
+                box-shadow: none !important;
+            }
+        }
+
+        // Input text fields focus states
+        .p-inputtext:focus,
+        input[type="text"]:focus,
+        input[pInputText]:focus {
+            outline: none;
+            box-shadow: none !important;
+            border-color: var(--p-button-primary-background, #363763) !important;
+        }
+
+        // Cancel button styling
+        button[label="Cancel"] {
+            background: #F2F2F2;
+            color: #0A0A0A;
+            border: none;
+            
+            &:hover {
+                background: #E0E0E0;
+                color: #0A0A0A;
+            }
+            
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+}

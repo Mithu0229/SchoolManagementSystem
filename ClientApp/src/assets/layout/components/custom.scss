@@ -1,0 +1,122 @@
+/* Custom Button Styles */
+
+.p-button:not(:disabled):active {
+    &.primary-button {
+        background: var(--p-button-primary-background) !important;
+        border: none !important;
+        color: var(--p-button-primary-text-color);
+        &:hover {
+            transition: none !important;
+        }
+    }
+
+    &.cancel-button {
+        background: transparent;
+        border: 1px solid var(--p-button-primary-border-color) !important;
+        color: var(--p-button-primary-outline-text-color);
+    }
+}
+
+// .p-button:not(:disabled):active {
+//     background: var(--p-button-primary-background) !important;
+//     border: none !important;
+//     color: var(--p-button-primary-outline-text-color);
+// }
+
+.p-button-outlined.p-button-contrast:not(:disabled):active {
+    background: transparent !important;
+    border: 1px solid var(--p-button-primary-border-color) !important;
+    color: var(--p-button-primary-outline-text-color);
+}
+
+.p-button:not(:disabled):hover {
+    &.primary-button {
+        background: var(--p-button-primary-background) !important;
+        border: none !important;
+        color: var(--p-button-primary-text-color);
+    }
+
+    &.cancel-button {
+        background: transparent !important;
+        border: 1px solid var(--p-button-primary-outline-border-color) !important;
+        color: var(--p-button-primary-outline-text-color);
+    }
+}
+
+.p-button {
+    padding: 10px 20px; // Padding
+    border-radius: 5px; // Rounded corners
+    cursor: pointer; // Pointer cursor on hover
+    font-size: 16px;
+    font-weight: 700;
+    transition: none;
+
+    &:hover {
+        transition: none;
+    }
+
+    &.primary-button {
+        background-color: var(--p-button-primary-background); // Example color for primary button
+        color: var(--p-button-primary-text-color); // Text color
+        border: none !important; // No border
+        transform: none;
+        &.hover {
+            background-color: var(--p-button-primary-hover-background);
+            border: none !important;
+        }
+        &:focus {
+            outline: none !important; // Outline color for focus
+            outline-offset: 0 !important; // Space between outline and button
+        }
+    }
+
+    &.cancel-button {
+        border: 1px solid var(--p-button-primary-outline-border-color); // Border color for cancel button
+        background-color: transparent; // Transparent background
+        color: var(--p-button-primary-outline-text-color); // Text color
+        &.hover {
+            background: transparent;
+        }
+        &:focus {
+            outline: none !important; // Outline color for focus
+            outline-offset: 0 !important; // Space between outline and button
+        }
+    }
+}
+
+.p-button:not(:disabled):active.primary-button {
+    border: none !important;
+    transform: none !important;
+    transition: none !important;
+    scale: none;
+}
+
+.required-asterisk {
+    color: #c00000 !important;
+}
+
+.create-button {
+    background: #fff !important;
+    color: #6c3880 !important;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    border: 1px solid #6c3880 !important;
+    &:active {
+        background: #f1f1f1 !important;
+        border: 1px solid #6c3880 !important;
+    }
+    &:hover {
+        background: #f8f8f8 !important;
+        border: 1px solid #6c3880 !important;
+    }
+}
+
+.p-step-active .p-step-number::after {
+    border: 1px solid var(--p-primary-color) !important;
+}
+
+.p-step-active .p-step-number {
+    color: var(--p-primary-color) !important;
+}

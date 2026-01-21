@@ -1,0 +1,59 @@
+<div class="layout-topbar">
+    <div class="layout-topbar-logo-container">
+        <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
+            <i class="pi pi-bars"></i>
+        </button>
+        <a class="layout-topbar-logo" routerLink="/">
+            <app-logo [logoUrl]="tenantLogoUrl$ | async"></app-logo>
+        </a>
+    </div>
+
+    <div class="layout-topbar-actions">
+        <div class="layout-config-menu"></div>
+    </div>
+
+    <!-- <div class="layout-topbar-menu hidden lg:block"> -->
+    <div class="flex items-center gap-3">
+
+        <!-- User Profile -->
+        <div>
+            <button #profileBtn type="button" class="profile-button" (click)="menu.toggle($event)">
+                <span class="profile-icon-wrapper">
+                    <i class="pi pi-user"></i>
+                </span>
+                <i class="pi pi-chevron-down"></i>
+            </button>
+            <p-menu #menu [popup]="true" [model]="menuItems" [style]="{ 'margin-top': '5px' }"></p-menu>
+        </div>
+    </div>
+</div>
+
+
+
+<p-dialog header="User Profile" [(visible)]="userProfileDialog" [modal]="true" [style]="{ width: '400px' }"
+    [showHeader]="true" styleClass="change-password-dialog" [closable]="true" [closeOnEscape]="true">
+    <div class="password-form !pt-0">
+        <div class="form-header !my-0">{{ currentUser?.userLoginInfo?.userName }}</div>
+        <div class="flex gap-2 w-full mt-1" *ngIf="tenantName">
+            <label for="role">Tenant:</label>
+            <span>{{ tenantName }}</span>
+        </div>
+        <div class="flex gap-2 w-full mt-1">
+            <label for="role">Role:</label>
+            <span>{{ roleNames }}</span>
+        </div>
+        <div class="flex gap-2 w-full mt-1">
+            <label for="role">Department:</label>
+            <span>{{ currentUser?.departmentName ?? 'Administrator' }}</span>
+        </div>
+        <div class="flex gap-2 w-full mt-1">
+            <label for="role">Email:</label>
+            <span>{{ currentUser?.userLoginInfo?.userEmail }}</span>
+        </div>
+        <div class="dialog-footer">
+            <button pButton label="Close" severity="secondary" (click)="userProfileDialog = false"></button>
+            <button pButton type="button" label="Update Profile" class="primary-button" (click)="updateProfile()"
+                *ngIf="isTenantAdmin"></button>
+        </div>
+    </div>
+</p-dialog>

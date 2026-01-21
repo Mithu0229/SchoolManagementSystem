@@ -1,0 +1,39 @@
+<div class="form-header">Edit Division</div>
+<div class="bg-white p-4 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:w-9/12">
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="name">Name<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="name" pInputText placeholder="e.g. “Corporate Sales”, “Internal Review”" [ngClass]="{ 'p-invalid': isInvalid('name') }" />
+                <!-- <app-form-error [control]="getControl('divisionName')" [isInvalid]="isInvalid('divisionName')"></app-form-error> -->
+            </div>
+            <div class="md:col-span-2 flex flex-col gap-1">
+                <label class="form-label" for="description">description<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="description" pInputText placeholder="e.g. “NR0001”, “CS0002”" [ngClass]="{ 'p-invalid': isInvalid('description') }" />
+                <!-- <app-form-error [control]="getControl('divisionCode')" [isInvalid]="isInvalid('divisionCode')"></app-form-error> -->
+            </div>
+            <!-- <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="tenantPath">Description</label>
+                <app-textarea maxLength="{{ 1000 }}" formControlName="description" placeholder="Brief context or Purpose of this Division" [ngClass]="{ 'p-invalid': isInvalid('description') }"></app-textarea>
+                <app-form-error [control]="getControl('description')" [isInvalid]="isInvalid('description')"></app-form-error>
+            </div> -->
+            <!-- <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="isActive">Status</label>
+                <div class="flex gap-2">
+                    <div class="flex items-center">
+                        <p-radiobutton inputId="active" [value]="true" formControlName="isActive"></p-radiobutton>
+                        <label for="active" class="ml-2">Active</label>
+                    </div>
+                    <div class="flex items-center">
+                        <p-radiobutton inputId="inactive" [value]="false" formControlName="isActive"></p-radiobutton>
+                        <label for="inactive" class="ml-2">Inactive</label>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit" severity="primary">Save</button>
+        </div>
+    </form>
+</div>

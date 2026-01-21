@@ -1,0 +1,164 @@
+<div class="form-header">Update Tenant Profile</div>
+<div class="bg-white py-8 px-5 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <p-message severity="info" styleClass="mb-4 items-start" class="flex items-start" *ngIf="!isSuperAdmin()">
+            <div class="flex items-start gap-2">
+                <i class="pi pi-exclamation-circle mt-1 text-[#046492]"></i>
+                <span class="text-[#0a0a0a] info-text">The following details cannot be modified directly: Subscription
+                    Plan, Email Address, Phone Number, Business Name, Business Registration Number, Company Domain,
+                    System Pathway. Please contact our support team for assistance.</span>
+            </div>
+        </p-message>
+
+        <div class="flex flex-col md:flex-row gap-[22px]">
+            <!-- Left Column -->
+            <div class="flex-[0_0_50%]">
+
+                <!-- Tenant Admin -->
+                <div class="mt-8">
+                    <span class="form-subheader">Tenant Admin</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-8">
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="firstName">First Name <span
+                                    class="required-asterisk">*</span></label>
+                            <input id="firstName" type="text" pInputText formControlName="firstName"
+                                placeholder="Enter your first name"
+                                [ngClass]="{ 'p-invalid': isInvalid('firstName') }" />
+                            <app-form-error [control]="getControl('firstName')"
+                                [isInvalid]="isInvalid('firstName')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="lastName">Last Name <span
+                                    class="required-asterisk">*</span></label>
+                            <input id="lastName" type="text" pInputText formControlName="lastName"
+                                placeholder="Enter your last name" [ngClass]="{ 'p-invalid': isInvalid('lastName') }" />
+                            <app-form-error [control]="getControl('lastName')"
+                                [isInvalid]="isInvalid('lastName')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="email">Email <span class="required-asterisk">*</span></label>
+                            <input id="email" type="email" pInputText formControlName="email"
+                                placeholder="Enter your email" [ngClass]="{ 'p-invalid': isInvalid('email') }" />
+                            <app-form-error [control]="getControl('email')"
+                                [isInvalid]="isInvalid('email')"></app-form-error>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Contact Details -->
+                <div>
+                    <span class="form-subheader">Business Contact Details</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-8">
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="phone">Phone <span class="required-asterisk">*</span></label>
+                            <input id="phone" type="text" pInputText formControlName="phone"
+                                placeholder="Enter phone number" [ngClass]="{ 'p-invalid': isInvalid('phone') }" />
+                            <app-form-error [control]="getControl('phone')"
+                                [isInvalid]="isInvalid('phone')"></app-form-error>
+                        </div>
+                        <br />
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="street">Street</label>
+                            <input id="street" type="text" pInputText formControlName="street"
+                                placeholder="Enter street name" [ngClass]="{ 'p-invalid': isInvalid('street') }" />
+                            <app-form-error [control]="getControl('street')"
+                                [isInvalid]="isInvalid('street')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="city">City</label>
+                            <input id="city" type="text" pInputText formControlName="city" placeholder="Enter city name"
+                                [ngClass]="{ 'p-invalid': isInvalid('city') }" />
+                            <app-form-error [control]="getControl('city')"
+                                [isInvalid]="isInvalid('city')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="province">Province/State/County</label>
+                            <input id="province" type="text" pInputText formControlName="province"
+                                placeholder="Enter province/state/county"
+                                [ngClass]="{ 'p-invalid': isInvalid('province') }" />
+                            <app-form-error [control]="getControl('province')"
+                                [isInvalid]="isInvalid('province')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="postalCode">Post Code/Zip Code/ P.O. Box</label>
+                            <input id="postalCode" type="text" pInputText formControlName="postalCode"
+                                placeholder="Enter post code/zip code/P.O. box"
+                                [ngClass]="{ 'p-invalid': isInvalid('postalCode') }" />
+                            <app-form-error [control]="getControl('postalCode')"
+                                [isInvalid]="isInvalid('postalCode')"></app-form-error>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="flex-[0_0_50%] md:pr-5">
+                <!-- Business Information -->
+                <div>
+                    <span class="form-subheader">Business Information</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-8">
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="tenantName">Tenant Legal Business Name <span
+                                    class="required-asterisk">*</span></label>
+                            <input pInputText type="text" formControlName="tenantName"
+                                placeholder="Enter Tenant Legal Business Name"
+                                [ngClass]="{ 'p-invalid': isInvalid('tenantName') }" />
+                            <app-form-error [control]="getControl('tenantName')"
+                                [isInvalid]="isInvalid('tenantName')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="binNo">Tenant Business Number</label>
+                            <input pInputText type="text" formControlName="binNo"
+                                placeholder="Enter Tenant Business Number"
+                                [ngClass]="{ 'p-invalid': isInvalid('binNo') }" />
+                            <app-form-error [control]="getControl('binNo')"
+                                [isInvalid]="isInvalid('binNo')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="domain">Company Domain <span
+                                    class="required-asterisk">*</span></label>
+                            <input pInputText formControlName="domain" type="text" placeholder="Enter Company Domain"
+                                [ngClass]="{ 'p-invalid': isInvalid('domain') }" />
+                            <app-form-error [control]="getControl('domain')"
+                                [isInvalid]="isInvalid('domain')"></app-form-error>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="tenantDomainList">Subsidiary Domains</label>
+                            <app-tag-input formControlName="tenantDomainList"></app-tag-input>
+                        </div>
+
+                        <div class="md:col-span-2 flex flex-col gap-1">
+                            <label class="form-label" for="tenantPath">System Pathway URL <span
+                                    class="required-asterisk">*</span></label>
+                            <input type="text" class="w-full" formControlName="tenantPath" pInputText
+                                placeholder="Example: https://qms.aarorn.com/dashboard"
+                                [ngClass]="{ 'p-invalid': isInvalid('tenantPath') }" />
+                            <app-form-error [control]="getControl('tenantPath')"
+                                [isInvalid]="isInvalid('tenantPath')"></app-form-error>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <!-- Submit/Cancel -->
+        <p-divider></p-divider>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit">Update</button>
+        </div>
+    </form>
+</div>

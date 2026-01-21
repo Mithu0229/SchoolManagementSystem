@@ -1,0 +1,44 @@
+/* Add some basic styling */
+
+::ng-deep .p-selectbutton {
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+}
+::ng-deep .p-togglebutton {
+    button {
+        background-color: #ffffff;
+        border: 1px solid #203f61;
+        border-radius: 5px !important;
+        color: #202152;
+        padding: 16px 24px !important;
+        span {
+            padding: 0px !important;
+        }
+    }
+}
+
+::ng-deep .p-togglebutton.p-togglebutton-checked {
+    border: 1px solid #203f61;
+    button {
+        background-color: #203f61 !important;
+        color: #ffffff !important;
+    }
+}
+
+::ng-deep .p-togglebutton {
+    padding: 0px !important;
+    column-gap: 12px !important;
+}
+
+.info-text {
+    color: #404040;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+::ng-deep .p-message-info {
+    outline-color: #046492 !important;
+    background: var(--Sky-Sky-50, #f0f9ff) !important;
+}

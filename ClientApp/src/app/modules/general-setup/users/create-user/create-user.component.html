@@ -1,0 +1,146 @@
+<!-- <div class="form-header">Create User</div>
+<div class="bg-white p-5 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="flex flex-col md:flex-row gap-[22px]">
+            <div class="flex-[0_0_50%]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="form-label" for="firstName">First Name<span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="w-full" formControlName="firstName" pInputText
+                            placeholder="Enter First Name" [ngClass]="{ 'p-invalid': isInvalid('firstName') }" />
+                        <app-form-error [control]="getControl('firstName')"
+                            [isInvalid]="isInvalid('firstName')"></app-form-error>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="form-label" for="lastName">Last Name<span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="w-full" formControlName="lastName" pInputText
+                            placeholder="Enter Last Name" [ngClass]="{ 'p-invalid': isInvalid('lastName') }" />
+                        <app-form-error [control]="getControl('lastName')"
+                            [isInvalid]="isInvalid('lastName')"></app-form-error>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="form-label" for="email">Email <span class="required-asterisk">*</span></label>
+                        <input type="email" class="w-full" formControlName="email" pInputText placeholder="Enter Email"
+                            [ngClass]="{ 'p-invalid': isInvalid('email') }" />
+                        <app-form-error [control]="getControl('email')"
+                            [isInvalid]="isInvalid('email')"></app-form-error>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="form-label" for="phoneNumber">Phone Number<span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="w-full" formControlName="phoneNumber" pInputText
+                            placeholder="Enter Phone Number" [ngClass]="{ 'p-invalid': isInvalid('phoneNumber') }" />
+                        <app-form-error [control]="getControl('phoneNumber')"
+                            [isInvalid]="isInvalid('phoneNumber')"></app-form-error>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="form-label" for="password">Password<span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="w-full" formControlName="password" pInputText
+                            placeholder="Enter Password" [ngClass]="{ 'p-invalid': isInvalid('password') }" />
+                        <app-form-error [control]="getControl('password')"
+                            [isInvalid]="isInvalid('password')"></app-form-error>
+                    </div>
+
+                    <div class="md:col-span-3 flex flex-col gap-1">
+                        <label class="form-label" for="tenantPath">Address</label>
+                        <app-textarea maxLength="{{ 1000 }}" formControlName="address"
+                            placeholder="Brief context or Purpose of this role"
+                            [ngClass]="{ 'p-invalid': isInvalid('address') }" />
+                        <app-form-error [control]="getControl('address')"
+                            [isInvalid]="isInvalid('address')"></app-form-error>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit" severity="primary">Create</button>
+        </div>
+    </form>
+</div> -->
+
+
+<div class="max-w-4xl mx-auto p-6">
+    <!-- Page Header -->
+    <div class="mb-6 text-center">
+        <h2 class="text-2xl font-semibold text-gray-800">Register user</h2>
+        <p class="text-gray-500 text-sm">Fill out the form below to register a new account</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="bg-white shadow-md rounded-2xl p-8">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <!-- Grid Layout -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- First Name -->
+                <div>
+                    <label class="form-label" for="firstName">First Name</label>
+                    <input type="text" formControlName="firstName" pInputText placeholder="Enter First Name"
+                        class="w-full" [ngClass]="{ 'p-invalid': isInvalid('firstName') }" />
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label class="form-label" for="lastName">Last Name</label>
+                    <input type="text" formControlName="lastName" pInputText placeholder="Enter Last Name"
+                        class="w-full" [ngClass]="{ 'p-invalid': isInvalid('lastName') }" />
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label class="form-label" for="email">Email<span class="required-asterisk">*</span></label>
+                    <input type="email" formControlName="email" pInputText placeholder="Enter Email" class="w-full"
+                        [ngClass]="{ 'p-invalid': isInvalid('email') }" />
+                    <app-form-error [control]="getControl('email')" [isInvalid]="isInvalid('email')"></app-form-error>
+                </div>
+
+                <!-- Phone -->
+                <div>
+                    <label class="form-label" for="phoneNumber">Phone Number<span
+                            class="required-asterisk">*</span></label>
+                    <input type="text" formControlName="phoneNumber" pInputText placeholder="Enter Phone Number"
+                        class="w-full" [ngClass]="{ 'p-invalid': isInvalid('phoneNumber') }" />
+                    <app-form-error [control]="getControl('phoneNumber')"
+                        [isInvalid]="isInvalid('phoneNumber')"></app-form-error>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="form-label" for="password">Password<span class="required-asterisk">*</span></label>
+                    <input type="password" formControlName="password" pInputText placeholder="Enter Password"
+                        class="w-full" [ngClass]="{ 'p-invalid': isInvalid('password') }" />
+                    <app-form-error [control]="getControl('password')"
+                        [isInvalid]="isInvalid('password')"></app-form-error>
+                </div>
+                <!-- User type -->
+                <!-- <div>
+                    <label for="userType" class="form-label"> User Type<span class="required-asterisk">*</span> </label>
+                    <p-select [options]="userTypes" formControlName="userType" placeholder="Select an option"
+                        optionLabel="label" optionValue="value" class="w-full"
+                        [ngClass]="{ 'ng-invalid ng-dirty': isInvalid('userType') }"></p-select>
+                    <app-form-error [control]="getControl('userType')"
+                        [isInvalid]="isInvalid('userType')"></app-form-error>
+                </div> -->
+
+                <!-- Address (Full Width) -->
+                <div class="md:col-span-2">
+                    <label class="form-label" for="address">Address</label>
+                    <app-textarea formControlName="address" maxLength="{{1000}}" placeholder="Enter your address"
+                        class="w-full" [ngClass]="{ 'p-invalid': isInvalid('address') }"></app-textarea>
+                    <app-form-error [control]="getControl('address')"
+                        [isInvalid]="isInvalid('address')"></app-form-error>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 mt-6">
+                <button pButton type="button" severity="secondary" class="!rounded-xl px-5 py-2"
+                    (click)="onCancel()">Cancel</button>
+                <button pButton type="submit" severity="primary" class="!rounded-xl px-6 py-2">Register</button>
+            </div>
+        </form>
+    </div>
+</div>

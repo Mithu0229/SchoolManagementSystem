@@ -1,0 +1,14 @@
+<!-- <app-confirm-dialog (accept)="onDeleteConfirmed()" (reject)="onCancel()" title="Confirm Deletion" [visible]="showDialog()">
+    <div class="flex gap-3">
+        <i class="pi pi-exclamation-triangle text-[#c00000]" style="font-size: 1rem; margin-top: 6px"></i>
+        <p class="text-base font-normal">
+            Are you sure you want to delete <span class="font-bold">{{ selectedDivision()?.divisionName ?? '' }}</span> role?
+        </p>
+    </div>
+</app-confirm-dialog> -->
+<div class="form-header">User Management</div>
+<div class="bg-white mx-auto">
+    <app-table apiUrl="/user/get-user-list" [columns]="columns" [config]="tableConfig" (actionClicked)="createUser()"
+        (selectedRowsChange)="onSelectedRowsChange($event)" [preselectedRows]="preselectedRows">
+    </app-table>
+</div>

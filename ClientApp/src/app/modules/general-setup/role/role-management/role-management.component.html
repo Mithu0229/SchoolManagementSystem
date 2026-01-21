@@ -1,0 +1,35 @@
+<div class="form-header">{{ title }}</div>
+<div class="bg-white mx-auto">
+    <app-table apiUrl="/Role/get-role-list" [columns]="columns" [config]="tableConfig" (actionClicked)="createRole()"></app-table>
+</div>
+
+<app-confirm-dialog (accept)="onDeleteConfirmed()" (reject)="onCancel()" title="Confirm Deletion" [visible]="showConfirmDialog()" [visibleAcceptButton]="!hasAssignedUsers()">
+    <!-- Warning message for roles with assigned users -->
+    <div *ngIf="hasAssignedUsers()" class="warning-box mb-2 border-orange-600 border-[2px] bg-orange-50 rounded-[5px] p-[12px]">
+        <div class="flex gap-3">
+            <i class="pi pi-exclamation-triangle text-orange-500" style="font-size: 1.5rem"></i>
+            <div>
+                <h3 class="text-orange-500 font-bold text-lg mb-2">Warning</h3>
+                <p class="text-base">
+                    The <span class="font-bold">{{ selectedRole()?.roleName }}</span> role is currently assigned to {{ assignedUserCount() }} active users, all the associated users with this role would be automatically deleted after
+                    {{ retentionDays() > 0 || retentionHours() > 0 ? (retentionDays() > 0 ? retentionDays() + ' days ' : '') + (retentionHours() > 0 ? retentionHours() + ' hours' : '') : '7 days' }}
+                    from now.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Standard confirmation for roles without assigned users -->
+    <div *ngIf="!hasAssignedUsers()" class="flex gap-3">
+        <i class="pi pi-exclamation-triangle text-[#c00000]" style="font-size: 1rem; margin-top: 6px"></i>
+        <p class="text-base font-normal">
+            Are you sure you want to delete <span class="font-bold">{{ selectedRole()?.roleName ?? '' }} role</span>?
+        </p>
+    </div>
+    
+    <!-- Password field -->
+    <div class="my-4">
+        <label for="deletePassword" class="block mb-2 font-medium">Password</label>
+        <input id="deletePassword" type="password" pInputText [(ngModel)]="deletePassword" placeholder="Enter password" class="w-full" />
+    </div>
+</app-confirm-dialog>

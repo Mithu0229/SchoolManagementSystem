@@ -1,0 +1,43 @@
+<div class="form-header">Create Role</div>
+<div class="bg-white p-4 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:w-9/12">
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="name">Role Name<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="name" pInputText placeholder="e.g. “HR”, “Dev”" [ngClass]="{ 'p-invalid': isInvalid('name') }" />
+                <!-- <app-form-error [control]="getControl('name')" [isInvalid]="isInvalid('name')"></app-form-error> -->
+            </div>
+           
+            <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="tenantPath">Description</label>
+                <app-textarea maxLength="{{ 1000 }}" formControlName="description" placeholder="Brief context or Purpose of this role" [ngClass]="{ 'p-invalid': isInvalid('description') }"/>
+                <!-- <app-form-error [control]="getControl('description')" [isInvalid]="isInvalid('description')"></app-form-error> -->
+            </div>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit" severity="primary">Create</button>
+        </div>
+    </form>
+</div>
+<hr>
+
+<div class="bg-white p-4 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:w-9/12">
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="name">Division Name<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="name" pInputText placeholder="e.g. “Corporate Sales”, “Internal Review”" [ngClass]="{ 'p-invalid': isInvalid('name') }" />
+            </div>
+           
+            <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="tenantPath">Description</label>
+                <app-textarea maxLength="{{ 1000 }}" formControlName="description" placeholder="Brief context or Purpose of this Division" [ngClass]="{ 'p-invalid': isInvalid('description') }"></app-textarea>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit" severity="primary">Create</button>
+        </div>
+    </form>
+</div>

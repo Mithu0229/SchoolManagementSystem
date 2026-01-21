@@ -1,0 +1,5 @@
+<div class="form-group">
+    <textarea [(ngModel)]="inputValue" [autoResize]="true" placeholder="{{ placeholder }}" rows="5" pTextarea maxlength="{{ maxLength }}" (input)="updateCharacterCount()" class="w-full"></textarea>
+
+    <div class="text-xs text-gray-500 mt-1">Characters: {{ characterCount }} / {{ maxLength }}</div>
+</div>

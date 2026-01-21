@@ -1,0 +1,92 @@
+<div class="form-header">Edit Sitemap</div>
+<div class="bg-white p-4 mx-auto">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 md:w-9/12">
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="name">Name<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="name" pInputText placeholder="Enter name" [ngClass]="{ 'p-invalid': isInvalid('name') }" />
+                <app-form-error [control]="getControl('name')" [isInvalid]="isInvalid('name')"></app-form-error>
+            </div>
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="favIcon">Fav Icon</label>
+                <input type="text" class="w-full" formControlName="favIcon" pInputText placeholder="eg.: 'pi pi-circle'" [ngClass]="{ 'p-invalid': isInvalid('favIcon') }" />
+                <app-form-error [control]="getControl('favIcon')" [isInvalid]="isInvalid('favIcon')"></app-form-error>
+            </div>
+            <div class="md:col-span-2 flex flex-col gap-1">
+                <label class="form-label" for="pageUrl">Page URL<span class="required-asterisk">*</span></label>
+                <input type="text" class="w-full" formControlName="pageUrl" pInputText placeholder="Enter page URL" [ngClass]="{ 'p-invalid': isInvalid('pageUrl') }" />
+                <app-form-error [control]="getControl('pageUrl')" [isInvalid]="isInvalid('pageUrl')"></app-form-error>
+            </div>
+            <div class="md:col-span-2 flex flex-col gap-1">
+                <label class="form-label" for="country">Parent</label>
+                <p-select
+                    [options]="parentMenus"
+                    formControlName="parentId"
+                    placeholder="Select an item"
+                    optionLabel="NameWithParent"
+                    optionValue="Id"
+                    [ngClass]="{ 'ng-invalid ng-dirty': isInvalid('parentId') }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceHolder="Search"
+                />
+                <app-form-error [control]="getControl('parentId')" [isInvalid]="isInvalid('parentId')"></app-form-error>
+            </div>
+            <br />
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="sortingOrder">Sorting Order</label>
+                <input type="number" class="w-full" formControlName="sortingOrder" pInputText placeholder="Enter sorting order" [ngClass]="{ 'p-invalid': isInvalid('sortingOrder') }" />
+                <app-form-error [control]="getControl('sortingOrder')" [isInvalid]="isInvalid('sortingOrder')"></app-form-error>
+            </div>
+            <div class="md:col-span-1 flex flex-col gap-1">
+                <label class="form-label" for="menuType">Menu Type</label>
+                <p-select
+                    [options]="menuTypes"
+                    formControlName="menuType"
+                    placeholder="Select an item"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngClass]="{ 'ng-invalid ng-dirty': isInvalid('menuType') }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceHolder="Search"
+                />
+                <app-form-error [control]="getControl('menuType')" [isInvalid]="isInvalid('menuType')"></app-form-error>
+            </div>
+            <div class="md:col-span-2 flex flex-col gap-1">
+                <label class="form-label" for="country">Menu Access Type</label>
+                <p-select
+                    [options]="menuAccessTypes"
+                    formControlName="menuAccessType"
+                    placeholder="Select an item"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngClass]="{ 'ng-invalid ng-dirty': isInvalid('menuAccessType') }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceHolder="Search"
+                />
+                <app-form-error [control]="getControl('menuAccessType')" [isInvalid]="isInvalid('menuAccessType')"></app-form-error>
+            </div>
+            <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="isFeature">Is Feature</label>
+                <p-checkbox formControlName="isFeature" binary="true" inputId="isFeature"></p-checkbox>
+                <app-form-error [control]="getControl('isFeature')" [isInvalid]="isInvalid('isFeature')"></app-form-error>
+            </div>
+            <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="isActive">Is Active</label>
+                <p-checkbox formControlName="isActive" binary="true" inputId="isActive"></p-checkbox>
+                <app-form-error [control]="getControl('isActive')" [isInvalid]="isInvalid('isActive')"></app-form-error>
+            </div>
+            <div class="md:col-span-3 flex flex-col gap-1">
+                <label class="form-label" for="">Is Sidebar Menu</label>
+                <p-checkbox formControlName="isSidebarmenu" binary="true" inputId="isSidebarmenu"></p-checkbox>
+                <app-form-error [control]="getControl('isSidebarmenu')" [isInvalid]="isInvalid('isSidebarmenu')"></app-form-error>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" severity="secondary" (click)="onCancel()">Cancel</button>
+            <button pButton type="submit" severity="primary">Update</button>
+        </div>
+    </form>
+</div>

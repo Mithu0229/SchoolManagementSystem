@@ -1,0 +1,10 @@
+<p-dialog [(visible)]="visible" [modal]="true" [header]="title || 'Confirmation'" [style]="{ width: '420px' }" [dismissableMask]="true">
+    <ng-content></ng-content>
+    <p-divider></p-divider>
+    <ng-template pTemplate="footer">
+        <div class="flex justify-end gap-3">
+            <button pButton type="button" (click)="close()" class="p-button-text" style="background: #f2f2f2; color: #0a0a0a" [label]="rejectLabel"></button>
+            <button pButton type="button" class="{{ acceptButtonStyleClass }}" (click)="accept.emit()" [label]="acceptLabel" *ngIf="visibleAcceptButton"></button>
+        </div>
+    </ng-template>
+</p-dialog>

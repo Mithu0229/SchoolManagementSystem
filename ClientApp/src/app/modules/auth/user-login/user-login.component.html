@@ -1,0 +1,38 @@
+<p-fluid *ngIf="!showTwoFactor()">
+    <div class="flex mt-8 max-w-[468px] mx-auto">
+        <div class="card flex flex-col gap-6 w-full !p-12 !rounded-[48px]">
+            <!-- <app-form-header [formHeaderInfo]="formHeaderInfo"></app-form-header> -->
+            <p-message severity="error" *ngIf="errorMessage()" icon="pi pi-exclamation-circle" styleClass="mb-2"
+                [closable]="true">{{ errorMessage() }}</p-message>
+            <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" novalidate>
+                <div class="flex flex-col gap-3">
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="email">E-mail</label>
+                        <input id="email" type="text" pInputText formControlName="email" placeholder="Enter e-mail"
+                            [ngClass]="{ 'p-invalid': isInvalid('email') }" />
+                        <app-error-message *ngIf="isInvalid('email')"
+                            message="Please enter a valid email address"></app-error-message>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" pInputText formControlName="password"
+                            placeholder="Enter password" [ngClass]="{ 'p-invalid': isInvalid('password') }" />
+                        <app-error-message *ngIf="isInvalid('password')"
+                            message="Please enter your password"></app-error-message>
+                    </div>
+                    <div class="flex items-center justify-end w-full mt-2">
+                        <a [routerLink]="['/user-register']"
+                            class="font-medium text-[#B70F76] underline ml-1">Register?</a>
+                    </div>
+                    <button pButton type="submit" [disabled]="loginForm.invalid || isSigningIn()"
+                        class="primary-button">
+                        <i class="pi pi-spinner pi-spin" *ngIf="isSigningIn()"></i>
+                        <span>{{ isSigningIn() ? 'Signing in...' : 'Sign in' }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</p-fluid>
+
+<!-- <app-verify-code *ngIf="showTwoFactor()" [email]="loginForm.get('email')?.value ?? ''" (verified)="handleTwoFactorVerified()" (resendOtpEvent)="resendOtp()"></app-verify-code> -->

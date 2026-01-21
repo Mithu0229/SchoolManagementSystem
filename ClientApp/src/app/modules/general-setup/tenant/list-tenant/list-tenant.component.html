@@ -1,0 +1,27 @@
+<div>
+    <app-confirm-dialog (accept)="onDeleteConfirmed()" (reject)="onCancel()" title="Confirm Deactivation"
+        [visible]="showDialog()" acceptLabel="Deactivate" rejectLabel="Cancel">
+        <div class="flex gap-2">
+            <i class="pi pi-exclamation-triangle text-[#c00000]" style="font-size: 1.25rem"></i>
+            <p class="text-base font-normal">
+                Are you sure you want to deactivate <span class="font-bold">{{ selectedTenant()?.tenantName ?? ''
+                    }}</span>?
+            </p>
+        </div>
+        <div class="my-4">
+            <label for="reason" class="block mb-2 font-medium">Reason<span class="text-[#c00000]">*</span></label>
+            <textarea id="reason" pTextarea [(ngModel)]="reason" placeholder="Enter reason" class="w-full" rows="4"
+                style="resize: none; min-height: 80px; border-radius: 4px; padding: 8px"></textarea>
+        </div>
+        <div class="my-4">
+            <label for="password" class="block mb-2 font-medium">Password<span class="text-[#c00000]">*</span></label>
+            <input id="password" type="password" pInputText [(ngModel)]="password" placeholder="Enter password"
+                class="w-full" />
+        </div>
+    </app-confirm-dialog>
+</div>
+<h4 class="form-header">Branches</h4>
+<div class="bg-white mx-auto">
+    <app-table apiUrl="/Tenant/get-tenant-list" [columns]="columns" [config]="tableConfig"
+        (actionClicked)="registerTenant()"> </app-table>
+</div>

@@ -1,0 +1,81 @@
+.layout-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    height: 70px;
+    background-color: var(--surface-card);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
+    &-logo-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &-logo {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    &-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &-menu {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.profile-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.profile-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.pi-chevron-down {
+    font-size: 12px;
+    color: #666;
+}
+
+::ng-deep .change-password-dialog {
+    .p-dialog-content {
+        padding: 0;
+    }
+
+    .password-form {
+        padding: 1.5rem;
+    }
+
+    .dialog-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #dee2e6;
+    }
+}

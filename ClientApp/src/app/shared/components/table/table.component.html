@@ -1,0 +1,180 @@
+<div class="card !p-4 !mb-4" *ngIf="config.isFilterByDate">
+    <p class="text-xl font-bold">Filters</p>
+    <div class="flex gap-4 items-end">
+        <div class="md:col-span-1 flex flex-col gap-1">
+            <label class="form-label" for="startDate">Start Date</label>
+            <p-datepicker [showIcon]="true" placeholder="Select Start Date" [(ngModel)]="startDate"
+                (ngModelChange)="onDateFilterChange()" />
+        </div>
+        <div class="md:col-span-1 flex flex-col gap-1">
+            <label class="form-label" for="endDate">End Date</label>
+            <p-datepicker [showIcon]="true" placeholder="Select End Date" [(ngModel)]="endDate"
+                (ngModelChange)="onDateFilterChange()" />
+        </div>
+        <div class="md:col-span-1 flex flex-col gap-1">
+            <button pButton (click)="onDateFilterChange()" [severity]="'primary'" label="Filter"></button>
+        </div>
+    </div>
+</div>
+
+<p-table #dt [value]="data" [paginator]="totalRecords || false" [rows]="currentState.pageSize || 10"
+    [first]="(currentState.page || 0) * (currentState.pageSize || 10)" [totalRecords]="totalRecords || 0" [lazy]="true"
+    [loading]="loading()" [rowHover]="true" [scrollable]="true" scrollHeight="flex"
+    [showCurrentPageReport]="totalRecords || false"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rowsPerPageOptions]="config.pageSizeOptions || [10, 20, 50, 100]" (onLazyLoad)="onLazyLoad($event)"
+    [showFirstLastIcon]="false">
+    <ng-template pTemplate="caption">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4 flex-wrap">
+                <div class="flex items-center gap-2" *ngIf="config.showSearch !== false">
+                    <label for="search-input">Search</label>
+                    <input disableAutofill id="search-input" #searchInput pInputText type="text"
+                        [placeholder]="config.searchPlaceholder || 'Search'" (input)="onSearch(searchInput.value)" />
+                </div>
+
+                <ng-container *ngIf="config.customFilters && config.customFilters.length > 0">
+                    <div *ngFor="let filter of config.customFilters" class="flex items-center gap-2">
+                        <label [for]="'filter-' + filter.field">{{ filter.label }}</label>
+                        <p-dropdown [id]="'filter-' + filter.field" [options]="filter.options"
+                            [(ngModel)]="(currentState.customFilters || {})[filter.field]"
+                            [placeholder]="filter.placeholder || 'Select an option'" [showClear]="true"
+                            (onChange)="onCustomFilterChange(filter.field, $event.value)" styleClass="status-filter">
+                        </p-dropdown>
+                    </div>
+                </ng-container>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <p-multiSelect [options]="columnsForOptions" [(ngModel)]="selectedColumns" optionLabel="header"
+                        placeholder="Choose Columns" [style]="{ width: '200px' }" display="chip"
+                        (ngModelChange)="onColumnSelectionChange($event)"></p-multiSelect>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button *ngIf="config.showExportButton" pButton icon="pi pi-file-excel" class="create-button"
+                        (click)="exportCSVHandler.emit()"></button>
+                    <button *ngIf="config.showExportPdfButton" pButton icon="pi pi-file-pdf" class="create-button"
+                        (click)="exportPDFHandler.emit()"></button>
+                    <button *ngIf="config.showPrintButton" pButton icon="pi pi-print" class="create-button"
+                        (click)="printHandler.emit()"></button>
+                    <button *ngIf="config.showImportButton" pButton icon="pi pi-upload" class="create-button"
+                        (click)="importHandler.emit()"></button>
+                    <button *ngIf="config.showCreateButton && config.createButtonPermission !== false"
+                        class="create-button" pButton (click)="actionClicked.emit()" variant="outlined">
+                        <i *ngIf="config.createButtonIcon && config.createButtonIcon !== ''"
+                            [class]="config.createButtonIcon"></i>
+                        <i *ngIf="config.createButtonIcon === undefined || config.createButtonIcon === null"
+                            class="pi pi-plus"></i>
+                        {{ config.createButtonLabel }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th *ngIf="config.showCheckboxColumn" [style.width]="'3rem'">
+                <!-- <div class="flex justify-content-center align-items-center">
+                    <p-checkbox [binary]="true" [ngModel]="areAllRowsSelected()"
+                        (onChange)="toggleAllRows($event.checked)"></p-checkbox>
+                </div> -->
+            </th>
+            <th *ngFor="let col of visibleColumns" [pSortableColumn]="col.sortable ? col.field : undefined"
+                [style.width]="col.field === 'Actions' ? '100px' : col.width">
+                <div class="flex justify-content-between align-items-center">
+                    {{ col.header }}
+                    <p-sortIcon *ngIf="col.sortable" [field]="col.field" class="ml-auto"></p-sortIcon>
+                </div>
+            </th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-i="rowIndex">
+        <tr>
+            <td *ngIf="config.showCheckboxColumn">
+                <div class="flex justify-content-center align-items-center">
+                    <p-checkbox [binary]="true" [ngModel]="isRowSelected(rowData)"
+                        (onChange)="onRowSelect($event, rowData)"></p-checkbox>
+                </div>
+            </td>
+            <td *ngFor="let col of visibleColumns">
+                <div *ngIf="col.dataType === 'long-text'">
+                    <div *ngIf="!col.isActionColumn" (click)="op.toggle($event)" class="line-clamp-2 cursor-pointer">
+                        {{ rowData[col.field] }}
+                    </div>
+                    <p-popover #op [dismissable]="true">
+                        <div class="flex flex-column gap-1 w-25rem">
+                            <span> {{ rowData[col.field] }} </span>
+                            <div class="flex justify-content-end">
+                                <div (click)="op.hide()" class="cursor-pointer"><i class="pi pi-times"
+                                        style="color: white"></i></div>
+                            </div>
+                        </div>
+                    </p-popover>
+                </div>
+                <div *ngIf="col.dataType !== 'long-text' && col.dataType !== 'long-text-with-popover'">
+                    @if (col.dataType === 'date') {
+                    {{ rowData[col.field] | formatDate }}
+                    } @else if (col.dataType === 'datetime') {
+                    {{ rowData[col.field] | formatDate: 'datetime' }}
+                    } @else if (col.dataType === 'time') {
+                    {{ rowData[col.field] | formatDate: 'time' }}
+                    } @else if (col.dataType === 'boolean') {
+                    <p-tag [severity]="rowData[col.field] === true ? 'success' : 'secondary'"
+                        [value]="rowData[col.field] === true ? col?.trueLabel || 'Active' : col?.falseLabel || 'Inactive'" />
+                    } @else if (col.dataType === 'url') {
+                    <a *ngIf="rowData[col.field]" [href]="rowData[col.field]" target="_blank"
+                        class="text-[#363763] hover:text-[#363763] underline cursor-pointer">
+                        <i class="pi pi-link"></i>
+                    </a>
+                    <span *ngIf="!rowData[col.field]">-</span>
+                    } @else {
+                    {{ rowData[col.field] }}
+                    }
+                </div>
+                <div *ngIf="col.dataType === 'long-text-with-popover'">
+                    <div *ngIf="!col.isActionColumn">
+                        <div class="flex items-center">
+                            <span class="line-clamp-2 flex-1">{{ rowData[col.field] }}</span>
+                            <i class="pi pi-info-circle cursor-pointer flex items-center" style="color: #202152"
+                                (click)="op.toggle($event)"></i>
+                        </div>
+                    </div>
+                    <p-popover #op [dismissable]="true">
+                        <div class="flex flex-column gap-1 w-25rem">
+                            <span *ngIf="col.popOverField"> {{ rowData[col.popOverField] }} </span>
+                            <div class="flex justify-content-end">
+                                <div (click)="op.hide()" class="cursor-pointer"><i class="pi pi-times"
+                                        style="color: white"></i></div>
+                            </div>
+                        </div>
+                    </p-popover>
+                </div>
+                <div class="flex justify-content-between gap-1" *ngIf="col.isActionColumn">
+                    <ng-container *ngFor="let action of col.actions">
+                        <button *ngIf="!action.visible || action.visible(rowData)" pButton [icon]="action.icon || ''"
+                            class="p-button-rounded p-button-text" [ngClass]="action.styleClass"
+                            [disabled]="action.disabled && action.disabled(rowData)"
+                            (click)="action.callback(rowData)"></button>
+                    </ng-container>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="loadingbody">
+        <tr *ngFor="let i of [0, 1, 2, 4, 5]">
+            <td>
+                <p-skeleton></p-skeleton>
+            </td>
+            <td *ngFor="let col of columns">
+                <p-skeleton></p-skeleton>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+<app-empty-state *ngIf="totalRecords === 0 && !loading()" [isFiltered]="isFiltered"
+    (reset)="resetFilters()"></app-empty-state>

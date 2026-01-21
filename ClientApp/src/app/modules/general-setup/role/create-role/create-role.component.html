@@ -1,0 +1,206 @@
+<h5>Create Role</h5>
+
+<div class="card">
+    <div class="role-form-container">
+        <form [formGroup]="createRoleForm" (ngSubmit)="handleSubmit()" novalidate>
+            <div class="role-form-row">
+                <div class="field role-name-field">
+                    <label for="roleName">Role Name</label>
+                    <input pInputText id="roleName" placeholder="Enter Role Name" formControlName="roleName" autofocus
+                           #roleNameInput [ngClass]="{ 'p-invalid': isInvalid('roleName') }"/>
+                    <app-error-message *ngIf="isInvalid('roleName')" class="mt-1"
+                                       message="Please enter role name"></app-error-message>
+                </div>
+
+                <div class="field description-field">
+                    <label for="roleDescription">Role Description</label>
+                    <input pInputText id="roleDescription" formControlName="description"
+                           placeholder="Enter Role Description" class="description-input"
+                           [ngClass]="{ 'p-invalid': isInvalid('description') }"/>
+                    <app-error-message *ngIf="isInvalid('description')"
+                                       message="Please enter role description"></app-error-message>
+                </div>
+
+                <div class="field status-field">
+                    <label class="status-label">Role Status</label>
+                    <div class="status-input-container">
+                        <div class="role-status-options">
+                            <label class="role-radio" [ngClass]="{ active: role.status === 'active' }">
+                                <input type="radio" name="status" formControlName="status" value="active"/>
+                                <span class="radio-label">Active</span>
+                            </label>
+                            <label class="role-radio" [ngClass]="{ active: role.status === 'inactive' }">
+                                <input type="radio" name="status" formControlName="status" value="inactive"/>
+                                <span class="radio-label">Inactive</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <p-table #dt [value]="filteredMenuItems" [rows]="selectedEntry" [columns]="cols" [tableStyle]="{ width: '100%' }"
+             dataKey="id">
+        <ng-template #caption>
+            <div class="search-container">
+                <label class="search-label">Search</label>
+                <p-iconfield class="search-field">
+                    <p-inputicon styleClass="pi pi-search"/>
+                    <input pInputText type="text" placeholder="Search..." (input)="onSearchInput($event)"
+                           class="search-input"/>
+                </p-iconfield>
+            </div>
+        </ng-template>
+        <ng-template #header>
+            <tr>
+                <th>
+                    <p-checkbox
+                        [(ngModel)]="globalSelectAll"
+                        (onChange)="onGlobalSelectAll($event.checked)"
+                        [binary]="true">
+                    </p-checkbox>
+                </th>
+                <th>
+                    <span class="header-flex"># Serial</span>
+                </th>
+                <th pSortableColumn="name">
+                    <span class="header-flex">Menu Item<p-sortIcon field="name"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canView">
+                    <span class="header-flex">Can View?<p-sortIcon field="roleMenus.canView"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canEdit">
+                    <span class="header-flex">Can Edit?<p-sortIcon field="roleMenus.canEdit"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canAdd">
+                    <span class="header-flex">Can Create?<p-sortIcon field="roleMenus.canAdd"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canDelete">
+                    <span class="header-flex">Can Delete?<p-sortIcon field="roleMenus.canDelete"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canPreview">
+                    <span class="header-flex">Can Preview?<p-sortIcon field="roleMenus.canPreview"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canExport">
+                    <span class="header-flex">Can Export?<p-sortIcon field="roleMenus.canExport"/></span>
+                </th>
+                <th pSortableColumn="roleMenus.canPrint">
+                    <span class="header-flex">Can Print?<p-sortIcon field="roleMenus.canPrint"/></span>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template #body let-menuItems let-i="rowIndex">
+            <ng-container *ngIf="filteredMenuItems.length > 0; else noData">
+                <tr>
+                    <td>
+                        <p-checkbox
+                            [ngModel]="isRowFullySelected(menuItems)"
+                            (onChange)="onRowSelectAll(menuItems, $event.checked)"
+                            [binary]="true">
+                        </p-checkbox>
+                    </td>
+                    <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ menuItems.name }}</td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canView"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canEdit"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canAdd"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canDelete"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canPreview"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canExport"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                    <td>
+                        <p-inputSwitch
+                            class="custom-switch"
+                            [(ngModel)]="menuItems.roleMenus.canPrint"
+                            (onChange)="onPermissionChange()">
+                        </p-inputSwitch>
+                    </td>
+                </tr>
+            </ng-container>
+            <ng-template #noData>
+                <tr>
+                    <td colspan="11" class="text-center">No entries found</td>
+                </tr>
+            </ng-template>
+        </ng-template>
+    </p-table>
+
+    <div class="pagination-container" *ngIf="totalMenuItems > 0">
+        <div class="entries-selector">
+            <span>Show</span>
+            <p-select [options]="entryOptions" [(ngModel)]="selectedEntry" (onChange)="onEntryChange($event)"
+                      [showClear]="false" [dropdownIcon]="'pi pi-chevron-down'" appendTo="body"
+                      (onFocus)="$event.stopPropagation()"></p-select>
+            <span>entries</span>
+        </div>
+        <span *ngIf="totalMenuItems > 0"> Showing {{ (currentPage - 1) * pageSize + 1 }}
+            to {{ Math.min((currentPage - 1) * pageSize + filteredMenuItems.length, totalMenuItems) }}
+            of {{ totalMenuItems }} entries </span>
+        <div class="pagination-controls">
+            <button class="pagination-button" [disabled]="currentPage === 1" (click)="goToPage(1)">
+                <span class="pagination-icon">«</span>
+            </button>
+            <button class="pagination-button" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                <span class="pagination-icon">‹</span>
+            </button>
+            <ng-container *ngFor="let page of getPaginationRange()">
+                <button class="pagination-button" [class.active]="currentPage === page" (click)="goToPage(page)">
+                    {{ page }}
+                </button>
+            </ng-container>
+            <button class="pagination-button" [disabled]="currentPage === totalPages"
+                    (click)="goToPage(currentPage + 1)">
+                <span class="pagination-icon">›</span>
+            </button>
+            <button class="pagination-button" [disabled]="currentPage === totalPages" (click)="goToPage(totalPages)">
+                <span class="pagination-icon">»</span>
+            </button>
+        </div>
+    </div>
+
+    <app-empty-state *ngIf="totalMenuItems == 0"></app-empty-state>
+
+    <div class="flex justify-content-end mt-4">
+        <button pButton type="button" label="Cancel" class="mr-2" (click)="cancelRole()"></button>
+        <button pButton type="button" label="Save" class="p-button p-button-primary" [disabled]="createRoleForm.invalid"
+                (click)="handleSubmit()"></button>
+    </div>
+</div>
