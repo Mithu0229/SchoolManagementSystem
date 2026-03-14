@@ -12,6 +12,8 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+*.angular
+
 
 # Mono auto generated files
 mono_crash.*
@@ -178,6 +180,7 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+uploads/
 
 # Publish Web Output
 *.[Pp]ublish.xml
