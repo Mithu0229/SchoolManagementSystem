@@ -12,7 +12,7 @@ export class StudentService {
   createStudent(payload: any): Observable<ApiResponse<any>> {
     return this.http.post<ApiResponse<any>>(
       'StudentInfo/save-student',
-      payload
+      payload,
     );
   }
   editSitemap(payload: any): Observable<ApiResponse<any>> {
@@ -27,6 +27,21 @@ export class StudentService {
   }
 
   getStudentById(id: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`studentInfo/${id}`);
+    return this.http.get<ApiResponse<any>>(`StudentInfo/${id}`);
+  }
+
+  getRoleById(roleId: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`/Role/${roleId}`);
+  }
+
+  updateStudent1(id: string, payload: FormData): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`StudentInfo/${id}`, payload);
+  }
+
+  updateStudent(payload: any): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(
+      'StudentInfo/update-student',
+      payload,
+    );
   }
 }

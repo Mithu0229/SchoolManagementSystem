@@ -116,7 +116,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
     private fb: FormBuilder,
     private studentService: StudentService,
     private toastService: ToastService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     super();
     this.buildForm();
@@ -171,7 +171,6 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         fatherName: new FormControl('', [Validators.required]),
         fatherAcademicQualification: new FormControl(''),
         fatherOccupation: new FormControl(''),
-        fatherNationalIdNo: new FormControl(''),
         fatherMobile: new FormControl('', [Validators.required]),
         fatherTelephoneOffice: new FormControl(''),
         fatherTelephoneResidence: new FormControl(''),
@@ -179,7 +178,6 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         motherName: new FormControl('', [Validators.required]),
         motherAcademicQualification: new FormControl(''),
         motherOccupation: new FormControl(''),
-        motherNationalIdNo: new FormControl(''),
         motherMobile: new FormControl('', [Validators.required]),
         motherTelephoneOffice: new FormControl(''),
         motherTelephoneResidence: new FormControl(''),
@@ -227,14 +225,73 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
       formData.append('LastSchool', student.lastSchool ?? '');
       formData.append('StudentPhone', student.studentPhone ?? '');
       formData.append('StudentEmail', student.studentEmail ?? '');
+      formData.append('IsDisability', student.isDisability ?? false);
+      formData.append('Disability', student.disability ?? '');
+      formData.append('SpecialCare', student.specialCare ?? '');
+      formData.append(
+        'LastClassAttendedResult',
+        student.lastClassAttendedResult ?? '',
+      );
 
-      // ✅ Guardian
-      formData.append('FatherName', guardian.fatherName ?? '');
-      formData.append('MotherName', guardian.motherName ?? '');
+      // ✅ Guardian - Father (nested binding for [FromForm] StudentInfoRequest)
+      formData.append('GuardianInfo.FatherName', guardian.fatherName ?? '');
+      formData.append(
+        'GuardianInfo.FatherOccupation',
+        guardian.fatherOccupation ?? '',
+      );
+      formData.append(
+        'GuardianInfo.FatherAcademicQualification',
+        guardian.fatherAcademicQualification ?? '',
+      );
+      formData.append('GuardianInfo.FatherMobile', guardian.fatherMobile ?? '');
+      formData.append('GuardianInfo.FatherEmail', guardian.fatherEmail ?? '');
+      formData.append(
+        'GuardianInfo.FatherTelephoneOffice',
+        guardian.fatherTelephoneOffice ?? '',
+      );
+      formData.append(
+        'GuardianInfo.FatherTelephoneResidence',
+        guardian.fatherTelephoneResidence ?? '',
+      );
+      // formData.append(
+      //   'GuardianInfo.FatherNationalIdNo',
+      //   guardian.fatherNationalIdNo ?? '',
+      // );
 
-      // ✅ Local Guardian
-      formData.append('LocalGuardianName', localGuardian.name ?? '');
-      formData.append('LocalGuardianPhone', localGuardian.phone ?? '');
+      // ✅ Guardian - Mother
+      formData.append('GuardianInfo.MotherName', guardian.motherName ?? '');
+      formData.append(
+        'GuardianInfo.MotherOccupation',
+        guardian.motherOccupation ?? '',
+      );
+      formData.append(
+        'GuardianInfo.MotherAcademicQualification',
+        guardian.motherAcademicQualification ?? '',
+      );
+      formData.append('GuardianInfo.MotherMobile', guardian.motherMobile ?? '');
+      formData.append('GuardianInfo.MotherEmail', guardian.motherEmail ?? '');
+      formData.append(
+        'GuardianInfo.MotherTelephoneOffice',
+        guardian.motherTelephoneOffice ?? '',
+      );
+      formData.append(
+        'GuardianInfo.MotherTelephoneResidence',
+        guardian.motherTelephoneResidence ?? '',
+      );
+      // formData.append(
+      //   'GuardianInfo.MotherNationalIdNo',
+      //   guardian.motherNationalIdNo ?? '',
+      // );
+
+      // ✅ Local Guardian (nested binding for [FromForm] StudentInfoRequest)
+      formData.append('LocalGuardianInfo.Name', localGuardian.name ?? '');
+      formData.append(
+        'LocalGuardianInfo.RelationToStudent',
+        localGuardian.relationToStudent ?? '',
+      );
+      formData.append('LocalGuardianInfo.Phone', localGuardian.phone ?? '');
+      formData.append('LocalGuardianInfo.Email', localGuardian.email ?? '');
+      formData.append('LocalGuardianInfo.Address', localGuardian.address ?? '');
 
       // ✅ Image
       if (this.selectedFile) {
@@ -260,7 +317,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         },
         error: () => {
           this.toastService.error(
-            'Failed to create sitemap. Please try again later.'
+            'Failed to create sitemap. Please try again later.',
           );
         },
       });

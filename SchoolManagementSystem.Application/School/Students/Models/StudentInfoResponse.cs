@@ -24,11 +24,46 @@ public class StudentInfoResponse
     public   string PermanentAddress { get; set; }
     public string? StudentPhone { get; set; }
     public string? StudentEmail { get; set; }
+    public string? ImagePath { get; set; }
 
     public string? FatherName { get; set; }
     public string? MotherName { get; set; }
     public string? Name { get; set; }
 
-    public GuardianInfo? GuardianInfo { get; set; }
-    public LocalGuardianInfo? LocalGuardianInfo { get; set; }
+    public GuardianInfoResponse? GuardianInfo { get; set; }
+    public LocalGuardianInfoResponse? LocalGuardianInfo { get; set; }
+}
+
+public class GuardianInfoResponse{
+    public Guid Id { get; set; }
+    public string FatherName { get; set; }
+    public string? FatherAcademicQualification { get; set; }
+    public string? FatherOccupation { get; set; }
+    public string FatherNationalIdNo { get; set; }
+    public string FatherMobile { get; set; }
+    public string? FatherTelephoneOffice { get; set; }
+    public string? FatherTelephoneResidence { get; set; }
+    public string? FatherEmail { get; set; }
+
+    public string MotherName { get; set; }
+    public string? MotherAcademicQualification { get; set; }
+    public string? MotherOccupation { get; set; }
+    public string MotherNationalIdNo { get; set; }
+    public string? MotherMobile { get; set; }
+    public string? MotherTelephoneOffice { get; set; }
+    public string? MotherTelephoneResidence { get; set; }
+    public string? MotherEmail { get; set; }
+
+    public Guid StudentInfoId { get; set; }
+}
+
+public class LocalGuardianInfoResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string RelationToStudent { get; set; }
+    public string? Address { get; set; }
+    public string Phone { get; set; }
+    public string? Email { get; set; }
+    public Guid StudentInfoId { get; set; }
 }
