@@ -13,9 +13,9 @@ const routes: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import(
-            '../student-application/student-application-list/student-application-list.component'
-          ).then((m) => m.StudentApplicationListComponent),
+          import('../student-application/student-application-list/student-application-list.component').then(
+            (m) => m.StudentApplicationListComponent,
+          ),
         //canActivate: [authGuard, permissionGuard('/student')],
         data: {
           breadcrumb: 'Student Management',
@@ -25,9 +25,9 @@ const routes: Routes = [
       {
         path: 'create',
         loadComponent: () =>
-          import(
-            '../student-application/create-student-application/student-application.component'
-          ).then((m) => m.StudentApplicationComponent),
+          import('../student-application/create-student-application/student-application.component').then(
+            (m) => m.StudentApplicationComponent,
+          ),
         //canActivate: [authGuard, permissionGuard('/student')],
         data: {
           breadcrumb: 'Create Student Application',
@@ -37,12 +37,26 @@ const routes: Routes = [
       {
         path: 'edit/:id',
         loadComponent: () =>
-          import(
-            '../student-application/edit-student-application/edit-student-application.component'
-          ).then((m) => m.EditStudentApplicationComponent),
+          import('../student-application/edit-student-application/edit-student-application.component').then(
+            (m) => m.EditStudentApplicationComponent,
+          ),
         // canActivate: [authGuard, permissionGuard('/student')],
         data: {
           breadcrumb: 'Edit student',
+          parent: [
+            { label: 'student', url: '/student' },
+            { label: 'student Management', url: '/student' },
+          ],
+        },
+      },
+      {
+        path: 'update-student-info/:id',
+        loadComponent: () =>
+          import('../student-application/update-student-info/update-student-info.component').then(
+            (m) => m.UpdateStudentInfoComponent,
+          ),
+        data: {
+          breadcrumb: 'Update student info',
           parent: [
             { label: 'student', url: '/student' },
             { label: 'student Management', url: '/student' },

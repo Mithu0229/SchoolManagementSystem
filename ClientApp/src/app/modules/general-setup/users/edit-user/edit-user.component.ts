@@ -68,7 +68,7 @@ export class EditUserComponent extends FormBase implements OnInit, OnDestroy {
     private readonly userService: UserService,
     private readonly toastService: ToastService,
     private readonly route: Router,
-    private readonly roleService: RoleService
+    private readonly roleService: RoleService,
   ) {
     super();
 
@@ -121,7 +121,6 @@ export class EditUserComponent extends FormBase implements OnInit, OnDestroy {
 
   private populateForm(user: any): void {
     let selectedRoles: any[] = [];
-    debugger;
     if (user.userRoleList && user.userRoleList.length > 0) {
       selectedRoles = user.userRoleList.map((role: any) => ({
         id: role.roleId,
@@ -149,7 +148,6 @@ export class EditUserComponent extends FormBase implements OnInit, OnDestroy {
       this.markAllAsTouched(); // show all errors
       return;
     }
-    debugger;
     if (this.form.valid) {
       const payload: any = {
         ...this.currentState!,
@@ -184,7 +182,7 @@ export class EditUserComponent extends FormBase implements OnInit, OnDestroy {
         },
         error: () => {
           this.toastService.error(
-            'Failed to update User. Please try again later.'
+            'Failed to update User. Please try again later.',
           );
         },
       });

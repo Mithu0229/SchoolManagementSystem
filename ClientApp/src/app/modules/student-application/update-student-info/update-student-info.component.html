@@ -1,0 +1,201 @@
+<div class="min-h-screen bg-gray-50 py-4 px-1 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-2">
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-2xl">
+                Update Student Info
+            </h1>
+        </div>
+
+        <div *ngIf="applicationForm" class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <form [formGroup]="applicationForm" (ngSubmit)="onSubmit()" class="p-8">
+                <div class="animate-fade-in-up">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b">Student Details</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="fullName">Full Name<span
+                                    class="required-asterisk">*</span></label>
+                            <input id="fullName" pInputText formControlName="fullName" placeholder="Enter Full Name"
+                                [ngClass]="{ 'p-invalid': isInvalid('fullName') }" class="w-full" />
+                            <app-form-error [control]="getControl('fullName')" [isInvalid]="isInvalid('fullName')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="gender">Gender<span
+                                    class="required-asterisk">*</span></label>
+                            <p-select [options]="genderList" formControlName="gender" placeholder="Select Gender"
+                                optionLabel="label" optionValue="value" [ngClass]="{ 'p-invalid': isInvalid('gender') }"
+                                appendTo="body" styleClass="w-full"></p-select>
+                            <app-form-error [control]="getControl('gender')" [isInvalid]="isInvalid('gender')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="image">Image<span class="required-asterisk">*</span></label>
+                            <div class="col image-preview" *ngIf="imagePreview">
+                                <img [src]="imagePreview" alt="Preview" />
+                            </div>
+                            <input type="file" id="image" formControlName="image" (change)="onFileChange($event)"
+                                accept="image/*" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="dateOfBirth">Date of Birth<span
+                                    class="required-asterisk">*</span></label>
+                            <input type="date" id="dateOfBirth" pInputText formControlName="dateOfBirth"
+                                [ngClass]="{ 'p-invalid': isInvalid('dateOfBirth') }" class="w-full" />
+                            <app-form-error [control]="getControl('dateOfBirth')"
+                                [isInvalid]="isInvalid('dateOfBirth')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="placeOfBirth">Place Of Birth<span
+                                    class="required-asterisk">*</span></label>
+                            <input id="placeOfBirth" pInputText formControlName="placeOfBirth"
+                                placeholder="Enter Place Of Birth"
+                                [ngClass]="{ 'p-invalid': isInvalid('placeOfBirth') }" class="w-full" />
+                            <app-form-error [control]="getControl('placeOfBirth')"
+                                [isInvalid]="isInvalid('placeOfBirth')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="nationality">Nationality<span
+                                    class="required-asterisk">*</span></label>
+                            <input id="nationality" pInputText formControlName="nationality"
+                                placeholder="Enter Nationality" [ngClass]="{ 'p-invalid': isInvalid('nationality') }"
+                                class="w-full" />
+                            <app-form-error [control]="getControl('nationality')"
+                                [isInvalid]="isInvalid('nationality')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="religion">Religion<span
+                                    class="required-asterisk">*</span></label>
+                            <p-select [options]="religionList" formControlName="religion" placeholder="Select Religion"
+                                optionLabel="label" optionValue="value"
+                                [ngClass]="{ 'p-invalid': isInvalid('religion') }" appendTo="body"
+                                styleClass="w-full"></p-select>
+                            <app-form-error [control]="getControl('religion')" [isInvalid]="isInvalid('religion')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="bloodGroup">Blood Group<span
+                                    class="required-asterisk">*</span></label>
+                            <p-select [options]="bloodGroupList" formControlName="bloodGroup"
+                                placeholder="Select Blood Group" optionLabel="label" optionValue="value"
+                                [ngClass]="{ 'p-invalid': isInvalid('bloodGroup') }" appendTo="body"
+                                styleClass="w-full"></p-select>
+                            <app-form-error [control]="getControl('bloodGroup')"
+                                [isInvalid]="isInvalid('bloodGroup')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="birthCertificateNo">Birth Certificate No<span
+                                    class="required-asterisk">*</span></label>
+                            <input id="birthCertificateNo" pInputText formControlName="birthCertificateNo"
+                                placeholder="Enter Birth Certificate No"
+                                [ngClass]="{ 'p-invalid': isInvalid('birthCertificateNo') }" class="w-full" />
+                            <app-form-error [control]="getControl('birthCertificateNo')"
+                                [isInvalid]="isInvalid('birthCertificateNo')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="applicationForClass">Application For Class<span
+                                    class="required-asterisk">*</span></label>
+                            <p-select [options]="applicationForClassList" formControlName="applicationForClass"
+                                placeholder="Select Application For Class" optionLabel="label" optionValue="value"
+                                [ngClass]="{ 'p-invalid': isInvalid('applicationForClass') }" appendTo="body"
+                                styleClass="w-full"></p-select>
+                            <app-form-error [control]="getControl('applicationForClass')"
+                                [isInvalid]="isInvalid('applicationForClass')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="academicYear">Academic Year<span
+                                    class="required-asterisk">*</span></label>
+                            <input id="academicYear" pInputText formControlName="academicYear"
+                                placeholder="Enter Academic Year" [ngClass]="{ 'p-invalid': isInvalid('academicYear') }"
+                                class="w-full" />
+                            <app-form-error [control]="getControl('academicYear')"
+                                [isInvalid]="isInvalid('academicYear')" />
+                        </div>
+
+                        <div class="flex flex-col gap-1 col-span-1 md:col-span-2">
+                            <label class="form-label" for="lastSchool">Last School</label>
+                            <input id="lastSchool" pInputText formControlName="lastSchool"
+                                placeholder="Enter Last School" class="w-full" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="lastClassAttendedResult">Last Class Attended Result</label>
+                            <input id="lastClassAttendedResult" pInputText formControlName="lastClassAttendedResult"
+                                placeholder="Enter Last Class Attended Result" class="w-full" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="studentPhone">Student Phone</label>
+                            <input id="studentPhone" pInputText formControlName="studentPhone"
+                                placeholder="Enter Student Phone" class="w-full" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="studentEmail">Student Email</label>
+                            <input id="studentEmail" pInputText formControlName="studentEmail"
+                                placeholder="Enter Student Email" class="w-full" />
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <label class="form-label" for="isDisability">Is Disability</label>
+                            <p-select [options]="isDisabilityList" formControlName="isDisability"
+                                placeholder="Select Is Disability" optionLabel="label" optionValue="value"
+                                appendTo="body" styleClass="w-full"></p-select>
+                        </div>
+
+                        <div *ngIf="form.get('isDisability')?.value === true"
+                            class="flex flex-col gap-1 col-span-1 md:col-span-2">
+                            <label class="form-label" for="disability">Disability Details</label>
+                            <textarea id="disability" pTextarea formControlName="disability"
+                                placeholder="Enter Disability" rows="2" class="w-full"></textarea>
+                        </div>
+
+                        <div class="flex flex-col gap-1 col-span-1 md:col-span-2">
+                            <label class="form-label" for="specialCare">Special Care</label>
+                            <textarea id="specialCare" pTextarea formControlName="specialCare"
+                                placeholder="Enter Special Care" rows="2" class="w-full"></textarea>
+                        </div>
+
+                        <div class="col-span-1 md:col-span-3 lg:col-span-1">
+                            <label class="form-label" for="presentAddress">Present Address<span
+                                    class="required-asterisk">*</span></label>
+                            <textarea id="presentAddress" pTextarea formControlName="presentAddress"
+                                placeholder="Enter Present Address" rows="3" class="w-full"
+                                [ngClass]="{ 'p-invalid': isInvalid('presentAddress') }"></textarea>
+                            <app-form-error [control]="getControl('presentAddress')"
+                                [isInvalid]="isInvalid('presentAddress')" />
+                        </div>
+
+                        <div class="col-span-1 md:col-span-3 lg:col-span-1">
+                            <label class="form-label" for="permanentAddress">Permanent Address<span
+                                    class="required-asterisk">*</span></label>
+                            <textarea id="permanentAddress" pTextarea formControlName="permanentAddress"
+                                placeholder="Enter Permanent Address" rows="3" class="w-full"
+                                [ngClass]="{ 'p-invalid': isInvalid('permanentAddress') }"></textarea>
+                            <app-form-error [control]="getControl('permanentAddress')"
+                                [isInvalid]="isInvalid('permanentAddress')" />
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end gap-3">
+                        <button type="button" (click)="onCancel()"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded-lg transition-colors duration-200">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200">
+                            Update Student Info
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

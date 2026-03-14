@@ -56,11 +56,15 @@
         <div class="flex gap-2 w-full mt-1">
             <label for="role">Email:</label>
             <span>{{ currentUser?.userLoginInfo?.userEmail }}</span>
+            <!-- <button pButton type="button" label="Update Profile" class="primary-button"
+                (click)="updateStudentProfile()"></button> -->
         </div>
         <div class="dialog-footer">
             <button pButton label="Close" severity="secondary" (click)="userProfileDialog = false"></button>
             <button pButton type="button" label="Update Profile" class="primary-button" (click)="updateProfile()"
                 *ngIf="isTenantAdmin"></button>
+
         </div>
+
     </div>
 </p-dialog>

@@ -31,7 +31,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private tenantService: TenantService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {
     this.verifyToken();
   }
@@ -91,12 +91,11 @@ export class AuthService {
         if (response.isSuccess && response.data.token) {
           this.storeAuthData(response.data.token, response.data);
         }
-      })
+      }),
     );
   }
 
   storeAuthData(token: string, userData: any) {
-    debugger;
     userData.userLoginInfo.userId = userData.id;
     if (token) {
       this.getMenuList(userData.id).subscribe({
@@ -104,7 +103,7 @@ export class AuthService {
           if (response.isSuccess) {
             localStorage.setItem(
               'menuList',
-              JSON.stringify(response.data ?? [])
+              JSON.stringify(response.data ?? []),
             );
           }
         },
@@ -114,6 +113,7 @@ export class AuthService {
     localStorage.setItem('token', token);
     localStorage.setItem('userLoginInfo', JSON.stringify(userData));
     localStorage.setItem('userId', userData.id);
+    localStorage.setItem('studentId', userData.studentId);
     localStorage.setItem('currentUser', JSON.stringify(userData));
     this.setCurrentUser(userData);
     this.isAuthenticatedSubject.next(true);
@@ -123,6 +123,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('userLoginInfo');
     localStorage.removeItem('userId');
+    localStorage.removeItem('studentId');
     localStorage.clear();
     this.tenantService.clearCurrentTenant();
     this.isAuthenticatedSubject.next(false);
@@ -140,7 +141,7 @@ export class AuthService {
       {
         email,
         verificationCode,
-      }
+      },
     );
   }
 
@@ -161,7 +162,7 @@ export class AuthService {
 
   changePassword(
     currentPassword: string,
-    newPassword: string
+    newPassword: string,
   ): Observable<ApiResponse<null>> {
     const userId = localStorage.getItem('userId');
 
@@ -173,7 +174,7 @@ export class AuthService {
 
     return this.http.post<ApiResponse<null>>(
       '/Account/change-password',
-      request
+      request,
     );
   }
 
@@ -187,7 +188,7 @@ export class AuthService {
   getMenuList(id: string | null = null) {
     const userId = id ?? localStorage.getItem('userId');
     return this.http.get<ApiResponse<null>>(
-      '/Sitemap/get-all-menu-list/' + userId
+      '/Sitemap/get-all-menu-list/' + userId,
     );
   }
 
@@ -219,7 +220,7 @@ export class AuthService {
 
   getAssignedUserByRoleId(roleId: string): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(
-      `/Role/get-user-count-by-roleId?id=${roleId}`
+      `/Role/get-user-count-by-roleId?id=${roleId}`,
     );
   }
 

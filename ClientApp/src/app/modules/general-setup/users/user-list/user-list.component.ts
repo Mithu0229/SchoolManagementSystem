@@ -26,7 +26,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private readonly userService: UserService,
     private readonly toastService: ToastService,
-    private readonly route: Router
+    private readonly route: Router,
   ) {}
 
   ngOnInit(): void {
@@ -108,7 +108,6 @@ export class UserListComponent implements OnInit {
   }
 
   editUser(user: any) {
-    debugger;
     this.route
       .navigate(['/admin/edit', user.id], {
         state: {

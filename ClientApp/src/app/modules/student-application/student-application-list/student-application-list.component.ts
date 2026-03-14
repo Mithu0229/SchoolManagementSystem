@@ -26,7 +26,7 @@ export class StudentApplicationListComponent implements OnInit {
   constructor(
     private readonly studentService: StudentService,
     private readonly toastService: ToastService,
-    private readonly route: Router
+    private readonly route: Router,
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +111,6 @@ export class StudentApplicationListComponent implements OnInit {
   }
 
   editUser(user: any) {
-    debugger;
     this.route
       .navigate(['/application/edit', user.id], {
         state: {

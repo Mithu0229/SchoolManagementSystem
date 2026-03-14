@@ -84,6 +84,33 @@ namespace SchoolManagementSystem.API.Controllers
             return await Mediator.Send(cmd);
         }
 
+        [HttpPut("update-student-info")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentInfoResponse))]
+        public async Task<IResult> UpdateStudentInfoOnly([FromForm] StudentInfoUpdateRequest request)
+        {
+            string? imagePath = null;
+
+            if (request.Image != null)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                var extension = Path.GetExtension(request.Image.FileName).ToLower();
+                var uploadFolder = Path.Combine(_env.WebRootPath, "uploads/students");
+                Directory.CreateDirectory(uploadFolder);
+
+                var fileName = $"{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using var stream = new FileStream(filePath, FileMode.Create);
+                await request.Image.CopyToAsync(stream);
+
+                imagePath = $"/uploads/students/{fileName}";
+                request.ImagePath = imagePath;
+            }
+
+            UpdateStudentInfoOnlyCommand cmd = new UpdateStudentInfoOnlyCommand() { StudentInfo = request };
+            return await Mediator.Send(cmd);
+        }
+
         [HttpDelete("delete-student/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<IResult> Delete(Guid id)

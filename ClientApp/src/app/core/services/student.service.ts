@@ -44,4 +44,10 @@ export class StudentService {
       payload,
     );
   }
+  updateStudentOnly(payload: any): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(
+      'StudentInfo/update-student-info',
+      payload,
+    );
+  }
 }

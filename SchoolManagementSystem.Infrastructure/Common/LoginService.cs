@@ -33,19 +33,19 @@ public class LoginService : ILoginService
             var uaParser = Parser.GetDefault();
             ClientInfo c = uaParser.Parse(ua);
 
-            var loginHistory = new UsersLoginHistory
-            {
-                Id = Guid.NewGuid(),
-                CreatedById = user.Id,
-                CreatedDate = DateTime.UtcNow,
-                IP = _accessor.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                MAC = GetMacAddress(),
-                NetworkType = GetNetworkType(),
-                OperatingSystem = c.OS.ToString(),
-                TenantId = user.TenantId,
-            };
+            //var loginHistory = new UsersLoginHistory
+            //{
+            //    Id = Guid.NewGuid(),
+            //    CreatedById = user.Id,
+            //    CreatedDate = DateTime.UtcNow,
+            //    IP = _accessor.HttpContext.Connection.RemoteIpAddress?.ToString(),
+            //    MAC = GetMacAddress(),
+            //    NetworkType = GetNetworkType(),
+            //    OperatingSystem = c.OS.ToString(),
+            //    TenantId = user.TenantId,
+            //};
 
-            await _unitOfWork.UserLoginHistoryRepository.AddAsync(loginHistory);
+            //await _unitOfWork.UserLoginHistoryRepository.AddAsync(loginHistory);
 
             user.IsActive = true;
             await _unitOfWork.UserRepository.UpdateAsync(user);
@@ -98,6 +98,7 @@ public class LoginService : ILoginService
                 TenantName = user.Tenant?.TenantName,
                 UserName = user != null ? $"{user.FirstName} {user.LastName}" : null,
                 UserEmail = user?.Email,
+                StudentId = user.StudentId
             };
            
             return new

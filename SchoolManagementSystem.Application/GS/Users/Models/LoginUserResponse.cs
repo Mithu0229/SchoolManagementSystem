@@ -23,6 +23,7 @@ public class LoginUserResponse
     public DateTime? PasswordResetDate { get; set; }
     public string? UserPhoto { get; set; }
     public string? Logo { get; set; }
+    public Guid? StudentId { get; set; }
     public Guid? TenantId { get; set; }
     public string? TenantName { get; set; }
 

@@ -24,7 +24,7 @@ export class UserService {
   public isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
   constructor(
     private readonly http: HttpService,
-    private readonly router: Router
+    private readonly router: Router,
   ) {}
 
   createUser(payload: any): Observable<ApiResponse<any>> {
@@ -40,7 +40,6 @@ export class UserService {
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post(`user/user-login`, credentials).pipe(
       tap((response: any) => {
-        debugger;
         if (response.isSuccess) {
           if (response.data.userType == 2) {
             this.isAuthenticatedSubject.next(true);
@@ -51,7 +50,7 @@ export class UserService {
             this.isAuthenticatedSubject.next(true);
           }
         }
-      })
+      }),
     );
   }
   logout(): void {

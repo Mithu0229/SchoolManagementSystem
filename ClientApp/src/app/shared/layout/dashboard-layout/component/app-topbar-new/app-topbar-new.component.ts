@@ -76,7 +76,7 @@ export class AppTopbarNew implements OnInit {
     private readonly router: Router,
     private readonly tenantService: TenantService,
     private readonly toastService: ToastService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {
     this.tenantLogoUrl$ = this.getTenantLogoUrl();
     this.currentUser = this.authService.getCurrentUser();
@@ -110,7 +110,7 @@ export class AppTopbarNew implements OnInit {
   private getTenantLogoUrl(): Observable<string | undefined> {
     return this.tenantService.currentTenant$.pipe(
       map((tenant) => tenant?.logoUrl),
-      map((url) => (url === null ? undefined : url))
+      map((url) => (url === null ? undefined : url)),
     );
   }
 
@@ -196,6 +196,17 @@ export class AppTopbarNew implements OnInit {
 
   updateProfile(): void {
     this.router.navigate([`/tenant/edit`], { state: { id: this.tenantId } });
+    this.userProfileDialog = false;
+  }
+  studentId: string | null = null;
+  updateStudentProfile(): void {
+    this.studentId = this.currentUser?.userLoginInfo?.studentId || null;
+    this.router.navigate(
+      [`/application/update-student-info/${this.studentId}`],
+      {
+        state: { id: this.studentId },
+      },
+    );
     this.userProfileDialog = false;
   }
 }

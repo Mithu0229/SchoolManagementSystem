@@ -53,6 +53,7 @@ export class AppTopbar implements OnInit {
   currentUser: any;
   tenantId: string | null = null;
   selectedEmployee: any;
+  studentId: string | null = null;
 
   changePasswordForm = new FormGroup({
     currentPassword: new FormControl('', [Validators.required]),
@@ -69,7 +70,7 @@ export class AppTopbar implements OnInit {
     public layoutService: LayoutService,
     private readonly router: Router,
     private readonly toastService: ToastService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
   ) {
     //this.tenantLogoUrl$ = this.getTenantLogoUrl();
     this.currentUser = null; //this.authService.getCurrentUser();
@@ -141,6 +142,12 @@ export class AppTopbar implements OnInit {
 
   updateProfile(): void {
     this.router.navigate([`/tenant/edit`], { state: { id: this.tenantId } });
+    this.userProfileDialog = false;
+  }
+  updateStudentProfile(): void {
+    this.router.navigate([`/application/update-student-info`], {
+      state: { id: this.studentId },
+    });
     this.userProfileDialog = false;
   }
 }

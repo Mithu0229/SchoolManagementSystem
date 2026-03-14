@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static Dapper.SqlMapper;
 
 namespace SchoolManagementSystem.Application.School.Students.Handlers.CommandHandlers;
@@ -31,25 +32,28 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
             {
                 return Result.Fail<StudentInfoResponse>(StatusCodes.Status406NotAcceptable);
             }
-            if(request.StudentInfo != null)
+            var id = Guid.NewGuid();
+            if (request.StudentInfo != null)
             {
                 var user = new User()
                 {
                     Id = Guid.NewGuid(),
                     FirstName = request.StudentInfo.FullName,
                     LastName = request.StudentInfo.FullName,
-                    Email = request.StudentInfo.FullName,
+                    Email = request.StudentInfo.FullName.Replace(" ", "") + "@gmail.com" ,
                     Password = request.StudentInfo.FullName,
                     UserType = Domain.Enums.UserTypes.Student,
                     PhoneNumber = request.StudentInfo.StudentPhone,
-                    IsActive = true
+                    IsActive = true,
+                    StudentId = id
 
                 };
-                user.Password = BCrypt.Net.BCrypt.HashPassword(request.StudentInfo!.FullName);
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Email);
                 await _unitOfWork.UserRepository.AddAsync(user);
             }
 
             var studentInfo = request.StudentInfo.Adapt<StudentInfo>();
+            studentInfo.Id = id;
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();
             var response = studentInfo.Adapt<StudentInfoResponse>();

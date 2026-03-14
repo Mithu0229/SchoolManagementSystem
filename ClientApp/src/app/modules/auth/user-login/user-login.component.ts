@@ -62,7 +62,7 @@ export class UserLoginComponent {
     private readonly userService: UserService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
@@ -97,7 +97,7 @@ export class UserLoginComponent {
             this.isSigningIn.set(false);
             this.errorMessage.set(
               res.errors?.[0] ??
-                'We couldn’t log you in. Please check your email and password.'
+                'We couldn’t log you in. Please check your email and password.',
             );
           }
         },
