@@ -86,6 +86,8 @@ export class UserLoginComponent {
               this.router.navigateByUrl('/member');
             } else if (res.data?.userType == 2) {
               this.router.navigateByUrl('/admin');
+            } else if (res.data?.userType == 4) {
+              this.router.navigateByUrl('/student');
             } else {
               this.router.navigateByUrl('');
             }

@@ -1,0 +1,26 @@
+<article class="panel">
+    <header class="panel-header">
+        <h3>Result</h3>
+    </header>
+
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Grade</th>
+                    <th>Point</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of rows">
+                    <td>{{ row.subject }}</td>
+                    <td>{{ row.marks }}</td>
+                    <td>{{ row.grade }}</td>
+                    <td>{{ row.point }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</article>

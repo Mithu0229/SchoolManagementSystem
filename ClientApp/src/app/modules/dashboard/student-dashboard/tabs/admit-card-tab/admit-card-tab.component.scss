@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+
+.panel {
+  background: rgba(130, 71, 165, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.panel-header {
+  padding: 12px 14px;
+  background: rgba(82, 40, 111, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.panel-body {
+  padding: 12px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 10px;
+}
+
+.table th {
+  text-align: left;
+  background: rgba(77, 35, 113, 0.5);
+}
+
+.action-btn {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #5b6bd7, #737ee9);
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 5px 10px;
+  cursor: pointer;
+}

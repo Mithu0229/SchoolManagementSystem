@@ -8,6 +8,7 @@ import { UserRegisterComponent } from './user-register/user-register.component';
 import { publicGuard } from '../../core/guards/public.guard';
 import { MemberDashboardComponent } from '../dashboard/member-dashboard/member-dashboard.component';
 import { UserLoginComponent } from './user-login/user-login.component';
+import { StudentDashboardComponent } from '../dashboard/student-dashboard/student-dashboard.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
   {
     path: 'member',
     component: MemberDashboardComponent,
+    // canActivate: [authGuard],
+  },
+  {
+    path: 'student',
+    component: StudentDashboardComponent,
     // canActivate: [authGuard],
   },
 ];

@@ -1,0 +1,26 @@
+<article class="panel">
+    <header class="panel-header">
+        <h3>Class Routine</h3>
+    </header>
+
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Subject</th>
+                    <th>Time</th>
+                    <th>Room</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of rows">
+                    <td>{{ row.period }}</td>
+                    <td>{{ row.subject }}</td>
+                    <td>{{ row.time }}</td>
+                    <td>{{ row.room }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</article>

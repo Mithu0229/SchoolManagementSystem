@@ -1,0 +1,15 @@
+<article class="panel">
+    <header class="panel-header">
+        <h3>Academic Calendar</h3>
+    </header>
+
+    <div class="panel-body">
+        <div class="event-list">
+            <div class="event-item" *ngFor="let event of events">
+                <p class="event-date">{{ event.date }}</p>
+                <h4>{{ event.title }}</h4>
+                <p>{{ event.details }}</p>
+            </div>
+        </div>
+    </div>
+</article>

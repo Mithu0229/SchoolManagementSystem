@@ -1,0 +1,36 @@
+<div class="student-dashboard">
+    <div class="dashboard-blur dashboard-blur-left"></div>
+    <div class="dashboard-blur dashboard-blur-right"></div>
+
+    <header class="student-topbar">
+        <div class="status-links">
+            <button *ngFor="let link of topLinks" class="status-link" type="button">
+                {{ link }}
+            </button>
+        </div>
+    </header>
+
+    <div class="dashboard-shell">
+        <aside class="side-nav">
+            <div class="portal-title">Student Panel</div>
+            <button *ngFor="let item of menuItems; let first = first" class="menu-item" [class.active]="first"
+                type="button">
+                <span class="menu-dot"></span>
+                {{ item }}
+            </button>
+        </aside>
+
+        <main class="dashboard-content">
+            <nav class="content-tabs">
+                <button *ngFor="let tab of tabs" class="tab-item" [class.active]="tab.key === activeTab"
+                    (click)="setActiveTab(tab.key)" type="button">
+                    {{ tab.label }}
+                </button>
+            </nav>
+
+            <section class="tab-content">
+                <ng-container *ngComponentOutlet="tabComponentMap[activeTab]"></ng-container>
+            </section>
+        </main>
+    </div>
+</div>

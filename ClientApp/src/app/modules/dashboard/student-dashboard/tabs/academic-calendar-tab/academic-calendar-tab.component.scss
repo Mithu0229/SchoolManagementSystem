@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.panel {
+  background: rgba(130, 71, 165, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.panel-header {
+  padding: 12px 14px;
+  background: rgba(82, 40, 111, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.panel-body {
+  padding: 12px;
+}
+
+.event-list {
+  display: grid;
+  gap: 10px;
+}
+
+.event-item {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px;
+}
+
+.event-item h4 {
+  margin: 0 0 4px;
+}
+
+.event-item p {
+  margin: 0;
+}
+
+.event-date {
+  color: #fce4ff;
+  margin-bottom: 6px;
+}
