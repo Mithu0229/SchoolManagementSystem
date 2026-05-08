@@ -18,6 +18,22 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<StudentInfo> StudentInfo { get; set; }
         public DbSet<GuardianInfo> GuardianInfo { get; set; }
         public DbSet<LocalGuardianInfo> LocalGuardianInfo { get; set; }
+        public DbSet<Institute> Institute { get; set; }
+        public DbSet<Branch> Branch { get; set; }
+        public DbSet<FinancialYear> FinancialYear { get; set; }
+        public DbSet<AcademicSession> AcademicSession { get; set; }
+        public DbSet<AcademicClass> AcademicClass { get; set; }
+        public DbSet<Section> Section { get; set; }
+        public DbSet<Shift> Shift { get; set; }
+        public DbSet<StudentGroup> StudentGroup { get; set; }
+        public DbSet<Student> Student { get; set; }
+        public DbSet<Admission> Admission { get; set; }
+        public DbSet<FeeHead> FeeHead { get; set; }
+        public DbSet<FeeTemplate> FeeTemplate { get; set; }
+        public DbSet<FeeTemplateDetail> FeeTemplateDetail { get; set; }
+        public DbSet<StudentFeeLedger> StudentFeeLedger { get; set; }
+        public DbSet<FeeCollection> FeeCollection { get; set; }
+        public DbSet<FeeCollectionDetail> FeeCollectionDetail { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

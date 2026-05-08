@@ -4,8 +4,18 @@ using SchoolManagementSystem.Application.GS.Roles.Repositories;
 using SchoolManagementSystem.Application.GS.Sitemaps.Repositories;
 using SchoolManagementSystem.Application.GS.Tenants.Repository;
 using SchoolManagementSystem.Application.GS.Users.Repositories;
+using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
+using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
+using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
+using SchoolManagementSystem.Application.School.FinancialYears.Repositories;
+using SchoolManagementSystem.Application.School.Institutes.Repositories;
+using SchoolManagementSystem.Application.School.Sections.Repositories;
+using SchoolManagementSystem.Application.School.Shifts.Repositories;
 using SchoolManagementSystem.Application.School.Students.Repositories;
+using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories;
+using SchoolManagementSystem.Infrastructure.Repositories.Schools;
 using SchoolManagementSystem.Infrastructure.Repositories.Students;
 
 namespace SchoolManagementSystem.Infrastructure.Common
@@ -139,6 +149,136 @@ namespace SchoolManagementSystem.Infrastructure.Common
                 return _userRoleRepository;
             }
         }
+
+        #region School Setup
+
+        public IInstituteRepository _instituteRepository;
+        public IInstituteRepository InstituteRepository
+        {
+            get
+            {
+                if (this._instituteRepository == null)
+                {
+                    this._instituteRepository = new InstituteRepository(_context, _currentUserService);
+                }
+
+                return _instituteRepository;
+            }
+        }
+
+        public IBranchRepository _branchRepository;
+        public IBranchRepository BranchRepository
+        {
+            get
+            {
+                if (this._branchRepository == null)
+                {
+                    this._branchRepository = new BranchRepository(_context, _currentUserService);
+                }
+
+                return _branchRepository;
+            }
+        }
+
+        public IFinancialYearRepository _financialYearRepository;
+        public IFinancialYearRepository FinancialYearRepository
+        {
+            get
+            {
+                if (this._financialYearRepository == null)
+                {
+                    this._financialYearRepository = new FinancialYearRepository(_context, _currentUserService);
+                }
+
+                return _financialYearRepository;
+            }
+        }
+
+        public IAcademicSessionRepository _academicSessionRepository;
+        public IAcademicSessionRepository AcademicSessionRepository
+        {
+            get
+            {
+                if (this._academicSessionRepository == null)
+                {
+                    this._academicSessionRepository = new AcademicSessionRepository(_context, _currentUserService);
+                }
+
+                return _academicSessionRepository;
+            }
+        }
+
+        public IAcademicClassRepository _academicClassRepository;
+        public IAcademicClassRepository AcademicClassRepository
+        {
+            get
+            {
+                if (this._academicClassRepository == null)
+                {
+                    this._academicClassRepository = new AcademicClassRepository(_context, _currentUserService);
+                }
+
+                return _academicClassRepository;
+            }
+        }
+
+        public ISectionRepository _sectionRepository;
+        public ISectionRepository SectionRepository
+        {
+            get
+            {
+                if (this._sectionRepository == null)
+                {
+                    this._sectionRepository = new SectionRepository(_context, _currentUserService);
+                }
+
+                return _sectionRepository;
+            }
+        }
+
+        public IShiftRepository _shiftRepository;
+        public IShiftRepository ShiftRepository
+        {
+            get
+            {
+                if (this._shiftRepository == null)
+                {
+                    this._shiftRepository = new ShiftRepository(_context, _currentUserService);
+                }
+
+                return _shiftRepository;
+            }
+        }
+
+        public IStudentGroupRepository _studentGroupRepository;
+        public IStudentGroupRepository StudentGroupRepository
+        {
+            get
+            {
+                if (this._studentGroupRepository == null)
+                {
+                    this._studentGroupRepository = new StudentGroupRepository(_context, _currentUserService);
+                }
+
+                return _studentGroupRepository;
+            }
+        }
+
+        public IFeeHeadRepository _feeHeadRepository;
+        public IFeeHeadRepository FeeHeadRepository
+        {
+            get
+            {
+                if (this._feeHeadRepository == null)
+                {
+                    this._feeHeadRepository = new FeeHeadRepository(_context, _currentUserService);
+                }
+
+                return _feeHeadRepository;
+            }
+        }
+
+        #endregion
 
         #region Students
 

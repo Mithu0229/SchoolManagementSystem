@@ -9,4 +9,5 @@ public class AuditableEntity:CoreEntity, IAuditable
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
     public Guid? ModifiedById { get; set; }
     public DateTime? ModifiedDate { get; set; }
+    public Guid? InstituteId { get; set; }
 }
