@@ -6,12 +6,17 @@ using SchoolManagementSystem.Application.GS.Tenants.Repository;
 using SchoolManagementSystem.Application.GS.Users.Repositories;
 using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
 using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
+using SchoolManagementSystem.Application.School.Admissions.Repositories;
 using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.FeeCollections.Repositories;
 using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
+using SchoolManagementSystem.Application.School.FeeTemplates.Repositories;
 using SchoolManagementSystem.Application.School.FinancialYears.Repositories;
 using SchoolManagementSystem.Application.School.Institutes.Repositories;
+using SchoolManagementSystem.Application.School.SchoolStudents.Repositories;
 using SchoolManagementSystem.Application.School.Sections.Repositories;
 using SchoolManagementSystem.Application.School.Shifts.Repositories;
+using SchoolManagementSystem.Application.School.StudentFeeLedgers.Repositories;
 using SchoolManagementSystem.Application.School.Students.Repositories;
 using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories;
@@ -275,6 +280,76 @@ namespace SchoolManagementSystem.Infrastructure.Common
                 }
 
                 return _feeHeadRepository;
+            }
+        }
+
+        public IStudentRepository _studentRepository;
+        public IStudentRepository StudentRepository
+        {
+            get
+            {
+                if (this._studentRepository == null)
+                {
+                    this._studentRepository = new StudentRepository(_context, _currentUserService);
+                }
+
+                return _studentRepository;
+            }
+        }
+
+        public IAdmissionRepository _admissionRepository;
+        public IAdmissionRepository AdmissionRepository
+        {
+            get
+            {
+                if (this._admissionRepository == null)
+                {
+                    this._admissionRepository = new AdmissionRepository(_context, _currentUserService);
+                }
+
+                return _admissionRepository;
+            }
+        }
+
+        public IFeeTemplateRepository _feeTemplateRepository;
+        public IFeeTemplateRepository FeeTemplateRepository
+        {
+            get
+            {
+                if (this._feeTemplateRepository == null)
+                {
+                    this._feeTemplateRepository = new FeeTemplateRepository(_context, _currentUserService);
+                }
+
+                return _feeTemplateRepository;
+            }
+        }
+
+        public IStudentFeeLedgerRepository _studentFeeLedgerRepository;
+        public IStudentFeeLedgerRepository StudentFeeLedgerRepository
+        {
+            get
+            {
+                if (this._studentFeeLedgerRepository == null)
+                {
+                    this._studentFeeLedgerRepository = new StudentFeeLedgerRepository(_context, _currentUserService);
+                }
+
+                return _studentFeeLedgerRepository;
+            }
+        }
+
+        public IFeeCollectionRepository _feeCollectionRepository;
+        public IFeeCollectionRepository FeeCollectionRepository
+        {
+            get
+            {
+                if (this._feeCollectionRepository == null)
+                {
+                    this._feeCollectionRepository = new FeeCollectionRepository(_context, _currentUserService);
+                }
+
+                return _feeCollectionRepository;
             }
         }
 

@@ -5,12 +5,17 @@ using SchoolManagementSystem.Application.GS.Tenants.Repository;
 using SchoolManagementSystem.Application.GS.Users.Repositories;
 using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
 using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
+using SchoolManagementSystem.Application.School.Admissions.Repositories;
 using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.FeeCollections.Repositories;
 using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
+using SchoolManagementSystem.Application.School.FeeTemplates.Repositories;
 using SchoolManagementSystem.Application.School.FinancialYears.Repositories;
 using SchoolManagementSystem.Application.School.Institutes.Repositories;
+using SchoolManagementSystem.Application.School.SchoolStudents.Repositories;
 using SchoolManagementSystem.Application.School.Sections.Repositories;
 using SchoolManagementSystem.Application.School.Shifts.Repositories;
+using SchoolManagementSystem.Application.School.StudentFeeLedgers.Repositories;
 using SchoolManagementSystem.Application.School.Students.Repositories;
 using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
 
@@ -38,6 +43,11 @@ public interface IUnitOfWork : IDisposable
     public IShiftRepository ShiftRepository { get; }
     public IStudentGroupRepository StudentGroupRepository { get; }
     public IFeeHeadRepository FeeHeadRepository { get; }
+    public IStudentRepository StudentRepository { get; }
+    public IAdmissionRepository AdmissionRepository { get; }
+    public IFeeTemplateRepository FeeTemplateRepository { get; }
+    public IStudentFeeLedgerRepository StudentFeeLedgerRepository { get; }
+    public IFeeCollectionRepository FeeCollectionRepository { get; }
     #endregion
 
     #region Students
