@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Branch, BranchService } from '../../services/branch.service';
 import { Institute, InstituteService } from '../../services/institute.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { TableColumn, TableConfig } from '../../../../shared/components/table/table.interface';
@@ -8,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -15,7 +17,7 @@ import { EMPTY_GUID } from '../../../../core/constents';
 import { environment } from '../../../../../environments/environment';
 
 @Component({
-  selector: 'app-institute',
+  selector: 'app-branch',
   standalone: true,
   imports: [
     CommonModule,
@@ -25,19 +27,21 @@ import { environment } from '../../../../../environments/environment';
     DialogModule,
     InputTextModule,
     CheckboxModule,
+    DropdownModule,
     ToastModule,
     ConfirmDialogModule
   ],
   providers: [MessageService, ConfirmationService],
-  templateUrl: './institute.component.html',
-  styleUrl: './institute.component.scss'
+  templateUrl: './branch.component.html',
+  styleUrl: './branch.component.scss'
 })
-export class InstituteComponent implements OnInit {
+export class BranchComponent implements OnInit {
   @ViewChild(TableComponent) tableComponent!: TableComponent;
 
+  branches: Branch[] = [];
   institutes: Institute[] = [];
-  instituteDialog: boolean = false;
-  instituteForm: FormGroup;
+  branchDialog: boolean = false;
+  branchForm: FormGroup;
   isEditMode: boolean = false;
   previewImage: string | ArrayBuffer | null = null;
   selectedFile: File | null = null;
@@ -47,32 +51,46 @@ export class InstituteComponent implements OnInit {
   tableConfig!: TableConfig;
 
   private fb = inject(FormBuilder);
+  private branchService = inject(BranchService);
   private instituteService = inject(InstituteService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
   constructor() {
-    this.instituteForm = this.fb.group({
+    this.branchForm = this.fb.group({
       id: [''],
-      instituteName: ['', Validators.required],
-      address: ['', Validators.required],
-      contactNo: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      logoPath: [''],
+      branchName: ['', Validators.required],
+      branchAddress: ['', Validators.required],
+      contactPerson: ['', Validators.required],
+      contactNumber: ['', Validators.required],
+      homeThemeImagePath: [''],
+      instituteId: ['', Validators.required],
       isActive: [true]
     });
   }
 
   ngOnInit() {
+    this.loadInstitutes();
     this.initializeColumns();
     this.initializeTableConfig();
   }
 
+  loadInstitutes() {
+    this.instituteService.getInstitutes().subscribe({
+      next: (res) => {
+        this.institutes = res.data?.items || [];
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to load institutes' });
+      }
+    });
+  }
+
   initializeColumns(): void {
     this.columns = [
-      { field: 'instituteName', header: 'Name', sortable: true },
-      { field: 'email', header: 'Email', sortable: true },
-      { field: 'contactNo', header: 'Contact No', sortable: true },
+      { field: 'branchName', header: 'Branch Name', sortable: true },
+      { field: 'contactPerson', header: 'Contact Person', sortable: true },
+      { field: 'contactNumber', header: 'Contact No', sortable: true },
       { field: 'isActive', header: 'Status', sortable: true, dataType: 'boolean' }
     ];
 
@@ -84,14 +102,14 @@ export class InstituteComponent implements OnInit {
         {
           label: 'Edit',
           icon: 'pi pi-pencil',
-          callback: (row) => this.editInstitute(row),
+          callback: (row) => this.editBranch(row),
           visible: () => true,
         },
         {
           label: 'Delete',
           icon: 'pi pi-trash',
           styleClass: 'p-button-danger',
-          callback: (row) => this.deleteInstitute(row),
+          callback: (row) => this.deleteBranch(row),
           visible: () => true,
         }
       ],
@@ -104,45 +122,45 @@ export class InstituteComponent implements OnInit {
       pageSizeOptions: [5, 10, 25],
       showSearch: true,
       searchPlaceholder: 'Search here',
-      emptyMessage: 'No institutes found',
+      emptyMessage: 'No branches found',
       showCreateButton: true,
       showCheckboxColumn: false,
-      createButtonLabel: 'Add Institute',
+      createButtonLabel: 'Add Branch',
     };
   }
 
   openNew() {
-    this.instituteForm.reset({ isActive: true });
+    this.branchForm.reset({ isActive: true });
     this.previewImage = null;
     this.selectedFile = null;
     this.isEditMode = false;
     this.submitted = false;
-    this.instituteDialog = true;
+    this.branchDialog = true;
   }
 
-  editInstitute(institute: Institute) {
-    this.instituteForm.patchValue({ ...institute });
-    this.previewImage = this.getLogoUrl(institute.logoPath);
+  editBranch(branch: Branch) {
+    this.branchForm.patchValue({ ...branch });
+    this.previewImage = this.getImageUrl(branch.homeThemeImagePath);
     this.selectedFile = null;
     this.isEditMode = true;
     this.submitted = false;
-    this.instituteDialog = true;
+    this.branchDialog = true;
   }
 
-  deleteInstitute(institute: Institute) {
+  deleteBranch(branch: Branch) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + institute.instituteName + '?',
+      message: 'Are you sure you want to delete ' + branch.branchName + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        if (institute.id) {
-          this.instituteService.deleteInstitute(institute.id).subscribe({
+        if (branch.id) {
+          this.branchService.deleteBranch(branch.id).subscribe({
             next: () => {
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Institute Deleted', life: 3000 });
+              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Branch Deleted', life: 3000 });
               this.tableComponent.loadData();
             },
             error: () => {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete institute' });
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete branch' });
             }
           });
         }
@@ -151,7 +169,7 @@ export class InstituteComponent implements OnInit {
   }
 
   hideDialog() {
-    this.instituteDialog = false;
+    this.branchDialog = false;
     this.submitted = false;
   }
 
@@ -165,67 +183,68 @@ export class InstituteComponent implements OnInit {
     }
   }
 
-  getLogoUrl(logoPath: string | null | undefined): string | null {
-    if (!logoPath) {
+  getImageUrl(imagePath: string | null | undefined): string | null {
+    if (!imagePath) {
       return null;
     }
 
-    if (logoPath.startsWith('http') || logoPath.startsWith('data:')) {
-      return logoPath;
+    if (imagePath.startsWith('http') || imagePath.startsWith('data:')) {
+      return imagePath;
     }
 
     const apiBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
-    return `${apiBaseUrl}${logoPath}`;
+    return `${apiBaseUrl}${imagePath}`;
   }
 
-  private buildInstituteFormData(): FormData {
-    const formValue = this.instituteForm.value;
+  private buildBranchFormData(): FormData {
+    const formValue = this.branchForm.value;
     const formData = new FormData();
 
     formData.append('Id', formValue.id || EMPTY_GUID);
-    formData.append('InstituteName', formValue.instituteName ?? '');
-    formData.append('Address', formValue.address ?? '');
-    formData.append('ContactNo', formValue.contactNo ?? '');
-    formData.append('Email', formValue.email ?? '');
-    formData.append('LogoPath', formValue.logoPath ?? '');
+    formData.append('BranchName', formValue.branchName ?? '');
+    formData.append('BranchAddress', formValue.branchAddress ?? '');
+    formData.append('ContactPerson', formValue.contactPerson ?? '');
+    formData.append('ContactNumber', formValue.contactNumber ?? '');
+    formData.append('HomeThemeImagePath', formValue.homeThemeImagePath ?? '');
+    formData.append('InstituteId', formValue.instituteId ?? '');
     formData.append('IsActive', String(formValue.isActive ?? false));
 
     if (this.selectedFile) {
-      formData.append('Logo', this.selectedFile);
+      formData.append('HomeThemeImage', this.selectedFile);
     }
 
     return formData;
   }
 
-  saveInstitute() {
+  saveBranch() {
     this.submitted = true;
 
-    if (this.instituteForm.invalid) {
+    if (this.branchForm.invalid) {
       return;
     }
 
-    const formData = this.buildInstituteFormData();
+    const formData = this.buildBranchFormData();
 
     if (this.isEditMode) {
-      this.instituteService.updateInstitute(formData).subscribe({
+      this.branchService.updateBranch(formData).subscribe({
         next: (res) => {
-          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Institute Updated', life: 3000 });
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Branch Updated', life: 3000 });
           this.tableComponent.loadData();
           this.hideDialog();
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update institute' });
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update branch' });
         }
       });
     } else {
-      this.instituteService.createInstitute(formData).subscribe({
+      this.branchService.createBranch(formData).subscribe({
         next: (res) => {
-          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Institute Created', life: 3000 });
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Branch Created', life: 3000 });
           this.tableComponent.loadData();
           this.hideDialog();
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create institute' });
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create branch' });
         }
       });
     }
