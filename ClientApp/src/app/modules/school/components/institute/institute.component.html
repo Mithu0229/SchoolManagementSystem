@@ -1,0 +1,134 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  <!-- Header Section -->
+  <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Institutes</h1>
+      <p class="text-gray-500 mt-1">Manage school institute records</p>
+    </div>
+    <p-button label="Add Institute" icon="pi pi-plus" (click)="openNew()" styleClass="p-button-primary shadow-md"></p-button>
+  </div>
+
+  <!-- Table Section -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <p-table [value]="institutes" [rows]="10" [paginator]="true" responsiveLayout="scroll"
+             [rowHover]="true" dataKey="id"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4">Logo</th>
+          <th pSortableColumn="instituteName" class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4">Name <p-sortIcon field="instituteName"></p-sortIcon></th>
+          <th pSortableColumn="email" class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4">Email <p-sortIcon field="email"></p-sortIcon></th>
+          <th pSortableColumn="contactNo" class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4">Contact No <p-sortIcon field="contactNo"></p-sortIcon></th>
+          <th pSortableColumn="isActive" class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4">Status <p-sortIcon field="isActive"></p-sortIcon></th>
+          <th class="bg-gray-50 text-gray-600 font-semibold text-sm uppercase tracking-wider py-4 text-center">Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-institute>
+        <tr class="transition-colors hover:bg-gray-50/50">
+          <td>
+            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex items-center justify-center">
+              <img *ngIf="institute.logoPath" [src]="getLogoUrl(institute.logoPath)" [alt]="institute.instituteName" class="w-full h-full object-cover" />
+              <i *ngIf="!institute.logoPath" class="pi pi-image text-gray-400 text-xl"></i>
+            </div>
+          </td>
+          <td class="font-medium text-gray-900">{{institute.instituteName}}</td>
+          <td class="text-gray-600">{{institute.email}}</td>
+          <td class="text-gray-600">{{institute.contactNo}}</td>
+          <td>
+            <span [class]="'px-3 py-1 rounded-full text-xs font-medium ' + (institute.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')">
+              {{institute.isActive ? 'Active' : 'Inactive'}}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="flex items-center justify-center gap-2">
+              <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text p-button-info" (click)="editInstitute(institute)"></p-button>
+              <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger" (click)="deleteInstitute(institute)"></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center py-8 text-gray-500">
+            <div class="flex flex-col items-center">
+              <i class="pi pi-inbox text-4xl mb-4 text-gray-300"></i>
+              <p>No institutes found.</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Dialog Section -->
+  <p-dialog [(visible)]="instituteDialog" [style]="{width: '600px'}" [header]="isEditMode ? 'Edit Institute' : 'Add New Institute'" [modal]="true" styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
+    <ng-template pTemplate="content">
+      <form [formGroup]="instituteForm" class="py-4">
+        
+        <!-- Logo Upload Section -->
+        <div class="flex flex-col items-center justify-center mb-8">
+          <div class="relative group">
+            <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center mb-4 transition-all group-hover:border-blue-500 shadow-sm relative">
+              <img *ngIf="previewImage" [src]="previewImage" alt="Logo Preview" class="w-full h-full object-cover" />
+              <div *ngIf="!previewImage" class="flex flex-col items-center text-gray-400">
+                <i class="pi pi-cloud-upload text-3xl mb-1"></i>
+                <span class="text-xs font-medium">Upload Logo</span>
+              </div>
+              <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer" onclick="document.getElementById('fileUpload').click()">
+                <i class="pi pi-camera text-white text-2xl"></i>
+              </div>
+            </div>
+            <input type="file" id="fileUpload" class="hidden" accept="image/*" (change)="onFileSelected($event)">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Institute Name -->
+          <div class="field col-span-2">
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Institute Name <span class="text-red-500">*</span></label>
+            <input type="text" pInputText id="name" formControlName="instituteName" placeholder="Enter institute name" [ngClass]="{'ng-invalid ng-dirty': submitted && instituteForm.controls['instituteName'].invalid}" class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+            <small class="text-red-500" *ngIf="submitted && instituteForm.controls['instituteName'].hasError('required')">Name is required.</small>
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+            <input type="email" pInputText id="email" formControlName="email" placeholder="email@example.com" [ngClass]="{'ng-invalid ng-dirty': submitted && instituteForm.controls['email'].invalid}" class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+            <small class="text-red-500" *ngIf="submitted && instituteForm.controls['email'].hasError('required')">Email is required.</small>
+            <small class="text-red-500" *ngIf="submitted && instituteForm.controls['email'].hasError('email')">Enter a valid email.</small>
+          </div>
+
+          <!-- Contact No -->
+          <div class="field">
+            <label for="contactNo" class="block text-sm font-medium text-gray-700 mb-1">Contact No <span class="text-red-500">*</span></label>
+            <input type="text" pInputText id="contactNo" formControlName="contactNo" placeholder="+1 234 567 8900" [ngClass]="{'ng-invalid ng-dirty': submitted && instituteForm.controls['contactNo'].invalid}" class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+            <small class="text-red-500" *ngIf="submitted && instituteForm.controls['contactNo'].hasError('required')">Contact Number is required.</small>
+          </div>
+
+          <!-- Address -->
+          <div class="field col-span-2">
+            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
+            <input type="text" pInputText id="address" formControlName="address" placeholder="Enter full address" [ngClass]="{'ng-invalid ng-dirty': submitted && instituteForm.controls['address'].invalid}" class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+            <small class="text-red-500" *ngIf="submitted && instituteForm.controls['address'].hasError('required')">Address is required.</small>
+          </div>
+
+          <!-- Is Active -->
+          <div class="field col-span-2 flex items-center mt-2">
+            <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+            <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active Institute</label>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary" (click)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" styleClass="p-button-primary" (click)="saveInstitute()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

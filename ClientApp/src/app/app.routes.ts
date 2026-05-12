@@ -49,6 +49,13 @@ export const routes: Routes = [
         './modules/student-application/student-application-routing.module'
       ).then((m) => m.StudentApplicationRoutingModule),
   },
+  {
+    path: 'school',
+    loadChildren: () =>
+      import('./modules/school/school-routing.module').then(
+        (m) => m.SchoolRoutingModule
+      ),
+  },
 
   { path: 'user-register', component: UserRegisterComponent },
   { path: 'notfound', component: Notfound },
