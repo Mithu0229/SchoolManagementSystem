@@ -1,0 +1,56 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  <div class="form-header">Section Management</div>
+  <div class="bg-white mx-auto">
+    <app-table apiUrl="/Section/get-section-list" [columns]="columns" [config]="tableConfig"
+      (actionClicked)="openNew()"></app-table>
+  </div>
+
+  <!-- Dialog Section -->
+  <p-dialog [(visible)]="sectionDialog" [style]="{width: '500px'}"
+    [header]="isEditMode ? 'Edit Section' : 'Add New Section'" [modal]="true"
+    styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
+    <ng-template pTemplate="content">
+      <form [formGroup]="sectionForm" class="py-4">
+
+        <div class="grid grid-cols-1 gap-5">
+          <!-- Section Name -->
+          <div class="field">
+            <label for="sectionName" class="block text-sm font-medium text-gray-700 mb-1">Section Name <span
+                class="text-red-500">*</span></label>
+            <input type="text" pInputText id="sectionName" formControlName="sectionName" placeholder="e.g. Section A"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && sectionForm.controls['sectionName'].invalid}"
+              class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+            <small class="text-red-500"
+              *ngIf="submitted && sectionForm.controls['sectionName'].hasError('required')">Name is
+              required.</small>
+          </div>
+
+          <!-- Remarks -->
+          <div class="field">
+            <label for="remarks" class="block text-sm font-medium text-gray-700 mb-1">Remarks</label>
+            <input type="text" pInputText id="remarks" formControlName="remarks" placeholder="Enter remarks"
+              class="w-full p-3 rounded-lg border-gray-300 shadow-sm" />
+          </div>
+
+          <!-- Is Active -->
+          <div class="field flex items-center mt-2">
+            <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+            <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active</label>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+          (click)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" styleClass="p-button-primary"
+          (click)="saveSection()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>
