@@ -9,6 +9,9 @@ import { AcademicSessionComponent } from './components/academic-session/academic
 import { AcademicClassComponent } from './components/academic-class/academic-class.component';
 import { SectionComponent } from './components/section/section.component';
 import { ShiftComponent } from './components/shift/shift.component';
+import { StudentGroupComponent } from './components/student-group/student-group.component';
+import { FeeHeadComponent } from './components/fee-head/fee-head.component';
+import { StudentFeeLedgerComponent } from './components/student-fee-ledger/student-fee-ledger.component';
 
 const routes: Routes = [
   { path: 'institute', component: InstituteComponent },
@@ -18,6 +21,9 @@ const routes: Routes = [
   { path: 'academic-class', component: AcademicClassComponent },
   { path: 'section', component: SectionComponent },
   { path: 'shift', component: ShiftComponent },
+  { path: 'student-group', component: StudentGroupComponent },
+  { path: 'fee-head', component: FeeHeadComponent },
+  { path: 'student-fee-ledger', component: StudentFeeLedgerComponent },
   { path: '', redirectTo: 'institute', pathMatch: 'full' }
 ];
 
