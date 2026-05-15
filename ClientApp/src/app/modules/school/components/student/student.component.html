@@ -1,0 +1,126 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  <div class="form-header">Student Management</div>
+  <div class="bg-white mx-auto">
+    <app-table apiUrl="/Student/get-student-list" [columns]="columns" [config]="tableConfig"
+      (actionClicked)="openNew()"></app-table>
+  </div>
+
+  <!-- Dialog Section -->
+  <p-dialog [(visible)]="studentDialog" [style]="{width: '900px'}"
+    [header]="isEditMode ? 'Edit Student' : 'Add New Student'" [modal]="true"
+    styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
+    <ng-template pTemplate="content">
+      <form [formGroup]="studentForm" class="py-4">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Student Code -->
+          <div class="field">
+            <label for="studentCode" class="block text-sm font-medium text-gray-700 mb-1">Student Code <span
+                class="text-red-500">*</span></label>
+            <input type="text" pInputText id="studentCode" formControlName="studentCode" placeholder="Code"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && studentForm.controls['studentCode'].invalid}" />
+          </div>
+
+          <!-- Student Name -->
+          <div class="field">
+            <label for="studentName" class="block text-sm font-medium text-gray-700 mb-1">Student Name <span
+                class="text-red-500">*</span></label>
+            <input type="text" pInputText id="studentName" formControlName="studentName" placeholder="Name"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && studentForm.controls['studentName'].invalid}" />
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="field">
+            <label for="dateOfBirth" class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+            <p-calendar id="dateOfBirth" formControlName="dateOfBirth" appendTo="body" [showIcon]="true"
+              placeholder="Select Date"></p-calendar>
+          </div>
+
+          <!-- Gender -->
+          <div class="field">
+            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+            <p-dropdown id="gender" [options]="genders" formControlName="gender" placeholder="Select Gender"></p-dropdown>
+          </div>
+
+          <!-- Blood Group -->
+          <div class="field">
+            <label for="bloodGroup" class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+            <p-dropdown id="bloodGroup" [options]="bloodGroups" formControlName="bloodGroup" placeholder="Select Blood Group"></p-dropdown>
+          </div>
+
+          <!-- Mobile No -->
+          <div class="field">
+            <label for="mobileNo" class="block text-sm font-medium text-gray-700 mb-1">Mobile No</label>
+            <input type="text" pInputText id="mobileNo" formControlName="mobileNo" placeholder="Mobile" />
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" pInputText id="email" formControlName="email" placeholder="Email" />
+          </div>
+
+          <!-- DOB No -->
+          <div class="field">
+            <label for="dobNo" class="block text-sm font-medium text-gray-700 mb-1">DOB Certificate No</label>
+            <input type="text" pInputText id="dobNo" formControlName="dobNo" placeholder="DOB No" />
+          </div>
+
+          <!-- Guardian NID -->
+          <div class="field">
+            <label for="guardianNID" class="block text-sm font-medium text-gray-700 mb-1">Guardian NID</label>
+            <input type="text" pInputText id="guardianNID" formControlName="guardianNID" placeholder="NID" />
+          </div>
+
+          <!-- Father's Name -->
+          <div class="field">
+            <label for="fatherName" class="block text-sm font-medium text-gray-700 mb-1">Father's Name</label>
+            <input type="text" pInputText id="fatherName" formControlName="fatherName" placeholder="Father's Name" />
+          </div>
+
+          <!-- Mother's Name -->
+          <div class="field">
+            <label for="motherName" class="block text-sm font-medium text-gray-700 mb-1">Mother's Name</label>
+            <input type="text" pInputText id="motherName" formControlName="motherName" placeholder="Mother's Name" />
+          </div>
+
+          <!-- Guardian Mobile -->
+          <div class="field">
+            <label for="guardianMobileNo" class="block text-sm font-medium text-gray-700 mb-1">Guardian Mobile</label>
+            <input type="text" pInputText id="guardianMobileNo" formControlName="guardianMobileNo" placeholder="Guardian Mobile" />
+          </div>
+
+          <!-- Present Address -->
+          <div class="field col-span-1 md:col-span-3">
+            <label for="presentAddress" class="block text-sm font-medium text-gray-700 mb-1">Present Address</label>
+            <input type="text" pInputText id="presentAddress" formControlName="presentAddress" placeholder="Present Address" />
+          </div>
+
+          <!-- Permanent Address -->
+          <div class="field col-span-1 md:col-span-3">
+            <label for="permanentAddress" class="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
+            <input type="text" pInputText id="permanentAddress" formControlName="permanentAddress" placeholder="Permanent Address" />
+          </div>
+
+          <!-- Is Active -->
+          <div class="field flex items-center mt-2">
+            <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+            <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active</label>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+          (click)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" styleClass="p-button-primary"
+          (click)="saveStudent()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

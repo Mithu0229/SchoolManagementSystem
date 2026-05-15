@@ -12,6 +12,10 @@ import { ShiftComponent } from './components/shift/shift.component';
 import { StudentGroupComponent } from './components/student-group/student-group.component';
 import { FeeHeadComponent } from './components/fee-head/fee-head.component';
 import { StudentFeeLedgerComponent } from './components/student-fee-ledger/student-fee-ledger.component';
+import { StudentComponent } from './components/student/student.component';
+import { AdmissionComponent } from './components/admission/admission.component';
+import { FeeTemplateComponent } from './components/fee-template/fee-template.component';
+import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
 
 const routes: Routes = [
   { path: 'institute', component: InstituteComponent },
@@ -24,6 +28,10 @@ const routes: Routes = [
   { path: 'student-group', component: StudentGroupComponent },
   { path: 'fee-head', component: FeeHeadComponent },
   { path: 'student-fee-ledger', component: StudentFeeLedgerComponent },
+  { path: 'student', component: StudentComponent },
+  { path: 'admission', component: AdmissionComponent },
+  { path: 'fee-template', component: FeeTemplateComponent },
+  { path: 'fee-collection', component: FeeCollectionComponent },
   { path: '', redirectTo: 'institute', pathMatch: 'full' }
 ];
 

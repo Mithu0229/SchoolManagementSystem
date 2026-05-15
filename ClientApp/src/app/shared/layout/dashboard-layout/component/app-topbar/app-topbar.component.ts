@@ -86,7 +86,7 @@ export class AppTopbar implements OnInit {
     this.selectedEmployee = this.transferRoleForm.get('employee')?.value;
   }
 
-  private loadCurrentUser(): void {}
+  private loadCurrentUser(): void { }
 
   private initializeMenuItems(): void {
     const items: MenuItem[] = [
@@ -95,7 +95,7 @@ export class AppTopbar implements OnInit {
         icon: 'pi pi-user',
         command: () => this.showUserProfileDialog(),
       },
-      { separator: true },
+      //{ separator: true },
       {
         label: 'Sign Out',
         icon: 'pi pi-sign-out',

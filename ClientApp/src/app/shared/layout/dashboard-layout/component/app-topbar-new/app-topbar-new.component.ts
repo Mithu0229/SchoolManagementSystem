@@ -133,7 +133,7 @@ export class AppTopbarNew implements OnInit {
   }
 
   private initializeMenuItems(): void {
-    const items: MenuItem[] = [
+    this.menuItems = [
       {
         label: 'User Profile',
         icon: 'pi pi-user',
@@ -141,13 +141,11 @@ export class AppTopbarNew implements OnInit {
       },
       { separator: true },
       {
-        label: 'Sign Out',
+        label: 'Log Out',
         icon: 'pi pi-sign-out',
         command: () => this.logOut(),
       },
     ];
-    // Filter out items that are not visible (if 'visible' is explicitly false)
-    this.menuItems = items.filter((item) => item.visible !== false);
   }
 
   public get roleNames(): string {

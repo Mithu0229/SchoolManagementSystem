@@ -1,0 +1,66 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  <div class="form-header">Admission Management</div>
+  <div class="bg-white mx-auto">
+    <app-table apiUrl="/Admission/get-admission-list" [columns]="columns" [config]="tableConfig"
+      (actionClicked)="openNew()"></app-table>
+  </div>
+
+  <!-- Dialog Section -->
+  <p-dialog [(visible)]="admissionDialog" [style]="{width: '600px'}"
+    [header]="isEditMode ? 'Edit Admission' : 'Add New Admission'" [modal]="true"
+    styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
+    <ng-template pTemplate="content">
+      <form [formGroup]="admissionForm" class="py-4">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <!-- Admission Date -->
+          <div class="field">
+            <label for="admissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date <span
+                class="text-red-500">*</span></label>
+            <p-calendar id="admissionDate" formControlName="admissionDate" appendTo="body" [showIcon]="true"
+              placeholder="Select Date"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['admissionDate'].invalid}"></p-calendar>
+          </div>
+
+          <!-- Roll No -->
+          <div class="field">
+            <label for="rollNo" class="block text-sm font-medium text-gray-700 mb-1">Roll No <span
+                class="text-red-500">*</span></label>
+            <input type="text" pInputText id="rollNo" formControlName="rollNo" placeholder="Roll No"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['rollNo'].invalid}" />
+          </div>
+
+          <!-- Is Passed -->
+          <div class="field flex items-center mt-2">
+            <p-checkbox formControlName="isPassed" [binary]="true" inputId="isPassed"></p-checkbox>
+            <label for="isPassed" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Passed</label>
+          </div>
+
+          <!-- Is Cancelled -->
+          <div class="field flex items-center mt-2">
+            <p-checkbox formControlName="isCancelled" [binary]="true" inputId="isCancelled"></p-checkbox>
+            <label for="isCancelled" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Cancelled</label>
+          </div>
+
+          <!-- Is Active -->
+          <div class="field flex items-center mt-2">
+            <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+            <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active</label>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+          (click)="hideDialog()"></p-button>
+        <p-button label="Save" icon="pi pi-check" styleClass="p-button-primary"
+          (click)="saveAdmission()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>
