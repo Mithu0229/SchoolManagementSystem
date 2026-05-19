@@ -24,4 +24,7 @@ public class ShiftController : ProtectedBaseController
 
     [HttpDelete("delete-shift/{id}")]
     public async Task<IResult> DeleteShift(Guid id) => await Mediator.Send(new DeleteShiftCommand(id));
+
+    [HttpGet("get-shift-dropdown")]
+    public async Task<IResult> GetShiftDropdown() => await Mediator.Send(new GetShiftDropdownQuery());
 }

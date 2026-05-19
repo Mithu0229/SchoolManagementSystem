@@ -5,6 +5,7 @@ import { ApiResponse } from '../../../core/models/api-response';
 
 export interface FeeCollectionDetail {
   id?: string;
+  feeCollectionId: string;
   feeHeadId: string;
   monthNo: string; // Following C# Guid
   yearNo: string;  // Following C# Guid
@@ -53,6 +54,10 @@ export class FeeCollectionService {
 
   getFeeCollection(id: string): Observable<ApiResponse<FeeCollection>> {
     return this.http.get<ApiResponse<FeeCollection>>(`${this.apiUrl}/${id}`);
+  }
+
+  getFeeCollectionDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-fee-collection-dropdown`);
   }
 
   createFeeCollection(feeCollection: FeeCollection): Observable<ApiResponse<FeeCollection>> {

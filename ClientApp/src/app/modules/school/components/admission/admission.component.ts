@@ -11,8 +11,16 @@ import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { EMPTY_GUID } from '../../../../core/constents';
+import { StudentService } from '../../services/student.service';
+import { BranchService } from '../../services/branch.service';
+import { AcademicSessionService } from '../../services/academic-session.service';
+import { AcademicClassService } from '../../services/academic-class.service';
+import { SectionService } from '../../services/section.service';
+import { ShiftService } from '../../services/shift.service';
+import { StudentGroupService } from '../../services/student-group.service';
 
 @Component({
   selector: 'app-admission',
@@ -27,7 +35,8 @@ import { EMPTY_GUID } from '../../../../core/constents';
     CalendarModule,
     CheckboxModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DropdownModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './admission.component.html',
@@ -45,8 +54,23 @@ export class AdmissionComponent implements OnInit {
   columns: TableColumn[] = [];
   tableConfig!: TableConfig;
 
+  students: any[] = [];
+  branches: any[] = [];
+  academicSessions: any[] = [];
+  academicClasses: any[] = [];
+  sections: any[] = [];
+  shifts: any[] = [];
+  studentGroups: any[] = [];
+
   private fb = inject(FormBuilder);
   private admissionService = inject(AdmissionService);
+  private studentService = inject(StudentService);
+  private branchService = inject(BranchService);
+  private academicSessionService = inject(AcademicSessionService);
+  private academicClassService = inject(AcademicClassService);
+  private sectionService = inject(SectionService);
+  private shiftService = inject(ShiftService);
+  private studentGroupService = inject(StudentGroupService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
@@ -71,6 +95,17 @@ export class AdmissionComponent implements OnInit {
   ngOnInit() {
     this.initializeColumns();
     this.initializeTableConfig();
+    this.loadDropdowns();
+  }
+
+  loadDropdowns() {
+    this.studentService.getStudentDropdown().subscribe(res => this.students = res.data || []);
+    this.branchService.getBranchDropdown().subscribe(res => this.branches = res.data || []);
+    this.academicSessionService.getAcademicSessionDropdown().subscribe(res => this.academicSessions = res.data || []);
+    this.academicClassService.getAcademicClassDropdown().subscribe(res => this.academicClasses = res.data || []);
+    this.sectionService.getSectionDropdown().subscribe(res => this.sections = res.data || []);
+    this.shiftService.getShiftDropdown().subscribe(res => this.shifts = res.data || []);
+    this.studentGroupService.getStudentGroupDropdown().subscribe(res => this.studentGroups = res.data || []);
   }
 
   initializeColumns(): void {

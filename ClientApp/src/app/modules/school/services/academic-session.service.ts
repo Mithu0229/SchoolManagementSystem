@@ -45,4 +45,8 @@ export class AcademicSessionService {
   deleteAcademicSession(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-academic-session/${id}`);
   }
+
+  getAcademicSessionDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-academic-session-dropdown`);
+  }
 }

@@ -56,4 +56,8 @@ export class StudentService {
   deleteStudent(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-student/${id}`);
   }
+
+  getStudentDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-student-dropdown`);
+  }
 }

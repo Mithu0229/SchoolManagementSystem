@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.FeeCollections.Commands;
 using SchoolManagementSystem.Application.School.FeeCollections.Models;
 using SchoolManagementSystem.Application.School.FeeCollections.Queries;
@@ -24,4 +25,8 @@ public class FeeCollectionController : ProtectedBaseController
 
     [HttpDelete("delete-fee-collection/{id}")]
     public async Task<IResult> DeleteFeeCollection(Guid id) => await Mediator.Send(new DeleteFeeCollectionCommand(id));
+
+    [HttpGet("get-fee-collection-dropdown")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
+    public async Task<IResult> GetFeeCollectionDropdown() => await Mediator.Send(new GetFeeCollectionDropdownQuery());
 }

@@ -11,8 +11,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DropdownModule } from 'primeng/dropdown';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { EMPTY_GUID } from '../../../../core/constents';
+import { AcademicClassService } from '../../services/academic-class.service';
+import { StudentGroupService } from '../../services/student-group.service';
+import { ShiftService } from '../../services/shift.service';
+import { FeeHeadService } from '../../services/fee-head.service';
 
 @Component({
   selector: 'app-fee-template',
@@ -27,7 +32,8 @@ import { EMPTY_GUID } from '../../../../core/constents';
     InputNumberModule,
     CheckboxModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    DropdownModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './fee-template.component.html',
@@ -45,8 +51,17 @@ export class FeeTemplateComponent implements OnInit {
   columns: TableColumn[] = [];
   tableConfig!: TableConfig;
 
+  academicClasses: any[] = [];
+  studentGroups: any[] = [];
+  shifts: any[] = [];
+  feeHeads: any[] = [];
+
   private fb = inject(FormBuilder);
   private feeTemplateService = inject(FeeTemplateService);
+  private academicClassService = inject(AcademicClassService);
+  private studentGroupService = inject(StudentGroupService);
+  private shiftService = inject(ShiftService);
+  private feeHeadService = inject(FeeHeadService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
@@ -82,6 +97,14 @@ export class FeeTemplateComponent implements OnInit {
   ngOnInit() {
     this.initializeColumns();
     this.initializeTableConfig();
+    this.loadDropdowns();
+  }
+
+  loadDropdowns() {
+    this.academicClassService.getAcademicClassDropdown().subscribe(res => this.academicClasses = res.data || []);
+    this.studentGroupService.getStudentGroupDropdown().subscribe(res => this.studentGroups = res.data || []);
+    this.shiftService.getShiftDropdown().subscribe(res => this.shifts = res.data || []);
+    this.feeHeadService.getFeeHeadDropdown().subscribe(res => this.feeHeads = res.data || []);
   }
 
   initializeColumns(): void {
@@ -136,31 +159,43 @@ export class FeeTemplateComponent implements OnInit {
   }
 
   editFeeTemplate(feeTemplate: FeeTemplate) {
-    this.isEditMode = true;
-    this.submitted = false;
-    
-    this.feeTemplateForm.patchValue({
-      id: feeTemplate.id,
-      templateName: feeTemplate.templateName,
-      classId: feeTemplate.classId,
-      groupId: feeTemplate.groupId,
-      shiftId: feeTemplate.shiftId,
-      isActive: feeTemplate.isActive
+    if (!feeTemplate.id) return;
+
+    this.feeTemplateService.getFeeTemplate(feeTemplate.id).subscribe({
+      next: (res) => {
+        const fullTemplate = res.data;
+        if (!fullTemplate) return;
+
+        this.isEditMode = true;
+        this.submitted = false;
+
+        this.feeTemplateForm.patchValue({
+          id: fullTemplate.id,
+          templateName: fullTemplate.templateName,
+          classId: fullTemplate.classId,
+          groupId: fullTemplate.groupId,
+          shiftId: fullTemplate.shiftId,
+          isActive: fullTemplate.isActive
+        });
+
+        while (this.details.length) {
+          this.details.removeAt(0);
+        }
+
+        fullTemplate.details?.forEach(detail => {
+          this.details.push(this.fb.group({
+            id: [detail.id || EMPTY_GUID],
+            feeHeadId: [detail.feeHeadId, Validators.required],
+            amount: [detail.amount, [Validators.required, Validators.min(0)]]
+          }));
+        });
+
+        this.feeTemplateDialog = true;
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to fetch template details' });
+      }
     });
-
-    while (this.details.length) {
-      this.details.removeAt(0);
-    }
-
-    feeTemplate.details?.forEach(detail => {
-      this.details.push(this.fb.group({
-        id: [detail.id || EMPTY_GUID],
-        feeHeadId: [detail.feeHeadId, Validators.required],
-        amount: [detail.amount, [Validators.required, Validators.min(0)]]
-      }));
-    });
-
-    this.feeTemplateDialog = true;
   }
 
   deleteFeeTemplate(feeTemplate: FeeTemplate) {

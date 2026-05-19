@@ -43,4 +43,8 @@ export class SectionService {
   deleteSection(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-section/${id}`);
   }
+
+  getSectionDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-section-dropdown`);
+  }
 }

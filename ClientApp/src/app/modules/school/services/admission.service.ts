@@ -41,6 +41,10 @@ export class AdmissionService {
     return this.http.get<ApiResponse<Admission>>(`${this.apiUrl}/${id}`);
   }
 
+  getAdmissionDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-admission-dropdown`);
+  }
+
   createAdmission(admission: Admission): Observable<ApiResponse<Admission>> {
     return this.http.post<ApiResponse<Admission>>(`${this.apiUrl}/save-admission`, admission);
   }

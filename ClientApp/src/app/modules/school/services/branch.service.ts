@@ -47,4 +47,8 @@ export class BranchService {
   deleteBranch(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-branch/${id}`);
   }
+
+  getBranchDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-branch-dropdown`);
+  }
 }

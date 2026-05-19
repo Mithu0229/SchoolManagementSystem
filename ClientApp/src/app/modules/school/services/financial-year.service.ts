@@ -36,6 +36,10 @@ export class FinancialYearService {
     return this.http.get<ApiResponse<FinancialYear>>(`${this.apiUrl}/${id}`);
   }
 
+  getFinancialYearDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-financial-year-dropdown`);
+  }
+
   createFinancialYear(financialYear: FinancialYear): Observable<ApiResponse<FinancialYear>> {
     return this.http.post<ApiResponse<FinancialYear>>(`${this.apiUrl}/save-financial-year`, financialYear);
   }

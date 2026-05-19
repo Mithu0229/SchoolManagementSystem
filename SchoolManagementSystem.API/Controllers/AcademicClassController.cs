@@ -24,4 +24,7 @@ public class AcademicClassController : ProtectedBaseController
 
     [HttpDelete("delete-academic-class/{id}")]
     public async Task<IResult> DeleteAcademicClass(Guid id) => await Mediator.Send(new DeleteAcademicClassCommand(id));
+
+    [HttpGet("get-academic-class-dropdown")]
+    public async Task<IResult> GetAcademicClassDropdown() => await Mediator.Send(new GetAcademicClassDropdownQuery());
 }

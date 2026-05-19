@@ -24,8 +24,8 @@ public class FeeCollectionDetailRequest
 {
     public Guid Id { get; set; }
     public Guid FeeHeadId { get; set; }
-    public Guid MonthNo { get; set; }
-    public Guid YearNo { get; set; }
+    public int MonthNo { get; set; }
+    public int YearNo { get; set; }
     public decimal FeeAmount { get; set; }
     public decimal DiscountAmount { get; set; }
     public decimal PaidAmount { get; set; }

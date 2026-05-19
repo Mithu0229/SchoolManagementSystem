@@ -4,6 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } fr
 import { FeeCollection, FeeCollectionService } from '../../services/fee-collection.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { TableColumn, TableConfig } from '../../../../shared/components/table/table.interface';
+import { StudentService } from '../../services/student.service';
+import { AdmissionService } from '../../services/admission.service';
+import { BranchService } from '../../services/branch.service';
+import { FinancialYearService } from '../../services/financial-year.service';
+import { FeeHeadService } from '../../services/fee-head.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -46,6 +51,12 @@ export class FeeCollectionComponent implements OnInit {
   isEditMode: boolean = false;
   submitted: boolean = false;
 
+  students: any[] = [];
+  admissions: any[] = [];
+  branches: any[] = [];
+  financialYears: any[] = [];
+  feeHeads: any[] = [];
+
   paymentModes = [
     { label: 'Cash', value: 'Cash' },
     { label: 'Bank', value: 'Bank' },
@@ -57,6 +68,11 @@ export class FeeCollectionComponent implements OnInit {
 
   private fb = inject(FormBuilder);
   private feeCollectionService = inject(FeeCollectionService);
+  private studentService = inject(StudentService);
+  private admissionService = inject(AdmissionService);
+  private branchService = inject(BranchService);
+  private financialYearService = inject(FinancialYearService);
+  private feeHeadService = inject(FeeHeadService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
@@ -88,9 +104,10 @@ export class FeeCollectionComponent implements OnInit {
   addDetail() {
     const detailForm = this.fb.group({
       id: [EMPTY_GUID],
+      feeCollectionId: [EMPTY_GUID, Validators.required],
       feeHeadId: [EMPTY_GUID, Validators.required],
-      monthNo: [EMPTY_GUID, Validators.required],
-      yearNo: [EMPTY_GUID, Validators.required],
+      monthNo: ['', Validators.required],
+      yearNo: ['', Validators.required],
       feeAmount: [0, Validators.required],
       discountAmount: [0],
       paidAmount: [0, Validators.required],
@@ -106,6 +123,25 @@ export class FeeCollectionComponent implements OnInit {
   ngOnInit() {
     this.initializeColumns();
     this.initializeTableConfig();
+    this.loadDropdowns();
+  }
+
+  loadDropdowns() {
+    this.studentService.getStudentDropdown().subscribe(res => {
+      if (res.isSuccess) this.students = res.data || [];
+    });
+    this.admissionService.getAdmissionDropdown().subscribe(res => {
+      if (res.isSuccess) this.admissions = res.data || [];
+    });
+    this.branchService.getBranchDropdown().subscribe(res => {
+      if (res.isSuccess) this.branches = res.data || [];
+    });
+    this.financialYearService.getFinancialYearDropdown().subscribe(res => {
+      if (res.isSuccess) this.financialYears = res.data || [];
+    });
+    this.feeHeadService.getFeeHeadDropdown().subscribe(res => {
+      if (res.isSuccess) this.feeHeads = res.data || [];
+    });
   }
 
   initializeColumns(): void {

@@ -66,4 +66,7 @@ public class BranchController : ProtectedBaseController
         DeleteBranchCommand cmd = new DeleteBranchCommand(id);
         return await Mediator.Send(cmd);
     }
+
+    [HttpGet("get-branch-dropdown")]
+    public async Task<IResult> GetBranchDropdown() => await Mediator.Send(new GetBranchDropdownQuery());
 }

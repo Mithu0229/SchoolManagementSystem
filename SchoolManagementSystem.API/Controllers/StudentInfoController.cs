@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Application.School.Students.Commands;
+using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Models;
 using SchoolManagementSystem.Application.School.Students.Queries;
 
@@ -117,5 +117,8 @@ namespace SchoolManagementSystem.API.Controllers
         {
             return await Mediator.Send(new DeleteStudentInfoCommand(id));
         }
+
+        [HttpGet("get-student-dropdown")]
+        public async Task<IResult> GetStudentDropdown() => await Mediator.Send(new GetStudentDropdownQuery());
     }
 }

@@ -24,4 +24,7 @@ public class StudentGroupController : ProtectedBaseController
 
     [HttpDelete("delete-student-group/{id}")]
     public async Task<IResult> DeleteStudentGroup(Guid id) => await Mediator.Send(new DeleteStudentGroupCommand(id));
+
+    [HttpGet("get-student-group-dropdown")]
+    public async Task<IResult> GetStudentGroupDropdown() => await Mediator.Send(new GetStudentGroupDropdownQuery());
 }

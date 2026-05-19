@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.FeeHeads.Commands;
 using SchoolManagementSystem.Application.School.FeeHeads.Models;
 using SchoolManagementSystem.Application.School.FeeHeads.Queries;
@@ -24,4 +25,8 @@ public class FeeHeadController : ProtectedBaseController
 
     [HttpDelete("delete-fee-head/{id}")]
     public async Task<IResult> DeleteFeeHead(Guid id) => await Mediator.Send(new DeleteFeeHeadCommand(id));
+
+    [HttpGet("get-fee-head-dropdown")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
+    public async Task<IResult> GetFeeHeadDropdown() => await Mediator.Send(new GetFeeHeadDropdownQuery());
 }

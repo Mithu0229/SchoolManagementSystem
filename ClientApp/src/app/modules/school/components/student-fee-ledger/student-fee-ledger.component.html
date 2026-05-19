@@ -28,7 +28,37 @@
           <!-- Memo No -->
           <div class="field">
             <label for="memoNo" class="block text-sm font-medium text-gray-700 mb-1">Memo No</label>
-            <input type="text" pInputText id="memoNo" formControlName="memoNo" placeholder="Enter memo no" />
+            <input type="text" pInputText id="memoNo" formControlName="memoNo" placeholder="Enter memo no" class="w-full" />
+          </div>
+
+          <!-- Student -->
+          <div class="field">
+            <label for="studentId" class="block text-sm font-medium text-gray-700 mb-1">Student <span class="text-red-500">*</span></label>
+            <p-dropdown id="studentId" [options]="students" formControlName="studentId" optionLabel="name" optionValue="id" placeholder="Select Student" appendTo="body" styleClass="w-full"></p-dropdown>
+          </div>
+
+          <!-- Admission -->
+          <div class="field">
+            <label for="admissionId" class="block text-sm font-medium text-gray-700 mb-1">Admission <span class="text-red-500">*</span></label>
+            <p-dropdown id="admissionId" [options]="admissions" formControlName="admissionId" optionLabel="name" optionValue="id" placeholder="Select Admission" appendTo="body" styleClass="w-full"></p-dropdown>
+          </div>
+
+          <!-- Branch -->
+          <div class="field">
+            <label for="branchId" class="block text-sm font-medium text-gray-700 mb-1">Branch <span class="text-red-500">*</span></label>
+            <p-dropdown id="branchId" [options]="branches" formControlName="branchId" optionLabel="name" optionValue="id" placeholder="Select Branch" appendTo="body" styleClass="w-full"></p-dropdown>
+          </div>
+
+          <!-- Class -->
+          <div class="field">
+            <label for="classId" class="block text-sm font-medium text-gray-700 mb-1">Class <span class="text-red-500">*</span></label>
+            <p-dropdown id="classId" [options]="classes" formControlName="classId" optionLabel="name" optionValue="id" placeholder="Select Class" appendTo="body" styleClass="w-full"></p-dropdown>
+          </div>
+
+          <!-- Financial Year -->
+          <div class="field">
+            <label for="financialYearId" class="block text-sm font-medium text-gray-700 mb-1">Financial Year <span class="text-red-500">*</span></label>
+            <p-dropdown id="financialYearId" [options]="financialYears" formControlName="financialYearId" optionLabel="name" optionValue="id" placeholder="Select Financial Year" appendTo="body" styleClass="w-full"></p-dropdown>
           </div>
 
           <!-- Fee Amount -->

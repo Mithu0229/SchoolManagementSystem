@@ -43,4 +43,8 @@ export class StudentGroupService {
   deleteStudentGroup(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-student-group/${id}`);
   }
+
+  getStudentGroupDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-student-group-dropdown`);
+  }
 }

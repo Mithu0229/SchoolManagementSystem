@@ -37,9 +37,8 @@ public class AcademicSessionController : ProtectedBaseController
     }
 
     [HttpDelete("delete-academic-session/{id}")]
-    public async Task<IResult> DeleteAcademicSession(Guid id)
-    {
-        DeleteAcademicSessionCommand cmd = new DeleteAcademicSessionCommand(id);
-        return await Mediator.Send(cmd);
-    }
+    public async Task<IResult> DeleteAcademicSession(Guid id) => await Mediator.Send(new DeleteAcademicSessionCommand(id));
+
+    [HttpGet("get-academic-session-dropdown")]
+    public async Task<IResult> GetAcademicSessionDropdown() => await Mediator.Send(new GetAcademicSessionDropdownQuery());
 }

@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.FinancialYears.Commands;
 using SchoolManagementSystem.Application.School.FinancialYears.Models;
 using SchoolManagementSystem.Application.School.FinancialYears.Queries;
@@ -42,4 +43,8 @@ public class FinancialYearController : ProtectedBaseController
         DeleteFinancialYearCommand cmd = new DeleteFinancialYearCommand(id);
         return await Mediator.Send(cmd);
     }
+
+    [HttpGet("get-financial-year-dropdown")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
+    public async Task<IResult> GetFinancialYearDropdown() => await Mediator.Send(new GetFinancialYearDropdownQuery());
 }

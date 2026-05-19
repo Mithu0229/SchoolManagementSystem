@@ -43,4 +43,8 @@ export class AcademicClassService {
   deleteAcademicClass(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-academic-class/${id}`);
   }
+
+  getAcademicClassDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-academic-class-dropdown`);
+  }
 }

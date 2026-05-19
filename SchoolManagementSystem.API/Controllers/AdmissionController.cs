@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Admissions.Commands;
 using SchoolManagementSystem.Application.School.Admissions.Models;
 using SchoolManagementSystem.Application.School.Admissions.Queries;
@@ -24,4 +25,8 @@ public class AdmissionController : ProtectedBaseController
 
     [HttpDelete("delete-admission/{id}")]
     public async Task<IResult> DeleteAdmission(Guid id) => await Mediator.Send(new DeleteAdmissionCommand(id));
+
+    [HttpGet("get-admission-dropdown")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
+    public async Task<IResult> GetAdmissionDropdown() => await Mediator.Send(new GetAdmissionDropdownQuery());
 }

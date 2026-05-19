@@ -42,4 +42,8 @@ export class ShiftService {
   deleteShift(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-shift/${id}`);
   }
+
+  getShiftDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-shift-dropdown`);
+  }
 }

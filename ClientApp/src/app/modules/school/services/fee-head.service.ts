@@ -43,4 +43,8 @@ export class FeeHeadService {
   deleteFeeHead(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-fee-head/${id}`);
   }
+
+  getFeeHeadDropdown(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/get-fee-head-dropdown`);
+  }
 }

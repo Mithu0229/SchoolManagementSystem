@@ -4,12 +4,18 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { StudentFeeLedger, StudentFeeLedgerService } from '../../services/student-fee-ledger.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { TableColumn, TableConfig } from '../../../../shared/components/table/table.interface';
+import { StudentService } from '../../services/student.service';
+import { AdmissionService } from '../../services/admission.service';
+import { BranchService } from '../../services/branch.service';
+import { AcademicClassService } from '../../services/academic-class.service';
+import { FinancialYearService } from '../../services/financial-year.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -28,6 +34,7 @@ import { EMPTY_GUID } from '../../../../core/constents';
     InputNumberModule,
     CalendarModule,
     CheckboxModule,
+    DropdownModule,
     ToastModule,
     ConfirmDialogModule
   ],
@@ -44,11 +51,22 @@ export class StudentFeeLedgerComponent implements OnInit {
   isEditMode: boolean = false;
   submitted: boolean = false;
 
+  students: any[] = [];
+  admissions: any[] = [];
+  branches: any[] = [];
+  classes: any[] = [];
+  financialYears: any[] = [];
+
   columns: TableColumn[] = [];
   tableConfig!: TableConfig;
 
   private fb = inject(FormBuilder);
   private studentFeeLedgerService = inject(StudentFeeLedgerService);
+  private studentService = inject(StudentService);
+  private admissionService = inject(AdmissionService);
+  private branchService = inject(BranchService);
+  private academicClassService = inject(AcademicClassService);
+  private financialYearService = inject(FinancialYearService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
@@ -77,6 +95,25 @@ export class StudentFeeLedgerComponent implements OnInit {
   ngOnInit() {
     this.initializeColumns();
     this.initializeTableConfig();
+    this.loadDropdowns();
+  }
+
+  loadDropdowns() {
+    this.studentService.getStudentDropdown().subscribe(res => {
+      if (res.isSuccess) this.students = res.data || [];
+    });
+    this.admissionService.getAdmissionDropdown().subscribe(res => {
+      if (res.isSuccess) this.admissions = res.data || [];
+    });
+    this.branchService.getBranchDropdown().subscribe(res => {
+      if (res.isSuccess) this.branches = res.data || [];
+    });
+    this.academicClassService.getAcademicClassDropdown().subscribe(res => {
+      if (res.isSuccess) this.classes = res.data || [];
+    });
+    this.financialYearService.getFinancialYearDropdown().subscribe(res => {
+      if (res.isSuccess) this.financialYears = res.data || [];
+    });
   }
 
   initializeColumns(): void {

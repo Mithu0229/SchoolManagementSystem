@@ -1,6 +1,7 @@
 using SchoolManagementSystem.Application.School.SchoolStudents.Commands;
 using SchoolManagementSystem.Application.School.SchoolStudents.Models;
 using SchoolManagementSystem.Application.School.SchoolStudents.Queries;
+using StudentDropdownQuery = SchoolManagementSystem.Application.School.Students.Queries.GetStudentDropdownQuery;
 
 namespace SchoolManagementSystem.API.Controllers;
 
@@ -24,4 +25,7 @@ public class StudentController : ProtectedBaseController
 
     [HttpDelete("delete-student/{id}")]
     public async Task<IResult> DeleteStudent(Guid id) => await Mediator.Send(new DeleteStudentCommand(id));
+
+    [HttpGet("get-student-dropdown")]
+    public async Task<IResult> GetStudentDropdown() => await Mediator.Send(new StudentDropdownQuery());
 }

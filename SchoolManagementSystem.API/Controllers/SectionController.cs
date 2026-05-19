@@ -24,4 +24,7 @@ public class SectionController : ProtectedBaseController
 
     [HttpDelete("delete-section/{id}")]
     public async Task<IResult> DeleteSection(Guid id) => await Mediator.Send(new DeleteSectionCommand(id));
+
+    [HttpGet("get-section-dropdown")]
+    public async Task<IResult> GetSectionDropdown() => await Mediator.Send(new GetSectionDropdownQuery());
 }
