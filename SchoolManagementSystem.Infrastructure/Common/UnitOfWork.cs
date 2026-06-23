@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Application.Common;
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.GS.Divisions.Repositories;
 using SchoolManagementSystem.Application.GS.Roles.Repositories;
 using SchoolManagementSystem.Application.GS.Sitemaps.Repositories;
@@ -8,6 +8,7 @@ using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
 using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
 using SchoolManagementSystem.Application.School.Admissions.Repositories;
 using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.BillMasters.Repositories;
 using SchoolManagementSystem.Application.School.FeeCollections.Repositories;
 using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
 using SchoolManagementSystem.Application.School.FeeTemplates.Repositories;
@@ -350,6 +351,20 @@ namespace SchoolManagementSystem.Infrastructure.Common
                 }
 
                 return _feeCollectionRepository;
+            }
+        }
+
+        public IBillMasterRepository _billMasterRepository;
+        public IBillMasterRepository BillMasterRepository
+        {
+            get
+            {
+                if (this._billMasterRepository == null)
+                {
+                    this._billMasterRepository = new BillMasterRepository(_context, _currentUserService);
+                }
+
+                return _billMasterRepository;
             }
         }
 

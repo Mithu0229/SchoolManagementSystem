@@ -18,7 +18,7 @@ public class GetStudentFeeLedgerByIdQueryHandler : IHttpRequestHandler<GetStuden
                 Id = x.Id,
                 EntryDate = x.EntryDate,
                 StudentId = x.StudentId,
-                StudentName = x.Student.StudentName,
+                StudentName = x.Student.FullName,
                 AdmissionId = x.AdmissionId,
                 BranchId = x.BranchId,
                 ClassId = x.ClassId,

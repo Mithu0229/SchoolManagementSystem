@@ -56,4 +56,8 @@ export class AdmissionService {
   deleteAdmission(id: string): Observable<ApiResponse<string>> {
     return this.http.delete<ApiResponse<string>>(`${this.apiUrl}/delete-admission/${id}`);
   }
+
+  getStudentByStdCID(stdcid: string): Observable<ApiResponse<{ id: string; fullName: string }>> {
+    return this.http.get<ApiResponse<{ id: string; fullName: string }>>(`${this.apiUrl}/get-student-by-stdcid/${stdcid}`);
+  }
 }

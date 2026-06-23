@@ -410,12 +410,12 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         principalTable: "tb_sch_Shifts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "tb_sch_StudentGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    //table.ForeignKey(
+                    //    name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
+                    //    column: x => x.GroupId,
+                    //    principalTable: "tb_sch_StudentGroups",
+                    //    principalColumn: "Id",
+                    //    onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_tb_sch_Admissions_tb_sch_Students_StudentId",
                         column: x => x.StudentId,

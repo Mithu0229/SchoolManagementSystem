@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Domain.Entities.Students;
 using SchoolManagementSystem.Infrastructure.Persistence.Configurations;
@@ -34,6 +34,8 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<StudentFeeLedger> StudentFeeLedger { get; set; }
         public DbSet<FeeCollection> FeeCollection { get; set; }
         public DbSet<FeeCollectionDetail> FeeCollectionDetail { get; set; }
+        public DbSet<BillMaster> BillMaster { get; set; }
+        public DbSet<BillDetail> BillDetail { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

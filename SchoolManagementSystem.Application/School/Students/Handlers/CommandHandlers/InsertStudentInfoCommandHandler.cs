@@ -1,4 +1,5 @@
-﻿using SchoolManagementSystem.Application.GS.Users.Commands;
+using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Application.GS.Users.Commands;
 using SchoolManagementSystem.Application.GS.Users.Models;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Models;
@@ -54,6 +55,23 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
 
             var studentInfo = request.StudentInfo.Adapt<StudentInfo>();
             studentInfo.Id = id;
+
+            // Generate unique Student Custom ID (STD-0000001, STD-0000002, ...)
+            var lastStudent = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted()
+                .Where(x => x.StdCID != null && x.StdCID != "")
+                .OrderByDescending(x => x.StdCID)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            int nextNumber = 1;
+            if (lastStudent != null && lastStudent.StdCID.StartsWith("STD-"))
+            {
+                if (int.TryParse(lastStudent.StdCID.Substring(4), out int lastNumber))
+                {
+                    nextNumber = lastNumber + 1;
+                }
+            }
+            studentInfo.StdCID = $"STD-{nextNumber:D7}";
+
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();
             var response = studentInfo.Adapt<StudentInfoResponse>();

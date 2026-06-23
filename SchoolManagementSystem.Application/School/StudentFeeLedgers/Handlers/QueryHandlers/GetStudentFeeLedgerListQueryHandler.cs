@@ -17,7 +17,7 @@ public class GetStudentFeeLedgerListQueryHandler : IHttpRequestHandler<GetStuden
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();
-                query = query.Where(x => x.Student.StudentName.ToLower().Contains(search) || (x.MemoNo != null && x.MemoNo.ToLower().Contains(search)) || (x.VoucherCode != null && x.VoucherCode.ToLower().Contains(search)));
+                query = query.Where(x => x.Student.FullName.ToLower().Contains(search) || (x.MemoNo != null && x.MemoNo.ToLower().Contains(search)) || (x.VoucherCode != null && x.VoucherCode.ToLower().Contains(search)));
             }
             var totalRecord = await query.CountAsync(cancellationToken);
             if (pagedRequest.Page > 0 && pagedRequest.PageSize > 0) query = query.Skip((pagedRequest.Page - 1) * pagedRequest.PageSize).Take(pagedRequest.PageSize);
@@ -26,7 +26,7 @@ public class GetStudentFeeLedgerListQueryHandler : IHttpRequestHandler<GetStuden
                 Id = x.Id,
                 EntryDate = x.EntryDate,
                 StudentId = x.StudentId,
-                StudentName = x.Student.StudentName,
+                StudentName = x.Student.FullName,
                 AdmissionId = x.AdmissionId,
                 BranchId = x.BranchId,
                 ClassId = x.ClassId,

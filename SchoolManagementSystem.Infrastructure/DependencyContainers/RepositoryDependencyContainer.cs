@@ -5,6 +5,7 @@ using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
 using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
 using SchoolManagementSystem.Application.School.Admissions.Repositories;
 using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.BillMasters.Repositories;
 using SchoolManagementSystem.Application.School.FeeCollections.Repositories;
 using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
 using SchoolManagementSystem.Application.School.FeeTemplates.Repositories;
@@ -40,6 +41,7 @@ public class RepositoryDependencyContainer
         services.AddScoped<IFeeTemplateRepository, FeeTemplateRepository>();
         services.AddScoped<IStudentFeeLedgerRepository, StudentFeeLedgerRepository>();
         services.AddScoped<IFeeCollectionRepository, FeeCollectionRepository>();
+        services.AddScoped<IBillMasterRepository, BillMasterRepository>();
 
     }
 }

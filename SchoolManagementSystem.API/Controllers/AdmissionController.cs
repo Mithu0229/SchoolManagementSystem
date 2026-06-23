@@ -2,6 +2,8 @@ using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Admissions.Commands;
 using SchoolManagementSystem.Application.School.Admissions.Models;
 using SchoolManagementSystem.Application.School.Admissions.Queries;
+using SchoolManagementSystem.Application.School.Students.Models;
+using SchoolManagementSystem.Application.School.Students.Queries;
 
 namespace SchoolManagementSystem.API.Controllers;
 
@@ -29,4 +31,9 @@ public class AdmissionController : ProtectedBaseController
     [HttpGet("get-admission-dropdown")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
     public async Task<IResult> GetAdmissionDropdown() => await Mediator.Send(new GetAdmissionDropdownQuery());
+
+    // Get Student by StdCID
+    [HttpGet("get-student-by-stdcid/{stdcid}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentInfoResponse))]
+    public async Task<IResult> GetStudentByStdCID(string stdcid) => await Mediator.Send(new GetStudentByStdCIDQuery(stdcid));
 }

@@ -18,7 +18,7 @@ public class GetAdmissionByIdQueryHandler : IHttpRequestHandler<GetAdmissionById
                 Id = x.Id,
                 AdmissionDate = x.AdmissionDate,
                 StudentId = x.StudentId,
-                StudentName = x.Student.StudentName,
+                StudentName = x.Student.FullName,//.StudentName,
                 BranchId = x.BranchId,
                 BranchName = x.Branch.BranchName,
                 AcademicSessionId = x.AcademicSessionId,

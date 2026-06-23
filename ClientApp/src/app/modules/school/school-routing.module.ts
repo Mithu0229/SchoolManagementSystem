@@ -16,6 +16,8 @@ import { StudentComponent } from './components/student/student.component';
 import { AdmissionComponent } from './components/admission/admission.component';
 import { FeeTemplateComponent } from './components/fee-template/fee-template.component';
 import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
+import { BillProcessComponent } from './components/bill-process/bill-process.component';
+import { BillCollectionComponent } from './components/bill-collection/bill-collection.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 
@@ -38,6 +40,8 @@ const routes: Routes = [
       { path: 'admission', component: AdmissionComponent },
       { path: 'fee-template', component: FeeTemplateComponent },
       { path: 'fee-collection', component: FeeCollectionComponent },
+      { path: 'bill-process', component: BillProcessComponent },
+      { path: 'bill-collection', component: BillCollectionComponent },
       { path: '', redirectTo: 'institute', pathMatch: 'full' }
     ]
   }

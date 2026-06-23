@@ -20,6 +20,7 @@ import { FormErrorComponent } from '../../../shared/components/form-error.compon
 import { FormBase } from '../../../core/enums/form-base';
 import { ToastService } from '../../../core/services/toast.service';
 import { StudentService } from '../../../core/services/student.service';
+import { AcademicClassService } from '../../school/services/academic-class.service';
 
 @Component({
   selector: 'app-edit-student-application',
@@ -38,8 +39,7 @@ import { StudentService } from '../../../core/services/student.service';
 })
 export class EditStudentApplicationComponent
   extends FormBase
-  implements OnInit
-{
+  implements OnInit {
   activeTab: 'student' | 'guardian' | 'localGuardian' = 'student';
   applicationForm!: FormGroup;
   genderList = [
@@ -66,16 +66,7 @@ export class EditStudentApplicationComponent
     { label: 'O+', value: 'O+' },
     { label: 'O-', value: 'O-' },
   ];
-  applicationForClassList = [
-    { label: 'Nursery', value: 'Nursery' },
-    { label: 'Kindergarten', value: 'Kindergarten' },
-    { label: '1st Grade', value: '1st Grade' },
-    { label: '2nd Grade', value: '2nd Grade' },
-    { label: '3rd Grade', value: '3rd Grade' },
-    { label: '4th Grade', value: '4th Grade' },
-    { label: '5th Grade', value: '5th Grade' },
-    { label: '6th Grade', value: '6th Grade' },
-  ];
+  applicationForClassList: any = [];
   isDisabilityList = [
     { label: 'Yes', value: true },
     { label: 'No', value: false },
@@ -92,6 +83,7 @@ export class EditStudentApplicationComponent
     private toastService: ToastService,
     private readonly router: Router,
     private route: ActivatedRoute,
+    private academicClassService: AcademicClassService
   ) {
     super();
     this.buildForm();
@@ -102,6 +94,17 @@ export class EditStudentApplicationComponent
       if (params['id']) {
         let id = params['id'];
         this.getStudentById(id);
+      }
+    });
+
+    this.getAcademicClassList();
+  }
+  getAcademicClassList() {
+    this.academicClassService.getAcademicClassDropdown().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        if (res && res.isSuccess) {
+          this.applicationForClassList = res.data;
+        }
       }
     });
   }
@@ -115,37 +118,16 @@ export class EditStudentApplicationComponent
     this.destroy$.complete();
   }
 
-  getStudentById1(id: any) {
-    this.studentService.getStudentById(id).subscribe({
-      next: (response: any) => {
-        if (response.isSuccess) {
-          const roleData = response.data;
-        }
-      },
-    });
-  }
-
   getStudentById(id: string) {
     this.studentId = id;
-    console.log('========== GET STUDENT BY ID ==========');
-    console.log('Student ID:', id);
-    console.log('Expected URL: http://localhost:5015/api/StudentInfo/' + id);
-    console.log('=====================================');
 
     this.studentService
       .getStudentById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
-          console.log('========== API RESPONSE SUCCESS ==========');
-          console.log('Full Response:', res);
-          console.log('Response Type:', typeof res);
-          console.log('isSuccess:', res?.isSuccess);
-          console.log('data:', res?.data);
-          console.log('=====================================');
 
           if (res && res.isSuccess) {
-            console.log('✅ Success - Patching form with data');
             this.imagePreview = 'http://localhost:5015' + res.data.imagePath;
             res.data.imagePath = this.imagePreview; // Add imageUrl to data for patching
             if (typeof this.imagePreview === 'string') {
@@ -159,8 +141,6 @@ export class EditStudentApplicationComponent
             res.data.dateOfBirth = dob;
             this.patchApplicationForm(res.data);
           } else {
-            console.error('❌ API returned unsuccessful response');
-            console.error('Response:', res);
             this.toastService.error(
               res?.notificationMessage || 'Failed to load student data.',
             );
@@ -175,10 +155,8 @@ export class EditStudentApplicationComponent
 
   patchApplicationForm(data: any) {
     if (!data) {
-      console.warn('No data to patch');
       return;
     }
-    console.log('Patching form with data:', data);
 
     const guardianInfo = data?.guardianInfo ?? data?.GuardianInfo ?? null;
     const localGuardianInfo =
@@ -266,20 +244,13 @@ export class EditStudentApplicationComponent
     // Image preview - check both possible locations
     if (data?.imageUrl) {
       this.imagePreview = data.imageUrl;
-      console.log('Image URL set from data.imageUrl:', data.imageUrl);
       this.preloadSelectedFileFromImageUrl(data.imageUrl);
     } else if (data?.student?.imageUrl) {
       this.imagePreview = data.student.imageUrl;
-      console.log(
-        'Image URL set from data.student.imageUrl:',
-        data.student.imageUrl,
-      );
       this.preloadSelectedFileFromImageUrl(data.student.imageUrl);
     }
 
     this.syncImageControlValidation();
-
-    console.log('Form patched successfully');
   }
 
   onFileChange(event: Event) {
@@ -367,7 +338,7 @@ export class EditStudentApplicationComponent
         specialCare: new FormControl(''),
         presentAddress: new FormControl('', [Validators.required]),
         permanentAddress: new FormControl('', [Validators.required]),
-        studentPhone: new FormControl(''),
+        studentPhone: new FormControl('', [Validators.required]),
         studentEmail: new FormControl(''),
         image: new FormControl(null, [Validators.required]),
       }),
@@ -538,9 +509,7 @@ export class EditStudentApplicationComponent
           );
         },
       });
-      console.log('Full Form Value:', this.applicationForm.value);
     } else {
-      console.log('Form Invalid');
       this.applicationForm.markAllAsTouched();
     }
   }

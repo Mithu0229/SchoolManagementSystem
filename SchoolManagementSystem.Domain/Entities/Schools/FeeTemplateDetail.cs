@@ -1,4 +1,4 @@
-﻿namespace SchoolManagementSystem.Domain.Entities;
+namespace SchoolManagementSystem.Domain.Entities;
 
 public class FeeTemplateDetail : AuditableEntity
 {
@@ -10,4 +10,6 @@ public class FeeTemplateDetail : AuditableEntity
 
     public FeeTemplate FeeTemplate { get; set; }
     public FeeHead FeeHead { get; set; }
+
+    public ICollection<BillDetail> BillDetails { get; set; }
 }

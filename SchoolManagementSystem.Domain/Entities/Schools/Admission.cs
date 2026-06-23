@@ -1,4 +1,6 @@
-﻿namespace SchoolManagementSystem.Domain.Entities;
+﻿using SchoolManagementSystem.Domain.Entities.Students;
+
+namespace SchoolManagementSystem.Domain.Entities;
 
 public class Admission : AuditableEntity
 {
@@ -16,7 +18,7 @@ public class Admission : AuditableEntity
     public bool IsPassed { get; set; }
     public bool IsCancelled { get; set; }
 
-    public Student Student { get; set; }
+    public StudentInfo Student { get; set; }
     public Branch Branch { get; set; }
     public AcademicClass Class { get; set; }
     public Section? Section { get; set; }

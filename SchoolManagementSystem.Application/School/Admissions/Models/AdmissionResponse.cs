@@ -19,6 +19,7 @@ public class AdmissionResponse
     public Guid? GroupId { get; set; }
     public string? GroupName { get; set; }
     public string RollNo { get; set; }
+    public decimal MonthlyFeeAmount { get; set; }
     public bool IsPassed { get; set; }
     public bool IsCancelled { get; set; }
     public bool IsActive { get; set; }

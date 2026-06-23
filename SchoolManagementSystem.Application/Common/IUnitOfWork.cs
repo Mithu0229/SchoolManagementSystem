@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Application.GS.Divisions.Repositories;
+using SchoolManagementSystem.Application.GS.Divisions.Repositories;
 using SchoolManagementSystem.Application.GS.Roles.Repositories;
 using SchoolManagementSystem.Application.GS.Sitemaps.Repositories;
 using SchoolManagementSystem.Application.GS.Tenants.Repository;
@@ -7,6 +7,7 @@ using SchoolManagementSystem.Application.School.AcademicClasses.Repositories;
 using SchoolManagementSystem.Application.School.AcademicSessions.Repositories;
 using SchoolManagementSystem.Application.School.Admissions.Repositories;
 using SchoolManagementSystem.Application.School.Branches.Repositories;
+using SchoolManagementSystem.Application.School.BillMasters.Repositories;
 using SchoolManagementSystem.Application.School.FeeCollections.Repositories;
 using SchoolManagementSystem.Application.School.FeeHeads.Repositories;
 using SchoolManagementSystem.Application.School.FeeTemplates.Repositories;
@@ -48,6 +49,7 @@ public interface IUnitOfWork : IDisposable
     public IFeeTemplateRepository FeeTemplateRepository { get; }
     public IStudentFeeLedgerRepository StudentFeeLedgerRepository { get; }
     public IFeeCollectionRepository FeeCollectionRepository { get; }
+    public IBillMasterRepository BillMasterRepository { get; }
     #endregion
 
     #region Students

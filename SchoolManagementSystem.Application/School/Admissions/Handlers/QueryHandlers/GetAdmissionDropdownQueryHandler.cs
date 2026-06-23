@@ -17,7 +17,7 @@ public class GetAdmissionDropdownQueryHandler : IHttpRequestHandler<GetAdmission
         {
             var items = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(true)
                 .Where(x => x.IsActive)
-                .Select(x => new DropdownModel { Id = x.Id, Name = x.Student.StudentName + " - " + x.RollNo })
+                .Select(x => new DropdownModel { Id = x.Id, Name = x.Student.FullName + " - " + x.RollNo })
                 .ToListAsync(cancellationToken);
             return Result.Success(items);
         }

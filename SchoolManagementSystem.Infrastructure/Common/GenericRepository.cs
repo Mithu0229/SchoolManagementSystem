@@ -43,7 +43,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         IQueryable<T> query = _dbSet;
         if (!ignoreTenantGuard && typeof(IGuardTenant).IsAssignableFrom(typeof(T)))
             query = query.Where(e => EF.Property<Guid>(e, "TenantId") == _tenantId);
-        query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
+       // query = query.Where(e => !EF.Property<bool>(e, "IsDeleted"));
         return query;
     }
 

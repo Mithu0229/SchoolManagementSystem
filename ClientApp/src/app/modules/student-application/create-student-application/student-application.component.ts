@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   ReactiveFormsModule,
@@ -18,6 +18,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TextareaModule } from 'primeng/textarea';
 import { Router } from '@angular/router';
+import { AcademicClassService } from '../../school/services/academic-class.service';
 
 @Component({
   selector: 'app-student-application',
@@ -95,16 +96,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
     { label: 'O+', value: 'O+' },
     { label: 'O-', value: 'O-' },
   ];
-  applicationForClassList = [
-    { label: 'Nursery', value: 'Nursery' },
-    { label: 'Kindergarten', value: 'Kindergarten' },
-    { label: '1st Grade', value: '1st Grade' },
-    { label: '2nd Grade', value: '2nd Grade' },
-    { label: '3rd Grade', value: '3rd Grade' },
-    { label: '4th Grade', value: '4th Grade' },
-    { label: '5th Grade', value: '5th Grade' },
-    { label: '6th Grade', value: '6th Grade' },
-  ];
+  applicationForClassList = [];
   isDisabilityList = [
     { label: 'Yes', value: true },
     { label: 'No', value: false },
@@ -117,14 +109,25 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
     private studentService: StudentService,
     private toastService: ToastService,
     private readonly router: Router,
+    private academicClassService: AcademicClassService
   ) {
     super();
     this.buildForm();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loadApplicationForClassList();
+  }
   get form(): FormGroup {
     return this.applicationForm;
+  }
+
+  loadApplicationForClassList() {
+    this.academicClassService.getAcademicClassDropdown().subscribe((res: any) => {
+      if (res.isSuccess) {
+        this.applicationForClassList = res.data;
+      }
+    });
   }
 
   onFileChange(event: Event) {
@@ -162,7 +165,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         specialCare: new FormControl(''),
         presentAddress: new FormControl('', [Validators.required]),
         permanentAddress: new FormControl('', [Validators.required]),
-        studentPhone: new FormControl(''),
+        studentPhone: new FormControl('', [Validators.required]),
         studentEmail: new FormControl(''),
         image: new FormControl(null, [Validators.required]),
       }),
@@ -278,10 +281,6 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         'GuardianInfo.MotherTelephoneResidence',
         guardian.motherTelephoneResidence ?? '',
       );
-      // formData.append(
-      //   'GuardianInfo.MotherNationalIdNo',
-      //   guardian.motherNationalIdNo ?? '',
-      // );
 
       // ✅ Local Guardian (nested binding for [FromForm] StudentInfoRequest)
       formData.append('LocalGuardianInfo.Name', localGuardian.name ?? '');
@@ -321,9 +320,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
           );
         },
       });
-      console.log('Full Form Value:', this.applicationForm.value);
     } else {
-      console.log('Form Invalid');
       this.applicationForm.markAllAsTouched();
     }
   }

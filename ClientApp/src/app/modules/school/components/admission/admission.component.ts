@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Admission, AdmissionService } from '../../services/admission.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { TableColumn, TableConfig } from '../../../../shared/components/table/table.interface';
@@ -27,6 +27,7 @@ import { StudentGroupService } from '../../services/student-group.service';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     TableComponent,
     ButtonModule,
@@ -54,13 +55,19 @@ export class AdmissionComponent implements OnInit {
   columns: TableColumn[] = [];
   tableConfig!: TableConfig;
 
-  students: any[] = [];
   branches: any[] = [];
   academicSessions: any[] = [];
   academicClasses: any[] = [];
   sections: any[] = [];
   shifts: any[] = [];
   studentGroups: any[] = [];
+
+  // Student search by StdCID
+  searchStdCID: string = '';
+  foundStudent: { id: string; fullName: string } | null = null;
+  studentSearchError: string = '';
+  isSearching: boolean = false;
+  emptyGuid = EMPTY_GUID;
 
   private fb = inject(FormBuilder);
   private admissionService = inject(AdmissionService);
@@ -86,6 +93,7 @@ export class AdmissionComponent implements OnInit {
       shiftId: [EMPTY_GUID],
       groupId: [EMPTY_GUID],
       rollNo: ['', Validators.required],
+      monthlyFeeAmount: [0, Validators.required],
       isPassed: [false],
       isCancelled: [false],
       isActive: [true]
@@ -99,7 +107,6 @@ export class AdmissionComponent implements OnInit {
   }
 
   loadDropdowns() {
-    this.studentService.getStudentDropdown().subscribe(res => this.students = res.data || []);
     this.branchService.getBranchDropdown().subscribe(res => this.branches = res.data || []);
     this.academicSessionService.getAcademicSessionDropdown().subscribe(res => this.academicSessions = res.data || []);
     this.academicClassService.getAcademicClassDropdown().subscribe(res => this.academicClasses = res.data || []);
@@ -165,6 +172,9 @@ export class AdmissionComponent implements OnInit {
       isCancelled: false,
       isActive: true
     });
+    this.searchStdCID = '';
+    this.foundStudent = null;
+    this.studentSearchError = '';
     this.isEditMode = false;
     this.submitted = false;
     this.admissionDialog = true;
@@ -242,5 +252,37 @@ export class AdmissionComponent implements OnInit {
         }
       });
     }
+  }
+
+  searchStudent() {
+    const stdcid = this.searchStdCID?.trim();
+    if (!stdcid) {
+      this.studentSearchError = 'Please enter a Student ID.';
+      this.foundStudent = null;
+      return;
+    }
+
+    this.isSearching = true;
+    this.studentSearchError = '';
+    this.foundStudent = null;
+
+    this.admissionService.getStudentByStdCID(stdcid).subscribe({
+      next: (res) => {
+        this.isSearching = false;
+        if (res.data) {
+          this.foundStudent = res.data;
+          this.admissionForm.patchValue({ studentId: res.data.id });
+        } else {
+          this.studentSearchError = 'Student not found.';
+          this.admissionForm.patchValue({ studentId: EMPTY_GUID });
+        }
+      },
+      error: () => {
+        this.isSearching = false;
+        this.studentSearchError = 'Student not found with this ID.';
+        this.foundStudent = null;
+        this.admissionForm.patchValue({ studentId: EMPTY_GUID });
+      }
+    });
   }
 }

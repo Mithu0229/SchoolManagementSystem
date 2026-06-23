@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SchoolManagementSystem.Domain.Entities.Students;
 
 namespace SchoolManagementSystem.Infrastructure.Persistence.Configurations;
 
@@ -23,7 +24,7 @@ public class FeeCollectionConfiguration : AuditableEntityConfiguration<FeeCollec
         entityTypeBuilder.Property(x => x.Remarks).HasMaxLength(500).IsRequired(false);
         entityTypeBuilder.Property(x => x.IsCancelled).IsRequired();
         entityTypeBuilder.HasIndex(x => new { x.MemoNo, x.IsDeleted }).IsUnique(false).HasFilter("\"IsDeleted\" = 0");
-        entityTypeBuilder.HasOne<Student>().WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.StudentId).OnDelete(DeleteBehavior.Restrict);
+        entityTypeBuilder.HasOne<StudentInfo>().WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.StudentId).OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.HasOne<Admission>().WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.AdmissionId).OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.HasOne<Branch>().WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.BranchId).OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.HasOne<FinancialYear>().WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.FinancialYearId).OnDelete(DeleteBehavior.Restrict);

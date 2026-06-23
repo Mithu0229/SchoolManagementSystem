@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gray-50 py-4 px-1 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
         <div class="text-center mb-2">
-            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-2xl">Student Admission Form</h1>
+            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-2xl">Student Registration Form</h1>
         </div>
 
         <!-- Tabs -->
@@ -160,7 +160,7 @@
                             <label class="form-label" for="applicationForClass">Application For Class<span
                                     class="required-asterisk">*</span></label>
                             <p-select [options]="applicationForClassList" formControlName="applicationForClass"
-                                placeholder="Select Application For Class" optionLabel="label" optionValue="value"
+                                placeholder="Select Application For Class" optionLabel="name" optionValue="id"
                                 [ngClass]="{ 'p-invalid': isInvalid('applicationForClass') }" appendTo="body"
                                 styleClass="w-full"></p-select>
                             <app-form-error [control]="getControl('applicationForClass')"
@@ -198,10 +198,13 @@
 
                         <!-- Student Phone-->
                         <div class="flex flex-col gap-1">
-                            <label class="form-label" for="studentPhone">Student Phone</label>
+                            <label class="form-label" for="studentPhone">Student Phone<span
+                                    class="required-asterisk">*</span></label>
                             <input id="studentPhone" pInputText formControlName="studentPhone"
                                 placeholder="Enter Student Phone" [ngClass]="{ 'p-invalid': isInvalid('studentPhone') }"
                                 class="w-full" />
+                            <app-form-error [control]="getControl('studentPhone')"
+                                [isInvalid]="isInvalid('studentPhone')" />
                         </div>
 
                         <!-- Student Email-->

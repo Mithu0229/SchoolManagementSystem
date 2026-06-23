@@ -243,6 +243,8 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("AcademicSessionId");
 
+                    b.HasIndex("BranchId");
+
                     b.HasIndex("ClassId");
 
                     b.HasIndex("GroupId");
@@ -253,11 +255,149 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.HasIndex("BranchId", "AcademicSessionId", "ClassId", "RollNo", "IsDeleted")
+                    b.HasIndex("RollNo", "IsDeleted")
                         .IsUnique()
                         .HasFilter("\"IsDeleted\" = 0");
 
                     b.ToTable("tb_sch_Admissions", (string)null);
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.BillDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(0)
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("BillMasterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(103);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(104)
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(101);
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(102);
+
+                    b.Property<Guid>("FeeHeadId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FeeTemplateDetailId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("InstituteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnOrder(90);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnOrder(100);
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(105);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(106);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillMasterId");
+
+                    b.HasIndex("FeeHeadId");
+
+                    b.HasIndex("FeeTemplateDetailId");
+
+                    b.ToTable("tb_sch_BillDetails", (string)null);
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.BillMaster", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(0)
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<Guid>("AdmissionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BillMonth")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BillYear")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(103);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(104)
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<Guid?>("DeletedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(101);
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(102);
+
+                    b.Property<Guid?>("InstituteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnOrder(90);
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnOrder(100);
+
+                    b.Property<Guid?>("ModifiedById")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnOrder(105);
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnOrder(106);
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdmissionId", "BillMonth", "BillYear", "IsDeleted")
+                        .IsUnique()
+                        .HasFilter("\"IsDeleted\" = 0");
+
+                    b.ToTable("tb_sch_BillMasters", (string)null);
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.Branch", b =>
@@ -1849,6 +1989,10 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<string>("SpecialCare")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StdCID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("StudentEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -2195,37 +2339,34 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.HasOne("SchoolManagementSystem.Domain.Entities.AcademicSession", "AcademicSession")
                         .WithMany()
                         .HasForeignKey("AcademicSessionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.Branch", "Branch")
                         .WithMany()
                         .HasForeignKey("BranchId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.AcademicClass", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.StudentGroup", "Group")
                         .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.Section", "Section")
                         .WithMany()
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("SectionId");
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.Shift", "Shift")
                         .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ShiftId");
 
-                    b.HasOne("SchoolManagementSystem.Domain.Entities.Student", "Student")
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.Students.StudentInfo", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2244,6 +2385,44 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Navigation("Shift");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.BillDetail", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.BillMaster", "BillMaster")
+                        .WithMany("Details")
+                        .HasForeignKey("BillMasterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.FeeHead", "FeeHead")
+                        .WithMany()
+                        .HasForeignKey("FeeHeadId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.FeeTemplateDetail", "FeeTemplateDetail")
+                        .WithMany("BillDetails")
+                        .HasForeignKey("FeeTemplateDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BillMaster");
+
+                    b.Navigation("FeeHead");
+
+                    b.Navigation("FeeTemplateDetail");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.BillMaster", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.Admission", "Admission")
+                        .WithMany()
+                        .HasForeignKey("AdmissionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Admission");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.Branch", b =>
@@ -2277,7 +2456,7 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SchoolManagementSystem.Domain.Entities.Student", null)
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.Students.StudentInfo", null)
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2412,7 +2591,7 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SchoolManagementSystem.Domain.Entities.Student", "Student")
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.Students.StudentInfo", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -2476,6 +2655,11 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.BillMaster", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.FeeCollection", b =>
                 {
                     b.Navigation("Details");
@@ -2484,6 +2668,11 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.FeeTemplate", b =>
                 {
                     b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.FeeTemplateDetail", b =>
+                {
+                    b.Navigation("BillDetails");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.Institute", b =>

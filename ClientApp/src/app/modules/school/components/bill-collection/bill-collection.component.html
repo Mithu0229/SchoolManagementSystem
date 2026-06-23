@@ -1,0 +1,77 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+
+  <div class="form-header">Bill Collection</div>
+  <div class="bg-white mx-auto">
+    <app-table apiUrl="/BillMaster/get-bill-master-list" [columns]="columns" [config]="tableConfig">
+    </app-table>
+  </div>
+
+  <!-- Edit Bill Dialog -->
+  <p-dialog [(visible)]="billDialog" [style]="{width: '850px'}" header="Edit Bill" [modal]="true"
+    styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
+    <ng-template pTemplate="content">
+      <form *ngIf="billForm" [formGroup]="billForm" class="py-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <!-- Roll No (disabled) -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Roll No</label>
+            <input type="text" pInputText formControlName="admissionRollNo" class="w-full" />
+          </div>
+
+          <!-- Bill Month (disabled) -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Bill Month</label>
+            <input type="text" pInputText formControlName="billMonth" class="w-full" />
+          </div>
+
+          <!-- Bill Year (disabled) -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Bill Year</label>
+            <input type="text" pInputText formControlName="billYear" class="w-full" />
+          </div>
+
+          <!-- Total Amount (editable) -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Total Amount</label>
+            <p-inputNumber formControlName="totalAmount" mode="decimal" [minFractionDigits]="2"
+              styleClass="w-full"></p-inputNumber>
+          </div>
+        </div>
+
+        <!-- Bill Details Section -->
+        <div class="mt-4 border-t pt-4">
+          <span class="text-lg font-semibold text-gray-800 mb-3 block">Bill Details</span>
+
+          <div formArrayName="details">
+            <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i"
+              class="grid grid-cols-12 gap-3 mb-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
+
+              <!-- Fee Head Name (disabled) -->
+              <div class="col-span-4">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Fee Head</label>
+                <input type="text" pInputText formControlName="feeHeadName" class="w-full p-inputtext-sm" />
+              </div>
+
+              <!-- Amount (editable) -->
+              <div class="col-span-4">
+                <label class="block text-xs font-medium text-gray-500 mb-1">Amount</label>
+                <p-inputNumber formControlName="amount" mode="decimal" [minFractionDigits]="2"
+                  class="p-inputtext-sm w-full" styleClass="w-full"></p-inputNumber>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+          (click)="hideDialog()"></p-button>
+        <p-button label="Submit Bill" icon="pi pi-check" styleClass="p-button-primary"
+          [loading]="isSubmitting" (click)="submitBill()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+</div>

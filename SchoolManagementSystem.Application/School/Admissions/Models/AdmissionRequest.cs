@@ -12,6 +12,7 @@ public class AdmissionRequest
     public Guid? ShiftId { get; set; }
     public Guid? GroupId { get; set; }
     public string RollNo { get; set; }
+    public decimal MonthlyFeeAmount { get; set; }
     public bool IsPassed { get; set; }
     public bool IsCancelled { get; set; }
     public bool IsActive { get; set; }

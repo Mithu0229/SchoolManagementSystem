@@ -1,4 +1,6 @@
-﻿namespace SchoolManagementSystem.Domain.Entities;
+using SchoolManagementSystem.Domain.Entities.Students;
+
+namespace SchoolManagementSystem.Domain.Entities;
 
 public class StudentFeeLedger : AuditableEntity
 {
@@ -23,7 +25,7 @@ public class StudentFeeLedger : AuditableEntity
 
     public bool IsCancelled { get; set; }
 
-    public Student Student { get; set; }
+    public StudentInfo Student { get; set; }
     public Admission Admission { get; set; }
     public FinancialYear FinancialYear { get; set; }
 }
