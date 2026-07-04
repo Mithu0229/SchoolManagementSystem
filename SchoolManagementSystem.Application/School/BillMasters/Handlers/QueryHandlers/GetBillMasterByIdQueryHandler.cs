@@ -13,6 +13,7 @@ public class GetBillMasterByIdQueryHandler : IHttpRequestHandler<GetBillMasterBy
         try
         {
             if (request.Id == Guid.Empty) return Result.Fail<BillMasterResponse>(StatusCodes.Status406NotAcceptable);
+
             var response = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true).Where(x => x.Id == request.Id).Select(x => new BillMasterResponse
             {
                 Id = x.Id,
@@ -21,6 +22,7 @@ public class GetBillMasterByIdQueryHandler : IHttpRequestHandler<GetBillMasterBy
                 BillMonth = x.BillMonth,
                 BillYear = x.BillYear,
                 TotalAmount = x.TotalAmount,
+                StdCID = x.Admission.Student.StdCID,
                 IsActive = x.IsActive,
                 Details = x.Details.Where(d => !d.IsDeleted).Select(d => new BillDetailResponse
                 {

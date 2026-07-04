@@ -17,7 +17,7 @@ public class GetAdmissionListQueryHandler : IHttpRequestHandler<GetAdmissionList
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();
-                query = query.Where(x => x.RollNo.ToLower().Contains(search) || x.Student.FullName.ToLower().Contains(search));
+                query = query.Where(x => x.RollNo.ToLower().Contains(search) || x.Student.FullName.ToLower().Contains(search) || x.Student.StdCID.ToLower().Contains(search));
             }
             var totalRecord = await query.CountAsync(cancellationToken);
             if (pagedRequest.Page > 0 && pagedRequest.PageSize > 0) query = query.Skip((pagedRequest.Page - 1) * pagedRequest.PageSize).Take(pagedRequest.PageSize);
@@ -25,6 +25,7 @@ public class GetAdmissionListQueryHandler : IHttpRequestHandler<GetAdmissionList
             {
                 Id = x.Id,
                 AdmissionDate = x.AdmissionDate,
+                StdCID = x.Student.StdCID,
                 StudentId = x.StudentId,
                 StudentName = x.Student.FullName,
                 BranchId = x.BranchId,

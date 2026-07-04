@@ -31,11 +31,11 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
                     var bill = new BillMaster
                     {
                         Id = Guid.NewGuid(),
-                        AdmissionId = Guid.Empty,
+                        AdmissionId = entity.Id,
                         BillMonth = i,
                         BillYear = DateTime.Now.Year,
                         TotalAmount = request.Admission.MonthlyFeeAmount,
-                        IsActive = true,
+                        IsActive = false,
                         Details = new List<BillDetail>()
                     };
 

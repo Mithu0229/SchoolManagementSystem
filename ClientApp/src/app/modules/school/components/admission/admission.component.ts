@@ -1,9 +1,18 @@
 import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Admission, AdmissionService } from '../../services/admission.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
-import { TableColumn, TableConfig } from '../../../../shared/components/table/table.interface';
+import {
+  TableColumn,
+  TableConfig,
+} from '../../../../shared/components/table/table.interface';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -37,11 +46,11 @@ import { StudentGroupService } from '../../services/student-group.service';
     CheckboxModule,
     ToastModule,
     ConfirmDialogModule,
-    DropdownModule
+    DropdownModule,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './admission.component.html',
-  styleUrl: './admission.component.scss'
+  styleUrl: './admission.component.scss',
 })
 export class AdmissionComponent implements OnInit {
   @ViewChild(TableComponent) tableComponent!: TableComponent;
@@ -96,7 +105,7 @@ export class AdmissionComponent implements OnInit {
       monthlyFeeAmount: [0, Validators.required],
       isPassed: [false],
       isCancelled: [false],
-      isActive: [true]
+      isActive: [true],
     });
   }
 
@@ -107,20 +116,48 @@ export class AdmissionComponent implements OnInit {
   }
 
   loadDropdowns() {
-    this.branchService.getBranchDropdown().subscribe(res => this.branches = res.data || []);
-    this.academicSessionService.getAcademicSessionDropdown().subscribe(res => this.academicSessions = res.data || []);
-    this.academicClassService.getAcademicClassDropdown().subscribe(res => this.academicClasses = res.data || []);
-    this.sectionService.getSectionDropdown().subscribe(res => this.sections = res.data || []);
-    this.shiftService.getShiftDropdown().subscribe(res => this.shifts = res.data || []);
-    this.studentGroupService.getStudentGroupDropdown().subscribe(res => this.studentGroups = res.data || []);
+    this.branchService
+      .getBranchDropdown()
+      .subscribe((res) => (this.branches = res.data || []));
+    this.academicSessionService
+      .getAcademicSessionDropdown()
+      .subscribe((res) => (this.academicSessions = res.data || []));
+    this.academicClassService
+      .getAcademicClassDropdown()
+      .subscribe((res) => (this.academicClasses = res.data || []));
+    this.sectionService
+      .getSectionDropdown()
+      .subscribe((res) => (this.sections = res.data || []));
+    this.shiftService
+      .getShiftDropdown()
+      .subscribe((res) => (this.shifts = res.data || []));
+    this.studentGroupService
+      .getStudentGroupDropdown()
+      .subscribe((res) => (this.studentGroups = res.data || []));
   }
 
   initializeColumns(): void {
     this.columns = [
-      { field: 'admissionDate', header: 'Date', sortable: true, dataType: 'date' },
+      {
+        field: 'admissionDate',
+        header: 'Date',
+        sortable: true,
+        dataType: 'date',
+      },
       { field: 'rollNo', header: 'Roll No', sortable: true },
-      { field: 'isPassed', header: 'Passed', sortable: true, dataType: 'boolean' },
-      { field: 'isActive', header: 'Status', sortable: true, dataType: 'boolean' }
+      { field: 'stdCID', header: 'StdCID', sortable: true },
+      {
+        field: 'isPassed',
+        header: 'Passed',
+        sortable: true,
+        dataType: 'boolean',
+      },
+      {
+        field: 'isActive',
+        header: 'Status',
+        sortable: true,
+        dataType: 'boolean',
+      },
     ];
 
     this.columns.push({
@@ -140,7 +177,7 @@ export class AdmissionComponent implements OnInit {
           styleClass: 'p-button-danger',
           callback: (row) => this.deleteAdmission(row),
           visible: () => true,
-        }
+        },
       ],
     });
   }
@@ -170,7 +207,7 @@ export class AdmissionComponent implements OnInit {
       groupId: EMPTY_GUID,
       isPassed: false,
       isCancelled: false,
-      isActive: true
+      isActive: true,
     });
     this.searchStdCID = '';
     this.foundStudent = null;
@@ -183,7 +220,9 @@ export class AdmissionComponent implements OnInit {
   editAdmission(admission: Admission) {
     this.admissionForm.patchValue({
       ...admission,
-      admissionDate: admission.admissionDate ? new Date(admission.admissionDate) : null
+      admissionDate: admission.admissionDate
+        ? new Date(admission.admissionDate)
+        : null,
     });
     this.isEditMode = true;
     this.submitted = false;
@@ -199,15 +238,24 @@ export class AdmissionComponent implements OnInit {
         if (admission.id) {
           this.admissionService.deleteAdmission(admission.id).subscribe({
             next: () => {
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Admission Deleted', life: 3000 });
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Successful',
+                detail: 'Admission Deleted',
+                life: 3000,
+              });
               this.tableComponent.loadData();
             },
             error: () => {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete admission' });
-            }
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to delete admission',
+              });
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -226,30 +274,48 @@ export class AdmissionComponent implements OnInit {
     const formValue = this.admissionForm.value;
     const payload: Admission = {
       ...formValue,
-      id: formValue.id || EMPTY_GUID
+      id: formValue.id || EMPTY_GUID,
     };
 
     if (this.isEditMode) {
       this.admissionService.updateAdmission(payload).subscribe({
         next: (res) => {
-          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Admission Updated', life: 3000 });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Admission Updated',
+            life: 3000,
+          });
           this.tableComponent.loadData();
           this.hideDialog();
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update admission' });
-        }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update admission',
+          });
+        },
       });
     } else {
       this.admissionService.createAdmission(payload).subscribe({
         next: (res) => {
-          this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Admission Created', life: 3000 });
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: 'Admission Created',
+            life: 3000,
+          });
           this.tableComponent.loadData();
           this.hideDialog();
         },
         error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create admission' });
-        }
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to create admission',
+          });
+        },
       });
     }
   }
@@ -282,7 +348,7 @@ export class AdmissionComponent implements OnInit {
         this.studentSearchError = 'Student not found with this ID.';
         this.foundStudent = null;
         this.admissionForm.patchValue({ studentId: EMPTY_GUID });
-      }
+      },
     });
   }
 }

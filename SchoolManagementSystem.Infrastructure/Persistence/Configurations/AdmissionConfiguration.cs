@@ -20,6 +20,10 @@ public class AdmissionConfiguration : AuditableEntityConfiguration<Admission>
         entityTypeBuilder.Property(x => x.RollNo).HasMaxLength(50).IsRequired();
         entityTypeBuilder.Property(x => x.IsPassed).IsRequired();
         entityTypeBuilder.Property(x => x.IsCancelled).IsRequired();
+        entityTypeBuilder.HasOne(x => x.Student)
+           .WithMany()
+           .HasForeignKey(x => x.StudentId)
+           .OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.HasIndex(x => new { x.RollNo, x.IsDeleted }).IsUnique().HasFilter("\"IsDeleted\" = 0");
         entityTypeBuilder.HasOne(x => x.Student).WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.StudentId).OnDelete(DeleteBehavior.Restrict);
         //entityTypeBuilder.HasOne(x => x.Branch).WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.BranchId).OnDelete(DeleteBehavior.Restrict);

@@ -12,9 +12,15 @@ public class BillMasterConfiguration : AuditableEntityConfiguration<BillMaster>
         entityTypeBuilder.Property(x => x.AdmissionId).IsRequired();
         entityTypeBuilder.Property(x => x.BillMonth).IsRequired();
         entityTypeBuilder.Property(x => x.BillYear).IsRequired();
+        entityTypeBuilder.HasOne(x => x.Admission)
+           .WithMany()
+           .HasForeignKey(x => x.AdmissionId)
+           .OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.Property(x => x.TotalAmount).HasColumnType("decimal(18,2)").IsRequired();
         entityTypeBuilder.HasIndex(x => new { x.AdmissionId, x.BillMonth, x.BillYear, x.IsDeleted }).IsUnique().HasFilter("\"IsDeleted\" = 0");
         entityTypeBuilder.HasOne(x => x.Admission).WithMany().OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.AdmissionId).OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.ToTable("tb_sch_BillMasters");
     }
+
+
 }

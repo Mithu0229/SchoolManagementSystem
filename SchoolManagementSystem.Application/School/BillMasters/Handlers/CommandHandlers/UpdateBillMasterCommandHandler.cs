@@ -23,7 +23,7 @@ public class UpdateBillMasterCommandHandler : IHttpRequestHandler<UpdateBillMast
             entity.BillMonth = request.BillMaster.BillMonth;
             entity.BillYear = request.BillMaster.BillYear;
             entity.TotalAmount = request.BillMaster.TotalAmount;
-            entity.IsActive = request.BillMaster.IsActive;
+            entity.IsActive = true;
             await _unitOfWork.BillMasterRepository.UpdateAsync(entity);
             var details = request.BillMaster.Details.Select(x => new BillDetail
             {

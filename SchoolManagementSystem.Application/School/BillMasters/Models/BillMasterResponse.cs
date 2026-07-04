@@ -5,6 +5,7 @@ public class BillMasterResponse
     public Guid Id { get; set; }
     public Guid AdmissionId { get; set; }
     public string? AdmissionRollNo { get; set; }
+    public string? StdCID { get; set; }
     public int BillMonth { get; set; }
     public int BillYear { get; set; }
     public decimal TotalAmount { get; set; }

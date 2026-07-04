@@ -16,6 +16,7 @@ public class GetAdmissionByIdQueryHandler : IHttpRequestHandler<GetAdmissionById
             var response = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(true).Where(x => x.Id == request.Id).Select(x => new AdmissionResponse
             {
                 Id = x.Id,
+                StdCID = x.Student.StdCID,
                 AdmissionDate = x.AdmissionDate,
                 StudentId = x.StudentId,
                 StudentName = x.Student.FullName,//.StudentName,

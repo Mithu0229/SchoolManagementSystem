@@ -22,6 +22,7 @@ export interface BillMasterResponse {
   id: string;
   admissionId: string;
   admissionRollNo?: string;
+  stdCID?: string;
   billMonth: number;
   billYear: number;
   totalAmount: number;
@@ -54,25 +55,38 @@ export interface BillMasterList {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BillMasterService {
   private http = inject(HttpClient);
   private apiUrl = '/BillMaster';
 
   processBill(request: ProcessBillRequest): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/process-bill`, request);
+    return this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/process-bill`,
+      request,
+    );
   }
 
   getBillMasters(): Observable<ApiResponse<BillMasterList>> {
-    return this.http.post<ApiResponse<BillMasterList>>(`${this.apiUrl}/get-bill-master-list`, {});
+    return this.http.post<ApiResponse<BillMasterList>>(
+      `${this.apiUrl}/get-bill-master-list`,
+      {},
+    );
   }
 
   getBillMasterById(id: string): Observable<ApiResponse<BillMasterResponse>> {
-    return this.http.get<ApiResponse<BillMasterResponse>>(`${this.apiUrl}/${id}`);
+    return this.http.get<ApiResponse<BillMasterResponse>>(
+      `${this.apiUrl}/${id}`,
+    );
   }
 
-  updateBillMaster(billMaster: BillMasterRequest): Observable<ApiResponse<BillMasterResponse>> {
-    return this.http.put<ApiResponse<BillMasterResponse>>(`${this.apiUrl}/update-bill-master`, billMaster);
+  updateBillMaster(
+    billMaster: BillMasterRequest,
+  ): Observable<ApiResponse<BillMasterResponse>> {
+    return this.http.put<ApiResponse<BillMasterResponse>>(
+      `${this.apiUrl}/update-bill-master`,
+      billMaster,
+    );
   }
 }

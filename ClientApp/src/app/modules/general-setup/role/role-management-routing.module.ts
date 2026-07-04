@@ -15,7 +15,7 @@ const routes: Routes = [
         path: '',
         loadComponent: () =>
           import('./role-management/role-management.component').then(
-            (m) => m.RoleManagementComponent
+            (m) => m.RoleManagementComponent,
           ),
         canActivate: [authGuard, permissionGuard('/role')],
         data: {
@@ -27,7 +27,7 @@ const routes: Routes = [
         path: 'create',
         loadComponent: () =>
           import('./create-role/create-role.component').then(
-            (m) => m.CreateRoleComponent
+            (m) => m.CreateRoleComponent,
           ),
         canActivate: [authGuard, permissionGuard('/role')],
         data: {
@@ -42,7 +42,7 @@ const routes: Routes = [
         path: 'edit/:id',
         loadComponent: () =>
           import('./edit-role/edit-role.component').then(
-            (m) => m.EditRoleComponent
+            (m) => m.EditRoleComponent,
           ),
         canActivate: [authGuard, permissionGuard('/role')],
         data: {

@@ -21,7 +21,9 @@
                             message="Please enter your password"></app-error-message>
                     </div>
                     <div class="flex items-center justify-end w-full mt-2">
-                        <a [routerLink]="['/user-register']"
+                        <!-- <a [routerLink]="['/user-register']"
+                            class="font-medium text-[#B70F76] underline ml-1">Register?</a> -->
+                        <a [routerLink]="['/register-student']"
                             class="font-medium text-[#B70F76] underline ml-1">Register?</a>
                     </div>
                     <button pButton type="submit" [disabled]="loginForm.invalid || isSigningIn()"

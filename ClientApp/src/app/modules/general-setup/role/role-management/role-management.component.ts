@@ -46,7 +46,7 @@ export class RoleManagementComponent implements OnInit {
     private router: Router,
     private readonly authService: AuthService,
     private readonly toastService: ToastService,
-    private readonly permissionService: PermissionService
+    private readonly permissionService: PermissionService,
   ) {}
 
   ngOnInit() {
@@ -166,12 +166,12 @@ export class RoleManagementComponent implements OnInit {
               `Role "${
                 this.selectedRole()?.roleName
               }" scheduled for deletion. Users will be notified.`,
-              Severity.SUCCESS
+              Severity.SUCCESS,
             );
           } else {
             this.toastService.success(
               `Role "${this.selectedRole()?.roleName}" deleted successfully`,
-              Severity.SUCCESS
+              Severity.SUCCESS,
             );
           }
 
@@ -195,14 +195,14 @@ export class RoleManagementComponent implements OnInit {
         } else {
           this.toastService.error(
             'Failed to delete role: ' + (response.errors?.[0] || ''),
-            Severity.ERROR
+            Severity.ERROR,
           );
         }
       },
       error: (error: any) => {
         this.toastService.error(
           'Failed to delete role. Please try again.',
-          Severity.ERROR
+          Severity.ERROR,
         );
         console.error('Delete role error:', error);
       },
@@ -235,7 +235,7 @@ export class RoleManagementComponent implements OnInit {
                 `Role "${
                   this.selectedRole()?.roleName
                 }" cancel role deletion successfully`,
-                Severity.SUCCESS
+                Severity.SUCCESS,
               );
 
               // Store reference to the table component before resetting state
@@ -256,14 +256,14 @@ export class RoleManagementComponent implements OnInit {
               this.toastService.error(
                 'Failed to cancel role deletion: ' +
                   (response.errors?.[0] || ''),
-                Severity.ERROR
+                Severity.ERROR,
               );
             }
           },
           error: (error: any) => {
             this.toastService.error(
               'Failed to cancel role deletion. Please try again.',
-              Severity.ERROR
+              Severity.ERROR,
             );
             console.error('Cancel role deletion error:', error);
           },

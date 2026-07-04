@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { UserLoginComponent } from './modules/auth/user-login/user-login.component';
 import { UserRegisterComponent } from './modules/auth/user-register/user-register.component';
 import { Notfound } from './shared/components/notfound/notfound';
+import { StudentApplicationComponent } from './modules/student-application/create-student-application/student-application.component';
 
 export const routes: Routes = [
   //{ path: 'login', component: UserLoginComponent },
@@ -9,14 +10,14 @@ export const routes: Routes = [
     path: '',
     loadChildren: () =>
       import('./modules/auth/auth-routing.module').then(
-        (m) => m.AuthRoutingModule
+        (m) => m.AuthRoutingModule,
       ),
   },
   {
     path: 'admin',
     loadChildren: () =>
       import('./modules/general-setup/users/user-routing.module').then(
-        (m) => m.UserRoutingModule
+        (m) => m.UserRoutingModule,
       ),
   },
   {
@@ -24,40 +25,41 @@ export const routes: Routes = [
     path: 'sitemap',
     loadChildren: () =>
       import('./modules/settings/sitemap/sitemap-routing.module').then(
-        (m) => m.SitemapRoutingModule
+        (m) => m.SitemapRoutingModule,
       ),
   },
   {
     //ok
     path: 'role',
     loadChildren: () =>
-      import(
-        './modules/general-setup/role/role-management-routing.module'
-      ).then((m) => m.RoleManagementRoutingModule),
+      import('./modules/general-setup/role/role-management-routing.module').then(
+        (m) => m.RoleManagementRoutingModule,
+      ),
   },
   {
     path: 'tenant',
     loadChildren: () =>
       import('./modules/general-setup/tenant/tenant-routing.module').then(
-        (m) => m.TenantRoutingModule
+        (m) => m.TenantRoutingModule,
       ),
   },
   {
     path: 'application',
     loadChildren: () =>
-      import(
-        './modules/student-application/student-application-routing.module'
-      ).then((m) => m.StudentApplicationRoutingModule),
+      import('./modules/student-application/student-application-routing.module').then(
+        (m) => m.StudentApplicationRoutingModule,
+      ),
   },
   {
     path: 'school',
     loadChildren: () =>
       import('./modules/school/school-routing.module').then(
-        (m) => m.SchoolRoutingModule
+        (m) => m.SchoolRoutingModule,
       ),
   },
 
   { path: 'user-register', component: UserRegisterComponent },
+  { path: 'register-student', component: StudentApplicationComponent },
   { path: 'notfound', component: Notfound },
   { path: '**', redirectTo: '/notfound' },
   //{ path: '', redirectTo: 'login', pathMatch: 'full' },

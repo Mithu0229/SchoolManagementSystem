@@ -15,8 +15,8 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <!-- Roll No (disabled) -->
           <div class="field">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Roll No</label>
-            <input type="text" pInputText formControlName="admissionRollNo" class="w-full" />
+            <label class="block text-sm font-medium text-gray-700 mb-1">Student ID</label>
+            <input type="text" pInputText formControlName="stdCID" class="w-full" />
           </div>
 
           <!-- Bill Month (disabled) -->
@@ -41,23 +41,39 @@
 
         <!-- Bill Details Section -->
         <div class="mt-4 border-t pt-4">
-          <span class="text-lg font-semibold text-gray-800 mb-3 block">Bill Details</span>
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-lg font-semibold text-gray-800">Bill Details</span>
+            <p-button label="Add Detail" icon="pi pi-plus" styleClass="p-button-sm p-button-outlined"
+              (click)="addDetailRow()"></p-button>
+          </div>
 
           <div formArrayName="details">
             <div *ngFor="let detail of details.controls; let i = index" [formGroupName]="i"
               class="grid grid-cols-12 gap-3 mb-2 items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
 
-              <!-- Fee Head Name (disabled) -->
-              <div class="col-span-4">
+              <!-- Fee Head Name -->
+              <div class="col-span-5">
                 <label class="block text-xs font-medium text-gray-500 mb-1">Fee Head</label>
-                <input type="text" pInputText formControlName="feeHeadName" class="w-full p-inputtext-sm" />
+                <p-dropdown formControlName="feeHeadId" [options]="feeHeads" optionLabel="name" optionValue="id"
+                  placeholder="Select Fee Head" appendTo="body" [filter]="true" filterBy="name"
+                  styleClass="w-full p-inputtext-sm"></p-dropdown>
               </div>
 
-              <!-- Amount (editable) -->
+              <!-- Amount -->
               <div class="col-span-4">
                 <label class="block text-xs font-medium text-gray-500 mb-1">Amount</label>
                 <p-inputNumber formControlName="amount" mode="decimal" [minFractionDigits]="2"
-                  class="p-inputtext-sm w-full" styleClass="w-full"></p-inputNumber>
+                  class="p-inputtext-sm w-full" styleClass="w-full" (onInput)="calculateTotal()"></p-inputNumber>
+              </div>
+
+              <!-- Actions -->
+              <div class="col-span-3 flex justify-end gap-1 mt-4">
+                <p-button *ngIf="!detail.get('isEditing')?.value" icon="pi pi-pencil"
+                  styleClass="p-button-text p-button-sm p-button-info" (click)="editDetailRow(i)"></p-button>
+                <p-button *ngIf="detail.get('isEditing')?.value" icon="pi pi-check"
+                  styleClass="p-button-text p-button-sm p-button-success" (click)="saveDetailRow(i)"></p-button>
+                <p-button icon="pi pi-trash" styleClass="p-button-text p-button-sm p-button-danger"
+                  (click)="removeDetailRow(i)"></p-button>
               </div>
             </div>
           </div>
@@ -69,8 +85,8 @@
       <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
         <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
           (click)="hideDialog()"></p-button>
-        <p-button label="Submit Bill" icon="pi pi-check" styleClass="p-button-primary"
-          [loading]="isSubmitting" (click)="submitBill()"></p-button>
+        <p-button label="Submit Bill" icon="pi pi-check" styleClass="p-button-primary" [loading]="isSubmitting"
+          (click)="submitBill()"></p-button>
       </div>
     </ng-template>
   </p-dialog>

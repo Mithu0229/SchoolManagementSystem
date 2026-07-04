@@ -17,7 +17,7 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();
-                query = query.Where(x => (x.Admission != null && x.Admission.RollNo.ToLower().Contains(search)) || x.BillMonth.ToString().Contains(search) || x.BillYear.ToString().Contains(search));
+                query = query.Where(x => (x.Admission != null && x.Admission.Student.StdCID.ToLower().Contains(search)) || x.BillMonth.ToString().Contains(search) || x.BillYear.ToString().Contains(search));
             }
             var totalRecord = await query.CountAsync(cancellationToken);
             query = query.OrderByDescending(x => x.CreatedDate);
@@ -28,7 +28,8 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
             {
                 Id = x.Id,
                 AdmissionId = x.AdmissionId,
-                //AdmissionRollNo = x.Admission != null ? x.Admission.RollNo : null,
+                StdCID = x.Admission.Student.StdCID,
+                AdmissionRollNo = x.Admission != null ? x.Admission.RollNo : null,
                 BillMonth = x.BillMonth,
                 BillYear = x.BillYear,
                 TotalAmount = x.TotalAmount,
