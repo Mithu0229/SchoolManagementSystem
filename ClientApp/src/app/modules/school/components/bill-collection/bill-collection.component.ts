@@ -239,6 +239,7 @@ export class BillCollectionComponent implements OnInit {
       id: formRaw.id,
       admissionId: formRaw.admissionId,
       billMonth: formRaw.billMonth,
+      stdCID: formRaw.stdCID,
       billYear: formRaw.billYear,
       totalAmount: formRaw.totalAmount,
       isActive: formRaw.isActive,

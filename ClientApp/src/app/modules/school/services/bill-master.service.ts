@@ -43,6 +43,7 @@ export interface BillMasterRequest {
   billMonth: number;
   billYear: number;
   totalAmount: number;
+  stdCID: string;
   isActive: boolean;
   details: BillDetailRequest[];
 }

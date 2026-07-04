@@ -3,6 +3,7 @@ namespace SchoolManagementSystem.Application.School.BillMasters.Models;
 public class BillMasterRequest
 {
     public Guid Id { get; set; }
+    public string? StdCID { get; set; }
     public Guid AdmissionId { get; set; }
     public int BillMonth { get; set; }
     public int BillYear { get; set; }
