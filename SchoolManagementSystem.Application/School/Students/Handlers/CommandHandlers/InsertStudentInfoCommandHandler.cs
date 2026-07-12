@@ -71,6 +71,7 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
                 }
             }
             studentInfo.StdCID = $"STD-{nextNumber:D7}";
+            studentInfo.UserId =
 
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();

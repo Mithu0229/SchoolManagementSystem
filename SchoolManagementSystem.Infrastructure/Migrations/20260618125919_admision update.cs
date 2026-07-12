@@ -100,52 +100,52 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
             //    principalColumn: "Id");
 
             // Clean up orphan records where StudentId doesn't exist in tb_sl_StudentInfo
-            migrationBuilder.Sql(@"
-                -- Delete FeeCollectionDetails that reference orphan FeeCollections
-                DELETE FROM tb_sch_FeeCollectionDetails
-                WHERE FeeCollectionId IN (
-                    SELECT Id FROM tb_sch_FeeCollections
-                    WHERE AdmissionId IN (
-                        SELECT Id FROM tb_sch_Admissions
-                        WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
-                    )
-                );
+            //migrationBuilder.Sql(@"
+            //    -- Delete FeeCollectionDetails that reference orphan FeeCollections
+            //    DELETE FROM tb_sch_FeeCollectionDetails
+            //    WHERE FeeCollectionId IN (
+            //        SELECT Id FROM tb_sch_FeeCollections
+            //        WHERE AdmissionId IN (
+            //            SELECT Id FROM tb_sch_Admissions
+            //            WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
+            //        )
+            //    );
 
-                -- Delete FeeCollections that reference orphan Admissions
-                DELETE FROM tb_sch_FeeCollections
-                WHERE AdmissionId IN (
-                    SELECT Id FROM tb_sch_Admissions
-                    WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
-                );
+            //    -- Delete FeeCollections that reference orphan Admissions
+            //    DELETE FROM tb_sch_FeeCollections
+            //    WHERE AdmissionId IN (
+            //        SELECT Id FROM tb_sch_Admissions
+            //        WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
+            //    );
 
-                -- Delete BillDetails that reference orphan BillMasters
-                DELETE FROM tb_sch_BillDetails
-                WHERE BillMasterId IN (
-                    SELECT Id FROM tb_sch_BillMasters
-                    WHERE AdmissionId IN (
-                        SELECT Id FROM tb_sch_Admissions
-                        WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
-                    )
-                );
+            //    -- Delete BillDetails that reference orphan BillMasters
+            //    DELETE FROM tb_sch_BillDetails
+            //    WHERE BillMasterId IN (
+            //        SELECT Id FROM tb_sch_BillMasters
+            //        WHERE AdmissionId IN (
+            //            SELECT Id FROM tb_sch_Admissions
+            //            WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
+            //        )
+            //    );
 
-                -- Delete BillMasters that reference orphan Admissions
-                DELETE FROM tb_sch_BillMasters
-                WHERE AdmissionId IN (
-                    SELECT Id FROM tb_sch_Admissions
-                    WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
-                );
+            //    -- Delete BillMasters that reference orphan Admissions
+            //    DELETE FROM tb_sch_BillMasters
+            //    WHERE AdmissionId IN (
+            //        SELECT Id FROM tb_sch_Admissions
+            //        WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
+            //    );
 
-                -- Delete StudentFeeLedgers that reference orphan Admissions
-                DELETE FROM tb_sch_StudentFeeLedgers
-                WHERE AdmissionId IN (
-                    SELECT Id FROM tb_sch_Admissions
-                    WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
-                );
+            //    -- Delete StudentFeeLedgers that reference orphan Admissions
+            //    DELETE FROM tb_sch_StudentFeeLedgers
+            //    WHERE AdmissionId IN (
+            //        SELECT Id FROM tb_sch_Admissions
+            //        WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo)
+            //    );
 
-                -- Finally delete orphan Admissions
-                DELETE FROM tb_sch_Admissions
-                WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo);
-            ");
+            //    -- Finally delete orphan Admissions
+            //    DELETE FROM tb_sch_Admissions
+            //    WHERE StudentId NOT IN (SELECT Id FROM tb_sl_StudentInfo);
+            //");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_tb_sch_Admissions_tb_sl_StudentInfo_StudentId",

@@ -36,6 +36,7 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<FeeCollectionDetail> FeeCollectionDetail { get; set; }
         public DbSet<BillMaster> BillMaster { get; set; }
         public DbSet<BillDetail> BillDetail { get; set; }
+        public DbSet<AttendanceDevice> AttendanceDevices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

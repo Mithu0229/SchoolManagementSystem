@@ -19,6 +19,7 @@ using SchoolManagementSystem.Application.School.Shifts.Repositories;
 using SchoolManagementSystem.Application.School.StudentFeeLedgers.Repositories;
 using SchoolManagementSystem.Application.School.Students.Repositories;
 using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
+using SchoolManagementSystem.Application.School.AttendanceDevices.Repositories;
 
 namespace SchoolManagementSystem.Application.Common;
 
@@ -50,6 +51,7 @@ public interface IUnitOfWork : IDisposable
     public IStudentFeeLedgerRepository StudentFeeLedgerRepository { get; }
     public IFeeCollectionRepository FeeCollectionRepository { get; }
     public IBillMasterRepository BillMasterRepository { get; }
+    public IAttendanceDeviceRepository AttendanceDeviceRepository { get; }
     #endregion
 
     #region Students

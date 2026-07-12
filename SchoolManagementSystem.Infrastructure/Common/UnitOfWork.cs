@@ -20,6 +20,7 @@ using SchoolManagementSystem.Application.School.Shifts.Repositories;
 using SchoolManagementSystem.Application.School.StudentFeeLedgers.Repositories;
 using SchoolManagementSystem.Application.School.Students.Repositories;
 using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
+using SchoolManagementSystem.Application.School.AttendanceDevices.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories.Schools;
 using SchoolManagementSystem.Infrastructure.Repositories.Students;
@@ -365,6 +366,20 @@ namespace SchoolManagementSystem.Infrastructure.Common
                 }
 
                 return _billMasterRepository;
+            }
+        }
+
+        public IAttendanceDeviceRepository _attendanceDeviceRepository;
+        public IAttendanceDeviceRepository AttendanceDeviceRepository
+        {
+            get
+            {
+                if (this._attendanceDeviceRepository == null)
+                {
+                    this._attendanceDeviceRepository = new AttendanceDeviceRepository(_context, _currentUserService);
+                }
+
+                return _attendanceDeviceRepository;
             }
         }
 
