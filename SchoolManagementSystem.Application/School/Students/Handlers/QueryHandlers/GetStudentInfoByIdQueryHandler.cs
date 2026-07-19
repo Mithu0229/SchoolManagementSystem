@@ -22,7 +22,7 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
             if (request.Id != Guid.Empty)
             {
                 var studentInfo = await _unitOfWork.StudentInfoRepository
-                    .GetAllNoneDeleted(false, true)
+                    .GetAllNoneDeleted()
                     .Include(x => x.GuardianInfo)
                     .Include(x => x.LocalGuardianInfo)
                     .FirstOrDefaultAsync(x => x.Id == request.Id);
@@ -31,10 +31,16 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                 {
                     return Result.Fail<StudentInfoResponse>(StatusCodes.Status404NotFound, "Student not found.");
                 }
+                var admission = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted()
+                    .Include(x => x.Section)
+                    .Include(x => x.Class)
+                    .Include(x => x.Shift)
+                    .FirstOrDefaultAsync(x => x.StudentId == request.Id);
 
                 var response = new StudentInfoResponse
                 {
                     Id = studentInfo.Id,
+                    StdCID = studentInfo.StdCID,
                     FullName = studentInfo.FullName,
                     Gender = studentInfo.Gender,
                     DateOfBirth = studentInfo.DateOfBirth,
@@ -59,7 +65,12 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                     MotherName = studentInfo.GuardianInfo?.MotherName,
                     Name = studentInfo.LocalGuardianInfo?.Name,
                     GuardianInfo = studentInfo.GuardianInfo.Adapt<GuardianInfoResponse>(),
-                    LocalGuardianInfo = studentInfo.LocalGuardianInfo.Adapt<LocalGuardianInfoResponse>()
+                    LocalGuardianInfo = studentInfo.LocalGuardianInfo.Adapt<LocalGuardianInfoResponse>(),
+                    ClassFor = admission?.Class.ClassName,
+                    Section = admission?.Section?.SectionName,
+                    Shift = admission?.Shift?.ShiftName,
+                    Email = studentInfo.StudentEmail,
+                    Mobile = studentInfo.StudentPhone
                 };
 
                 return Result.Success(response);

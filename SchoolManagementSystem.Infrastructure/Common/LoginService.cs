@@ -109,7 +109,8 @@ public class LoginService : ILoginService
                 index = "/home/index",
                 userLoginInfo,
                 roles = userRoles,
-                userType = user.UserType
+                userType = user.UserType,
+                StudentId = user.StudentId
             };
         }
         catch (Exception ex)

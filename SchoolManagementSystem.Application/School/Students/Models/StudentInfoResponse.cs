@@ -5,6 +5,7 @@ namespace SchoolManagementSystem.Application.School.Students.Models;
 public class StudentInfoResponse
 {
     public Guid Id { get; set; }
+    public string StdCID { get; set; }
     public string? FullName { get; set; }
     public int Gender { get; set; }
     public DateTime DateOfBirth { get; set; }
@@ -29,6 +30,11 @@ public class StudentInfoResponse
     public string? FatherName { get; set; }
     public string? MotherName { get; set; }
     public string? Name { get; set; }
+    public string? ClassFor { get; set; }
+    public string? Section { get; set; }
+    public string? Shift { get; set; }
+    public string? MobileNo { get; set; }
+    public string? Email { get; set; }
 
     public GuardianInfoResponse? GuardianInfo { get; set; }
     public LocalGuardianInfoResponse? LocalGuardianInfo { get; set; }

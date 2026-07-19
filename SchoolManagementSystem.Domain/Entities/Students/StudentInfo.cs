@@ -4,7 +4,6 @@ public class StudentInfo : TenantEntity
 {
     public  string? FullName { get; set; }
     public  string StdCID { get; set; }
-    public  Guid UserId { get; set; }
     public  int Gender { get; set; }
     public  DateTime DateOfBirth { get; set; }
     public  string PlaceOfBirth { get; set; }

@@ -16,17 +16,36 @@
                 <button class="download-link" type="button">Profile Download</button>
             </div>
 
-            <div class="profile-info">
+            <div class="profile-info" *ngIf="!isEditing">
                 <h4>{{ student.name }}</h4>
                 <p *ngFor="let field of profileFields">
                     <span>{{ field.label }} :</span>
                     <strong>{{ field.value }}</strong>
                 </p>
             </div>
+
+            <form [formGroup]="studentForm" *ngIf="isEditing" class="profile-info edit-form" (ngSubmit)="saveProfile()">
+                <div style="margin-bottom: 8px;">
+                    <label style="display:inline-block; width: 120px;">Name :</label>
+                    <input type="text" formControlName="studentName"
+                        style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
+                </div>
+                <div *ngFor="let field of profileFields" style="margin-bottom: 8px;">
+                    <label style="display:inline-block; width: 120px;">{{ field.label }} :</label>
+                    <input *ngIf="field.key" type="text" [formControlName]="field.key"
+                        style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
+                    <strong *ngIf="!field.key">{{ field.value }}</strong>
+                </div>
+            </form>
         </div>
 
         <footer class="panel-footer">
-            <button class="action-btn" type="button">Edit</button>
+            <button *ngIf="!isEditing" class="action-btn" type="button" (click)="toggleEdit()">Edit</button>
+            <div *ngIf="isEditing" style="display: flex; gap: 10px;">
+                <button class="action-btn" type="button" (click)="saveProfile()">Save</button>
+                <button class="action-btn" style="background-color: #6c757d;" type="button"
+                    (click)="cancelEdit()">Cancel</button>
+            </div>
         </footer>
     </article>
 

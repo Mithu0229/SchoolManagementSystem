@@ -88,7 +88,9 @@ export class UserLoginComponent {
             } else if (res.data?.userType == 2) {
               this.router.navigateByUrl('/admin');
             } else if (res.data?.userType == 4) {
-              this.router.navigateByUrl('/student');
+              this.router.navigate(['/student'], {
+                queryParams: { studentId: res.data?.studentId },
+              });
             } else {
               this.router.navigateByUrl('');
             }
