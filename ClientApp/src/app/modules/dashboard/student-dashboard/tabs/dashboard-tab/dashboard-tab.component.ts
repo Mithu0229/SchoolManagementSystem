@@ -8,6 +8,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { StudentService } from '../../../../../core/services/student.service';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { BillMasterService } from '../../../../school/services/bill-master.service';
 
 interface StudentProfileField {
   label: string;
@@ -22,6 +26,7 @@ interface FeesDueRow {
 }
 
 interface PaidFeeRow {
+  id: string;
   date: string;
   amount: string;
   slip: string;
@@ -30,7 +35,8 @@ interface PaidFeeRow {
 @Component({
   selector: 'app-student-dashboard-tab-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule],
+  providers: [MessageService],
   templateUrl: './dashboard-tab.component.html',
   styleUrl: './dashboard-tab.component.scss',
 })
@@ -38,6 +44,11 @@ export class DashboardTabComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private studentService = inject(StudentService);
   private fb = inject(FormBuilder);
+  private billMasterService = inject(BillMasterService);
+  private messageService = inject(MessageService);
+
+  reportDialog: boolean = false;
+  currentReceipt: any = null;
 
   avatarMissing = false;
   studentId: string | null = null;
@@ -66,11 +77,7 @@ export class DashboardTabComponent implements OnInit {
 
   feeRows: FeesDueRow[] = [];
 
-  readonly paidFees: PaidFeeRow[] = [
-    { date: '28/Jan/26', amount: '11090', slip: 'Print' },
-    { date: '03/Jan/26', amount: '11190', slip: 'Print' },
-    { date: '09/Nov/25', amount: '11090', slip: 'Print' },
-  ];
+  paidFees: PaidFeeRow[] = [];
 
   readonly classTeacher = {
     name: 'Ms. Rokhsana Titlee',
@@ -84,6 +91,7 @@ export class DashboardTabComponent implements OnInit {
       if (this.studentId) {
         this.loadStudentData();
         this.loadFeesDue();
+        this.loadPaidFees();
       }
     });
   }
@@ -138,6 +146,60 @@ export class DashboardTabComponent implements OnInit {
       },
       error: (err) => console.error('Error fetching fees due data:', err),
     });
+  }
+
+  loadPaidFees(): void {
+    if (!this.studentId) return;
+
+    this.studentService.getPaidFeesByStudent(this.studentId, false).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.paidFees = res.data;
+        }
+      },
+      error: (err) => console.error('Error fetching paid fees data:', err),
+    });
+  }
+
+  viewReport(row: PaidFeeRow): void {
+    if (!row.id) return;
+    this.billMasterService.getMoneyReceipt(row.id).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.currentReceipt = res.data;
+          this.reportDialog = true;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load receipt',
+          });
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load receipt',
+        });
+      },
+    });
+  }
+
+  hideReportDialog(): void {
+    this.reportDialog = false;
+    this.currentReceipt = null;
+  }
+
+  printReport(): void {
+    const printContent = document.getElementById('print-section');
+    if (printContent) {
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload(); // Reload to restore angular state after replacing body
+    }
   }
 
   updateProfileFields(data: any): void {

@@ -56,4 +56,10 @@ export class StudentService {
       `BillMaster/get-fees-due-by-student/${studentId}/${month}/${year}`
     );
   }
+
+  getPaidFeesByStudent(studentId: string, isActive: boolean): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `BillMaster/get-paid-fees-by-student/${studentId}/${isActive}`
+    );
+  }
 }
