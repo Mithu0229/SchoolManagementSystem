@@ -33,4 +33,8 @@ public class BillMasterController : ProtectedBaseController
     [HttpGet("get-bill-master-dropdown")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
     public async Task<IResult> GetBillMasterDropdown() => await Mediator.Send(new GetBillMasterDropdownQuery());
+
+    [HttpGet("get-fees-due-by-student/{studentId}/{month}/{year}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<FeesDueResponse>))]
+    public async Task<IResult> GetFeesDueByStudentId(Guid studentId, int month, int year) => await Mediator.Send(new GetFeesDueByStudentIdQuery(studentId, month, year));
 }

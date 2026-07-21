@@ -64,9 +64,7 @@ export class DashboardTabComponent implements OnInit {
     // { label: 'Telephone', value: '-', key: 'telephone' },
   ];
 
-  readonly feeRows: FeesDueRow[] = [
-    { installment: 'March', date: '-', amount: '11,190.00/-' },
-  ];
+  feeRows: FeesDueRow[] = [];
 
   readonly paidFees: PaidFeeRow[] = [
     { date: '28/Jan/26', amount: '11090', slip: 'Print' },
@@ -85,6 +83,7 @@ export class DashboardTabComponent implements OnInit {
       this.studentId = params['studentId'];
       if (this.studentId) {
         this.loadStudentData();
+        this.loadFeesDue();
       }
     });
   }
@@ -122,6 +121,22 @@ export class DashboardTabComponent implements OnInit {
         }
       },
       error: (err) => console.error('Error fetching student data:', err),
+    });
+  }
+
+  loadFeesDue(): void {
+    if (!this.studentId) return;
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    this.studentService.getFeesDueByStudent(this.studentId, currentMonth, currentYear).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.feeRows = res.data;
+        }
+      },
+      error: (err) => console.error('Error fetching fees due data:', err),
     });
   }
 

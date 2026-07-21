@@ -74,9 +74,9 @@
                         <td>{{ row.date }}</td>
                         <td class="amount-cell">Tk {{ row.amount }}</td>
                     </tr>
-                    <tr class="total-row">
+                    <tr class="total-row" *ngFor="let row of feeRows">
                         <td colspan="2">Total</td>
-                        <td class="amount-cell">Tk 11,190.00/-</td>
+                        <td class="amount-cell">Tk {{ row.amount }}</td>
                     </tr>
                 </tbody>
             </table>

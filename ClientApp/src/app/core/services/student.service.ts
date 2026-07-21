@@ -50,4 +50,10 @@ export class StudentService {
       payload,
     );
   }
+
+  getFeesDueByStudent(studentId: string, month: number, year: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `BillMaster/get-fees-due-by-student/${studentId}/${month}/${year}`
+    );
+  }
 }
