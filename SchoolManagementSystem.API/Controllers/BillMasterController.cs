@@ -26,6 +26,10 @@ public class BillMasterController : ProtectedBaseController
     [HttpDelete("delete-bill-master/{id}")]
     public async Task<IResult> DeleteBillMaster(Guid id) => await Mediator.Send(new DeleteBillMasterCommand(id));
 
+    [HttpGet("get-money-receipt/{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MoneyReceiptResponse))]
+    public async Task<IResult> GetMoneyReceipt(Guid id) => await Mediator.Send(new GetMoneyReceiptQuery(id));
+
     [HttpGet("get-bill-master-dropdown")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
     public async Task<IResult> GetBillMasterDropdown() => await Mediator.Send(new GetBillMasterDropdownQuery());

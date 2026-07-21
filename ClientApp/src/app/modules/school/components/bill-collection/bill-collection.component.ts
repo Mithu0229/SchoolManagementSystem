@@ -51,9 +51,11 @@ export class BillCollectionComponent implements OnInit {
   @ViewChild(TableComponent) tableComponent!: TableComponent;
 
   billDialog: boolean = false;
+  reportDialog: boolean = false;
   billForm!: FormGroup;
   isSubmitting: boolean = false;
   currentBill: BillMasterResponse | null = null;
+  currentReceipt: any = null;
   feeHeads: any[] = [];
 
   columns: TableColumn[] = [];
@@ -108,6 +110,12 @@ export class BillCollectionComponent implements OnInit {
           label: 'Edit',
           icon: 'pi pi-pencil',
           callback: (row) => this.editBill(row),
+          visible: () => true,
+        },
+        {
+          label: 'View Report',
+          icon: 'pi pi-print',
+          callback: (row) => this.viewReport(row),
           visible: () => true,
         },
       ],
@@ -227,6 +235,46 @@ export class BillCollectionComponent implements OnInit {
   hideDialog() {
     this.billDialog = false;
     this.currentBill = null;
+  }
+
+  viewReport(bill: BillMasterResponse) {
+    this.billMasterService.getMoneyReceipt(bill.id).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.currentReceipt = res.data;
+          this.reportDialog = true;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load receipt',
+          });
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load receipt',
+        });
+      },
+    });
+  }
+
+  hideReportDialog() {
+    this.reportDialog = false;
+    this.currentReceipt = null;
+  }
+
+  printReport() {
+    const printContent = document.getElementById('print-section');
+    if (printContent) {
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload(); // Reload to restore angular state after replacing body
+    }
   }
 
   submitBill() {

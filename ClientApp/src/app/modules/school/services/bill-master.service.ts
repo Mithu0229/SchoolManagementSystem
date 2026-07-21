@@ -90,4 +90,10 @@ export class BillMasterService {
       billMaster,
     );
   }
+
+  getMoneyReceipt(id: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.apiUrl}/get-money-receipt/${id}`,
+    );
+  }
 }

@@ -70,7 +70,7 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                     Section = admission?.Section?.SectionName,
                     Shift = admission?.Shift?.ShiftName,
                     Email = studentInfo.StudentEmail,
-                    Mobile = studentInfo.StudentPhone
+                    MobileNo = studentInfo.StudentPhone
                 };
 
                 return Result.Success(response);
