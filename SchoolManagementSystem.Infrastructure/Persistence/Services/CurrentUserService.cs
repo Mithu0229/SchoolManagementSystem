@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using SchoolManagementSystem.Application.Common;
 using System.Security.Claims;
 using System.Text.Json;
 
 namespace SchoolManagementSystem.Infrastructure.Persistence.Services;
+
 public class CurrentUserService : ICurrentUserService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -85,4 +87,36 @@ public class CurrentUserService : ICurrentUserService
         public string RoleName { get; set; } = string.Empty;
     }
 
+}
+
+public class SmsService : ISmsService
+{
+    private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
+
+    public SmsService(HttpClient httpClient, IConfiguration configuration)
+    {
+        _configuration = configuration;
+        _httpClient = httpClient;
+    }
+
+    public async Task<bool> SendSmsAsync(string mobile, string message)
+    {
+
+        var smsPayload = new
+        {
+            apikey = _configuration["SmsSettings:ApiKey"],
+            secretkey = _configuration["SmsSettings:SecretKey"],
+            callerID = _configuration["SmsSettings:CallerID"],
+            toUser = "8801755948794",
+            messageContent = message
+        };
+
+        using var httpClient = new System.Net.Http.HttpClient();
+        var content = new System.Net.Http.StringContent(System.Text.Json.JsonSerializer.Serialize(smsPayload), System.Text.Encoding.UTF8, "application/json");
+        // Note: Ensure the endpoint path (e.g. /api/v1/send or /smsapi) matches what Songbird Telecom expects
+        var response = await httpClient.PostAsync("http://sms.songbirdtelecom.com:8746/sendtext", content);
+
+        return response.IsSuccessStatusCode;
+    }
 }

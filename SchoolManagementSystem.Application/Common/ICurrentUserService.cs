@@ -8,3 +8,8 @@ public interface ICurrentUserService
     Guid? RoleId { get; }
     string? IpAddress { get; }
 }
+
+public interface ISmsService
+{
+    Task<bool> SendSmsAsync(string mobile, string message);
+}

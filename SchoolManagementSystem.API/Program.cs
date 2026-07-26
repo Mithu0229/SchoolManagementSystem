@@ -5,8 +5,10 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SchoolManagementSystem.Application.GS.Divisions.Commands;
+using SchoolManagementSystem.Infrastructure.Common;
 using SchoolManagementSystem.Infrastructure.DependencyContainers;
 using SchoolManagementSystem.Infrastructure.Persistence;
+using SchoolManagementSystem.Infrastructure.Persistence.Services;
 using System.Reflection;
 using System.Text;
 
@@ -19,6 +21,16 @@ builder.Services.AddEndpointsApiExplorer();
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//{
+//    options.UseSqlServer(
+//        builder.Configuration.GetConnectionString("DefaultConnection"));//AttendanceConnection
+//});
+
+builder.Services.AddHostedService<AttendanceSmsBackgroundService>();
+
+builder.Services.AddHttpClient<ISmsService, SmsService>();
 
 // Configure CORS
 builder.Services.AddCors(options =>

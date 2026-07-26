@@ -1,11 +1,15 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SchoolManagementSystem.Application.Common;
 using System.Collections;
 using System.Data;
 using System.Net.Sockets;
 using System.Text.Json;
+
 
 namespace SchoolManagementSystem.Infrastructure.Common;
 public class DapperCommandQuery : IDapperCommandQuery
@@ -328,4 +332,92 @@ public class DapperCommandQuery : IDapperCommandQuery
 
 
 
+}
+
+
+
+public class AttendanceSmsBackgroundService : BackgroundService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<AttendanceSmsBackgroundService> _logger;
+
+    public AttendanceSmsBackgroundService(
+        IServiceScopeFactory scopeFactory,
+        ILogger<AttendanceSmsBackgroundService> logger)
+    {
+        _scopeFactory = scopeFactory;
+        _logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("Attendance SMS Service Started");
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                using var scope = _scopeFactory.CreateScope();
+
+                var appdb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var thddb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();//AttendanceDbContext
+
+                var smsService = scope.ServiceProvider.GetRequiredService<ISmsService>();
+
+                //var transactions = await thddb.IclockTransactions
+                //    .Where(x => x.IsMask==0)//IsSmsSent
+                //    .OrderBy(x => x.Id)
+                //    .Take(100)
+                //    .ToListAsync(stoppingToken);
+
+                var transactions = await thddb.Shift
+                    .Where(x => x.IsActive)//IsSmsSent
+                    .OrderBy(x => x.Id)
+                    .Take(100)
+                    .ToListAsync(stoppingToken);
+
+                foreach (var tran in transactions)
+                {
+                    try
+                    {
+                        //var student = await appdb.StudentInfo
+                        //    .FirstOrDefaultAsync(x => x.FullName == tran.ShiftName);
+
+                        //if (student == null)
+                        //    continue;
+
+                        //var message =
+                        //    $"Dear Parent,\n\n" +
+                        //    $"{student.FullName} entered school successfully.\n" +
+                        //    $"Time : {tran.ShiftName:dd-MMM-yyyy hh:mm tt}";
+
+                        ////bool sent = await smsService.SendSmsAsync(
+                        //    "018",
+                        //    "test message from backendservice");
+
+                        //if (sent)
+                        //{
+                        //    //tran.IsSmsSent = true;
+                        //    //tran.SmsSentDate = DateTime.Now;
+
+                        //    //_logger.LogInformation(
+                        //    //    $"SMS sent to {student.StudentPhone}");
+                        //}
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "SMS Send Error");
+                    }
+                }
+
+                await thddb.SaveChangesAsync(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Background Service Error");
+            }
+
+            await Task.Delay(3000, stoppingToken);
+        }
+    }
 }

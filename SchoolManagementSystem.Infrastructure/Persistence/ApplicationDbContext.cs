@@ -58,4 +58,14 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         //    }
         //}
     }
+
+    public class AttendanceDbContext : DbContext
+    {
+        public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<IclockTransaction> IclockTransactions { get; set; }
+    }
 }
