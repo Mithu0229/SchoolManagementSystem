@@ -13,6 +13,7 @@ export interface Admission {
   sectionId?: string;
   shiftId?: string;
   groupId?: string;
+  teacherId?: string;
   rollNo: string;
   isPassed: boolean;
   isCancelled: boolean;

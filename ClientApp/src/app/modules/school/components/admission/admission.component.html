@@ -86,6 +86,13 @@
               optionValue="id" placeholder="Select Group" [showClear]="true"></p-dropdown>
           </div>
 
+          <!-- Teacher -->
+          <div class="field">
+            <label for="teacherId" class="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
+            <p-dropdown id="teacherId" [options]="teachers" formControlName="teacherId" optionLabel="name"
+              optionValue="id" placeholder="Select Teacher" [showClear]="true"></p-dropdown>
+          </div>
+
           <!-- Admission Date -->
           <div class="field">
             <label for="admissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date <span

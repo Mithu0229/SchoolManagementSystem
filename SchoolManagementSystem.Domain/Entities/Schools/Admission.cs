@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Domain.Entities.Students;
+using SchoolManagementSystem.Domain.Entities.Students;
 
 namespace SchoolManagementSystem.Domain.Entities;
 
@@ -25,4 +25,6 @@ public class Admission : AuditableEntity
     public Shift? Shift { get; set; }
     public StudentGroup? Group { get; set; }
     public AcademicSession AcademicSession { get; set; }
+    public Guid? TeacherId { get; set; }
+    public Teacher? Teacher { get; set; }
 }

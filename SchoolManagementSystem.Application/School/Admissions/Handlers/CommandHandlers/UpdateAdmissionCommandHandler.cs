@@ -28,6 +28,7 @@ public class UpdateAdmissionCommandHandler : IHttpRequestHandler<UpdateAdmission
             entity.SectionId = request.Admission.SectionId;
             entity.ShiftId = request.Admission.ShiftId;
             entity.GroupId = request.Admission.GroupId;
+            entity.TeacherId = request.Admission.TeacherId;
             entity.RollNo = request.Admission.RollNo;
             entity.IsPassed = request.Admission.IsPassed;
             entity.IsCancelled = request.Admission.IsCancelled;

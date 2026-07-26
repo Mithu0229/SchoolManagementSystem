@@ -34,6 +34,8 @@ public class StudentInfoResponse
     public string? Section { get; set; }
     public string? Shift { get; set; }
     public string? MobileNo { get; set; }
+    public string? TeacherName { get; set; }
+    public string? TeacherContact { get; set; }
     public string? Email { get; set; }
 
     public GuardianInfoResponse? GuardianInfo { get; set; }

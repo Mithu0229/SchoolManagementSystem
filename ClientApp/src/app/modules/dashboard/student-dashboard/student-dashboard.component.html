@@ -4,8 +4,11 @@
 
     <header class="student-topbar">
         <div class="status-links">
-            <button *ngFor="let link of topLinks" class="status-link" type="button">
-                {{ link }}
+            <button class="status-link" type="button">
+                {{ studentName }}
+            </button>
+            <button class="status-link" type="button" (click)="logout()">
+                Logout
             </button>
         </div>
     </header>

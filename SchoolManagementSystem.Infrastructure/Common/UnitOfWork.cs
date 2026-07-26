@@ -24,6 +24,8 @@ using SchoolManagementSystem.Application.School.AttendanceDevices.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories.Schools;
 using SchoolManagementSystem.Infrastructure.Repositories.Students;
+using SchoolManagementSystem.Application.School.Teachers.Repositories;
+using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
 
 namespace SchoolManagementSystem.Infrastructure.Common
 {
@@ -380,6 +382,32 @@ namespace SchoolManagementSystem.Infrastructure.Common
                 }
 
                 return _attendanceDeviceRepository;
+            }
+        }
+
+        public ITeacherRepository _teacherRepository;
+        public ITeacherRepository TeacherRepository
+        {
+            get
+            {
+                if (this._teacherRepository == null)
+                {
+                    this._teacherRepository = new TeacherRepository(_context, _currentUserService);
+                }
+                return _teacherRepository;
+            }
+        }
+
+        public ISMSHistoryRepository _smsHistoryRepository;
+        public ISMSHistoryRepository SMSHistoryRepository
+        {
+            get
+            {
+                if (this._smsHistoryRepository == null)
+                {
+                    this._smsHistoryRepository = new SMSHistoryRepository(_context, _currentUserService);
+                }
+                return _smsHistoryRepository;
             }
         }
 

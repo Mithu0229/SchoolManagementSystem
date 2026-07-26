@@ -40,6 +40,8 @@ public class GetAdmissionListQueryHandler : IHttpRequestHandler<GetAdmissionList
                 ShiftName = x.Shift == null ? null : x.Shift.ShiftName,
                 GroupId = x.GroupId,
                 GroupName = x.Group == null ? null : x.Group.GroupName,
+                TeacherId = x.TeacherId,
+                TeacherName = x.Teacher == null ? null : x.Teacher.Name,
                 RollNo = x.RollNo,
                 IsPassed = x.IsPassed,
                 IsCancelled = x.IsCancelled,

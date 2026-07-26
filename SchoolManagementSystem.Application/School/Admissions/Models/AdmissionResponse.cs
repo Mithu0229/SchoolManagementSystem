@@ -18,6 +18,8 @@ public class AdmissionResponse
     public string? ShiftName { get; set; }
     public Guid? GroupId { get; set; }
     public string? GroupName { get; set; }
+    public Guid? TeacherId { get; set; }
+    public string? TeacherName { get; set; }
     public string RollNo { get; set; }
     public string? StdCID { get; set; }
     public decimal MonthlyFeeAmount { get; set; }

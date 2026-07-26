@@ -30,6 +30,7 @@ import { AcademicClassService } from '../../services/academic-class.service';
 import { SectionService } from '../../services/section.service';
 import { ShiftService } from '../../services/shift.service';
 import { StudentGroupService } from '../../services/student-group.service';
+import { TeacherService } from '../../services/teacher.service';
 
 @Component({
   selector: 'app-admission',
@@ -70,6 +71,7 @@ export class AdmissionComponent implements OnInit {
   sections: any[] = [];
   shifts: any[] = [];
   studentGroups: any[] = [];
+  teachers: any[] = [];
 
   // Student search by StdCID
   searchStdCID: string = '';
@@ -87,6 +89,7 @@ export class AdmissionComponent implements OnInit {
   private sectionService = inject(SectionService);
   private shiftService = inject(ShiftService);
   private studentGroupService = inject(StudentGroupService);
+  private teacherService = inject(TeacherService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
@@ -101,6 +104,7 @@ export class AdmissionComponent implements OnInit {
       sectionId: [EMPTY_GUID],
       shiftId: [EMPTY_GUID],
       groupId: [EMPTY_GUID],
+      teacherId: [EMPTY_GUID],
       rollNo: ['', Validators.required],
       monthlyFeeAmount: [0, Validators.required],
       isPassed: [false],
@@ -134,6 +138,9 @@ export class AdmissionComponent implements OnInit {
     this.studentGroupService
       .getStudentGroupDropdown()
       .subscribe((res) => (this.studentGroups = res.data || []));
+    this.teacherService
+      .getTeacherDropdown()
+      .subscribe((res) => (this.teachers = res.data || []));
   }
 
   initializeColumns(): void {
@@ -205,6 +212,7 @@ export class AdmissionComponent implements OnInit {
       sectionId: EMPTY_GUID,
       shiftId: EMPTY_GUID,
       groupId: EMPTY_GUID,
+      teacherId: EMPTY_GUID,
       isPassed: false,
       isCancelled: false,
       isActive: true,

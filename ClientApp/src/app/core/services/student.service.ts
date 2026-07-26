@@ -62,4 +62,10 @@ export class StudentService {
       `BillMaster/get-paid-fees-by-student/${studentId}/${isActive}`
     );
   }
+
+  getSmsHistoryByStudent(studentId: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `Student/get-sms-history/${studentId}`
+    );
+  }
 }

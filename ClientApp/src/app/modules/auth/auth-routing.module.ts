@@ -31,12 +31,12 @@ const routes: Routes = [
   {
     path: 'member',
     component: MemberDashboardComponent,
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: 'student',
     component: StudentDashboardComponent,
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
 ];
 

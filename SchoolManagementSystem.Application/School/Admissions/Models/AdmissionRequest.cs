@@ -11,6 +11,7 @@ public class AdmissionRequest
     public Guid? SectionId { get; set; }
     public Guid? ShiftId { get; set; }
     public Guid? GroupId { get; set; }
+    public Guid? TeacherId { get; set; }
     public string RollNo { get; set; }
     public decimal MonthlyFeeAmount { get; set; }
     public bool IsPassed { get; set; }

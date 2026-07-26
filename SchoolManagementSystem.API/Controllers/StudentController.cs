@@ -1,6 +1,7 @@
 using SchoolManagementSystem.Application.School.SchoolStudents.Commands;
 using SchoolManagementSystem.Application.School.SchoolStudents.Models;
 using SchoolManagementSystem.Application.School.SchoolStudents.Queries;
+using SchoolManagementSystem.Application.School.SMSHistories.Queries;
 using StudentDropdownQuery = SchoolManagementSystem.Application.School.Students.Queries.GetStudentDropdownQuery;
 
 namespace SchoolManagementSystem.API.Controllers;
@@ -28,4 +29,8 @@ public class StudentController : ProtectedBaseController
 
     [HttpGet("get-student-dropdown")]
     public async Task<IResult> GetStudentDropdown() => await Mediator.Send(new StudentDropdownQuery());
+
+    [HttpGet("get-sms-history/{studentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SMSHistoryResponse>))]
+    public async Task<IResult> GetSMSHistory(Guid studentId) => await Mediator.Send(new GetSMSHistoryByStudentIdQuery { StudentId = studentId });
 }

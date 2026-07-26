@@ -1,131 +1,130 @@
 <section class="content-grid">
-    <article class="panel profile-panel">
-        <header class="panel-header">
-            <h3>My Profile</h3>
-        </header>
+  <article class="panel profile-panel">
+    <header class="panel-header">
+      <h3>My Profile</h3>
+    </header>
 
-        <div class="panel-body profile-body">
-            <div class="profile-identity">
-                <div class="avatar-box">
-                    <img *ngIf="!avatarMissing" src="/student.jpeg" alt="Student photo"
-                        (error)="avatarMissing = true" />
-                    <div *ngIf="avatarMissing" class="avatar-fallback">
-                        {{ student.initials }}
-                    </div>
-                </div>
-                <button class="download-link" type="button">Profile Download</button>
-            </div>
-
-            <div class="profile-info" *ngIf="!isEditing">
-                <h4>{{ student.name }}</h4>
-                <p *ngFor="let field of profileFields">
-                    <span>{{ field.label }} :</span>
-                    <strong>{{ field.value }}</strong>
-                </p>
-            </div>
-
-            <form [formGroup]="studentForm" *ngIf="isEditing" class="profile-info edit-form" (ngSubmit)="saveProfile()">
-                <div style="margin-bottom: 8px;">
-                    <label style="display:inline-block; width: 120px;">Name :</label>
-                    <input type="text" formControlName="studentName"
-                        style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
-                </div>
-                <div *ngFor="let field of profileFields" style="margin-bottom: 8px;">
-                    <label style="display:inline-block; width: 120px;">{{ field.label }} :</label>
-                    <input *ngIf="field.key" type="text" [formControlName]="field.key"
-                        style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
-                    <strong *ngIf="!field.key">{{ field.value }}</strong>
-                </div>
-            </form>
+    <div class="panel-body profile-body">
+      <div class="profile-identity">
+        <div class="avatar-box">
+          <img *ngIf="!avatarMissing" src="/student.jpeg" alt="Student photo" (error)="avatarMissing = true" />
+          <div *ngIf="avatarMissing" class="avatar-fallback">
+            {{ student.initials }}
+          </div>
         </div>
+        <button class="download-link" type="button">Profile Download</button>
+      </div>
 
-        <footer class="panel-footer">
-            <button *ngIf="!isEditing" class="action-btn" type="button" (click)="toggleEdit()">Edit</button>
-            <div *ngIf="isEditing" style="display: flex; gap: 10px;">
-                <button class="action-btn" type="button" (click)="saveProfile()">Save</button>
-                <button class="action-btn" style="background-color: #6c757d;" type="button"
-                    (click)="cancelEdit()">Cancel</button>
-            </div>
-        </footer>
-    </article>
+      <div class="profile-info" *ngIf="!isEditing">
+        <h4>{{ student.name }}</h4>
+        <p *ngFor="let field of profileFields">
+          <span>{{ field.label }} :</span>
+          <strong>{{ field.value }}</strong>
+        </p>
+      </div>
 
-    <article class="panel fees-panel">
-        <header class="panel-header">
-            <h3>Fees Dues</h3>
-        </header>
-
-        <div class="panel-body">
-            <label class="visually-hidden" for="fee-session">Session</label>
-            <select id="fee-session" class="session-select">
-                <option>Current</option>
-            </select>
-
-            <table class="fees-table">
-                <thead>
-                    <tr>
-                        <th>Installment</th>
-                        <th>Date</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let row of feeRows">
-                        <td>{{ row.installment }}</td>
-                        <td>{{ row.date }}</td>
-                        <td class="amount-cell">Tk {{ row.amount }}</td>
-                    </tr>
-                    <tr class="total-row" *ngFor="let row of feeRows">
-                        <td colspan="2">Total</td>
-                        <td class="amount-cell">Tk {{ row.amount }}</td>
-                    </tr>
-                </tbody>
-            </table>
+      <form [formGroup]="studentForm" *ngIf="isEditing" class="profile-info edit-form" (ngSubmit)="saveProfile()">
+        <div style="margin-bottom: 8px;">
+          <label style="display:inline-block; width: 120px;">Name :</label>
+          <input type="text" formControlName="studentName"
+            style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
         </div>
-
-        <footer class="panel-footer">
-            <button class="action-btn" type="button">Pay Now</button>
-        </footer>
-    </article>
-
-    <div class="side-panels">
-        <article class="panel info-panel">
-            <header class="panel-header">
-                <h3>Class Teacher</h3>
-            </header>
-
-            <div class="panel-body teacher-details">
-                <h4>{{ classTeacher.name }}</h4>
-                <p>{{ classTeacher.phone }}</p>
-            </div>
-        </article>
-
-        <article class="panel info-panel">
-            <header class="panel-header">
-                <h3>Last Paid Fees</h3>
-            </header>
-
-            <div class="panel-body">
-                <table class="fees-table compact-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Paid Slip</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let row of paidFees">
-                            <td>{{ row.date }}</td>
-                            <td>{{ row.amount }}</td>
-                            <td>
-                                <button class="print-btn" type="button" (click)="viewReport(row)">{{ row.slip }}</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </article>
+        <div *ngFor="let field of profileFields" style="margin-bottom: 8px;">
+          <label style="display:inline-block; width: 120px;">{{ field.label }} :</label>
+          <input *ngIf="field.key" type="text" [formControlName]="field.key"
+            style="padding: 4px; border-radius: 4px; border: 1px solid #ccc; width: calc(100% - 130px);" />
+          <strong *ngIf="!field.key">{{ field.value }}</strong>
+        </div>
+      </form>
     </div>
+
+    <footer class="panel-footer">
+      <button *ngIf="!isEditing" class="action-btn" type="button" (click)="toggleEdit()">Edit</button>
+      <div *ngIf="isEditing" style="display: flex; gap: 10px;">
+        <button class="action-btn" type="button" (click)="saveProfile()">Save</button>
+        <button class="action-btn" style="background-color: #6c757d;" type="button"
+          (click)="cancelEdit()">Cancel</button>
+      </div>
+    </footer>
+  </article>
+
+  <article class="panel fees-panel">
+    <header class="panel-header">
+      <h3>Fees Dues</h3>
+    </header>
+
+    <div class="panel-body">
+      <label class="visually-hidden" for="fee-session">Session</label>
+      <select id="fee-session" class="session-select">
+        <option>Current</option>
+      </select>
+
+      <table class="fees-table">
+        <thead>
+          <tr>
+            <th>Installment</th>
+            <th>Date</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of feeRows">
+            <td>{{ row.installment }}</td>
+            <td>{{ row.date }}</td>
+            <td class="amount-cell">Tk {{ row.amount }}</td>
+          </tr>
+          <tr class="total-row" *ngFor="let row of feeRows">
+            <td colspan="2">Total</td>
+            <td class="amount-cell">Tk {{ row.amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="panel-footer">
+      <button class="action-btn" type="button">Pay Now</button>
+    </footer>
+  </article>
+
+  <div class="side-panels">
+    <article class="panel info-panel">
+      <header class="panel-header">
+        <h3>Class Teacher</h3>
+      </header>
+
+      <div class="panel-body teacher-details">
+        <h4>{{ classTeacher.name }}</h4>
+        <p>{{ classTeacher.phone }}</p>
+      </div>
+    </article>
+
+    <article class="panel info-panel">
+      <header class="panel-header">
+        <h3>Last Paid Fees</h3>
+      </header>
+
+      <div class="panel-body">
+        <table class="fees-table compact-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Paid Slip</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of paidFees">
+              <td>{{ row.date }}</td>
+              <td>{{ row.amount }}</td>
+              <td>
+                <button class="print-btn" type="button" (click)="viewReport(row)">{{ row.slip }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
 </section>
 
 <!-- View Report Dialog -->
@@ -370,4 +369,4 @@
         (click)="printReport()"></p-button>
     </div>
   </ng-template>
-</p-dialog>
+</p-dialog>

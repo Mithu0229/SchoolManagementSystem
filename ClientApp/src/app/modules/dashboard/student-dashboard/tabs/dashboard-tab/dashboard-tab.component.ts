@@ -126,6 +126,9 @@ export class DashboardTabComponent implements OnInit {
 
           this.studentForm.patchValue(this.studentData);
           this.updateProfileFields(this.studentData);
+          debugger;
+          this.classTeacher.name = res.data.teacherName;
+          this.classTeacher.phone = res.data.teacherContact;
         }
       },
       error: (err) => console.error('Error fetching student data:', err),
@@ -138,14 +141,16 @@ export class DashboardTabComponent implements OnInit {
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
 
-    this.studentService.getFeesDueByStudent(this.studentId, currentMonth, currentYear).subscribe({
-      next: (res) => {
-        if (res.isSuccess && res.data) {
-          this.feeRows = res.data;
-        }
-      },
-      error: (err) => console.error('Error fetching fees due data:', err),
-    });
+    this.studentService
+      .getFeesDueByStudent(this.studentId, currentMonth, currentYear)
+      .subscribe({
+        next: (res) => {
+          if (res.isSuccess && res.data) {
+            this.feeRows = res.data;
+          }
+        },
+        error: (err) => console.error('Error fetching fees due data:', err),
+      });
   }
 
   loadPaidFees(): void {

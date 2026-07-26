@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Domain.Entities.Students;
+using SchoolManagementSystem.Domain.Entities.Schools;
 using SchoolManagementSystem.Infrastructure.Persistence.Configurations;
 using System.Reflection;
 
@@ -37,6 +38,8 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<BillMaster> BillMaster { get; set; }
         public DbSet<BillDetail> BillDetail { get; set; }
         public DbSet<AttendanceDevice> AttendanceDevices { get; set; }
+        public DbSet<Teacher> Teacher { get; set; }
+        public DbSet<SMSHistory> SMSHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,13 +62,13 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         //}
     }
 
-    public class AttendanceDbContext : DbContext
-    {
-        public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
-            : base(options)
-        {
-        }
+    //public class AttendanceDbContext : DbContext
+    //{
+    //    public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
+    //        : base(options)
+    //    {
+    //    }
 
-        public DbSet<IclockTransaction> IclockTransactions { get; set; }
-    }
+    //    public DbSet<IclockTransaction> IclockTransactions { get; set; }
+    //}
 }

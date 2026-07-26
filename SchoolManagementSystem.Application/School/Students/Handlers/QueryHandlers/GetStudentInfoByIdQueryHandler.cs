@@ -35,6 +35,7 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                     .Include(x => x.Section)
                     .Include(x => x.Class)
                     .Include(x => x.Shift)
+                    .Include(x=>x.Teacher)
                     .FirstOrDefaultAsync(x => x.StudentId == request.Id);
 
                 var response = new StudentInfoResponse
@@ -70,7 +71,11 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                     Section = admission?.Section?.SectionName,
                     Shift = admission?.Shift?.ShiftName,
                     Email = studentInfo.StudentEmail,
-                    MobileNo = studentInfo.StudentPhone
+                    MobileNo = studentInfo.StudentPhone,
+                    TeacherName = admission!.Teacher!.Name,
+                    TeacherContact = admission!.Teacher!.ContactNumber
+
+
                 };
 
                 return Result.Success(response);
