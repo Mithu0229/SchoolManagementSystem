@@ -62,13 +62,20 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         //}
     }
 
-    //public class AttendanceDbContext : DbContext
-    //{
-    //    public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
-    //        : base(options)
-    //    {
-    //    }
+    public class AttendanceDbContext : DbContext
+    {
+        public AttendanceDbContext(DbContextOptions<AttendanceDbContext> options)
+            : base(options)
+        {
+        }
 
-    //    public DbSet<IclockTransaction> IclockTransactions { get; set; }
-    //}
+        public DbSet<IclockTransaction> IclockTransactions { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<IclockTransaction>()
+                .ToTable("iclock_transaction");
+
+            base.OnModelCreating(modelBuilder);
+        }
+    }
 }

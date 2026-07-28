@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolManagementSystem.Domain.Entities;
@@ -113,4 +114,7 @@ public class IclockTransaction
     [Column("company_code")]
     [MaxLength(50)]
     public string? CompanyCode { get; set; }
+
+    [DefaultValue(false)]
+    public bool IsSent { get; set; }
 }

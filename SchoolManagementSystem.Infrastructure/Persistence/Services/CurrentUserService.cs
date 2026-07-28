@@ -108,7 +108,7 @@ public class SmsService : ISmsService
             apikey = _configuration["SmsSettings:ApiKey"],
             secretkey = _configuration["SmsSettings:SecretKey"],
             callerID = _configuration["SmsSettings:CallerID"],
-            toUser = "8801755948794",
+            toUser = mobile,
             messageContent = message
         };
 

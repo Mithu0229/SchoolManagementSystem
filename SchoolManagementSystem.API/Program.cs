@@ -22,11 +22,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//{
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("DefaultConnection"));//AttendanceConnection
-//});
+builder.Services.AddDbContext<AttendanceDbContext>(options =>
+{
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("AttendanceConnection"));//AttendanceConnection
+});
 
 builder.Services.AddHostedService<AttendanceSmsBackgroundService>();
 

@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SchoolManagementSystem.Application.Common;
+using SchoolManagementSystem.Domain.Entities.Schools;
 using System.Collections;
 using System.Data;
 using System.Net.Sockets;
@@ -360,49 +361,55 @@ public class AttendanceSmsBackgroundService : BackgroundService
                 using var scope = _scopeFactory.CreateScope();
 
                 var appdb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var thddb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();//AttendanceDbContext
+                var thddb = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
 
                 var smsService = scope.ServiceProvider.GetRequiredService<ISmsService>();
 
-                //var transactions = await thddb.IclockTransactions
-                //    .Where(x => x.IsMask==0)//IsSmsSent
-                //    .OrderBy(x => x.Id)
-                //    .Take(100)
-                //    .ToListAsync(stoppingToken);
-
-                var transactions = await thddb.Shift
-                    .Where(x => x.IsActive)//IsSmsSent
+                var transactions = await thddb.IclockTransactions
+                    .Where(x => !x.IsSent)
                     .OrderBy(x => x.Id)
                     .Take(100)
                     .ToListAsync(stoppingToken);
+
 
                 foreach (var tran in transactions)
                 {
                     try
                     {
-                        //var student = await appdb.StudentInfo
-                        //    .FirstOrDefaultAsync(x => x.FullName == tran.ShiftName);
+                        var student = await appdb.StudentInfo
+     .FirstOrDefaultAsync(x => x.StdCID == tran.EmpCode, stoppingToken);
 
-                        //if (student == null)
-                        //    continue;
+                        if (student == null)
+                            continue;
 
-                        //var message =
-                        //    $"Dear Parent,\n\n" +
-                        //    $"{student.FullName} entered school successfully.\n" +
-                        //    $"Time : {tran.ShiftName:dd-MMM-yyyy hh:mm tt}";
+                        var message =
+                            $"Dear Parent,\n\n" +
+                            $"{student.FullName} entered school successfully.\n" +
+                            $"Time : {tran.UploadTime:dd-MMM-yyyy hh:mm tt}";
 
-                        ////bool sent = await smsService.SendSmsAsync(
-                        //    "018",
-                        //    "test message from backendservice");
+                        bool sent = await smsService.SendSmsAsync(
+                        student.StudentPhone!,
+                           message);
 
-                        //if (sent)
-                        //{
-                        //    //tran.IsSmsSent = true;
-                        //    //tran.SmsSentDate = DateTime.Now;
+                        if (sent)
+                        {
+                            tran.IsSent = true;
 
-                        //    //_logger.LogInformation(
-                        //    //    $"SMS sent to {student.StudentPhone}");
-                        //}
+                            var smsHistory = new SMSHistory
+                            {
+                                Id = Guid.NewGuid(),
+                                SMSType = "Attendance",
+                                Message = message,
+                                Phone = student.StudentPhone!,
+                                StudentId = student.Id,
+                                IsActive = true
+
+                            };
+                            await appdb.SMSHistories.AddAsync(smsHistory, stoppingToken);
+                            await appdb.SaveChangesAsync(stoppingToken);
+                            //_logger.LogInformation(
+                            //    $"SMS sent to {student.StudentPhone}");
+                        }
                     }
                     catch (Exception ex)
                     {
