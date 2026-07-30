@@ -26,6 +26,7 @@ using SchoolManagementSystem.Infrastructure.Repositories.Schools;
 using SchoolManagementSystem.Infrastructure.Repositories.Students;
 using SchoolManagementSystem.Application.School.Teachers.Repositories;
 using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
+using SchoolManagementSystem.Application.School.BkashTransactions.Repositories;
 
 namespace SchoolManagementSystem.Infrastructure.Common
 {
@@ -411,6 +412,18 @@ namespace SchoolManagementSystem.Infrastructure.Common
             }
         }
 
+        public IBkashTransactionRepository _bkashTransactionRepository;
+        public IBkashTransactionRepository BkashTransactionRepository
+        {
+            get
+            {
+                if (this._bkashTransactionRepository == null)
+                {
+                    this._bkashTransactionRepository = new BkashTransactionRepository(_context, _currentUserService);
+                }
+                return _bkashTransactionRepository;
+            }
+        }
         #endregion
 
         #region Students

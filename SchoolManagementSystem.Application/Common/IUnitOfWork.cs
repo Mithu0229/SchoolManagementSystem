@@ -22,6 +22,7 @@ using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
 using SchoolManagementSystem.Application.School.AttendanceDevices.Repositories;
 using SchoolManagementSystem.Application.School.Teachers.Repositories;
 using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
+using SchoolManagementSystem.Application.School.BkashTransactions.Repositories;
 
 namespace SchoolManagementSystem.Application.Common;
 
@@ -56,6 +57,7 @@ public interface IUnitOfWork : IDisposable
     public IAttendanceDeviceRepository AttendanceDeviceRepository { get; }
     public ITeacherRepository TeacherRepository { get; }
     public ISMSHistoryRepository SMSHistoryRepository { get; }
+    public IBkashTransactionRepository BkashTransactionRepository { get; }
     #endregion
 
     #region Students
