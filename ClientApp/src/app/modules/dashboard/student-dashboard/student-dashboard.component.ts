@@ -75,6 +75,8 @@ export class StudentDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
+    debugger
+    console.log(currentUser?.userLoginInfo?.userName);
     this.studentName = currentUser?.userLoginInfo?.userName;
   }
 

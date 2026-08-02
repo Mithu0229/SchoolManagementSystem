@@ -37,6 +37,41 @@
             <p-inputNumber formControlName="totalAmount" mode="decimal" [minFractionDigits]="2"
               styleClass="w-full"></p-inputNumber>
           </div>
+
+          <!-- Transaction Type -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Transaction Type</label>
+            <p-dropdown formControlName="transactionType" [options]="transactionTypes" optionLabel="label" optionValue="value"
+              styleClass="w-full p-inputtext-sm"></p-dropdown>
+          </div>
+
+          <!-- Voucher No -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Voucher No</label>
+            <input type="text" pInputText formControlName="voucherNo" class="w-full" />
+          </div>
+
+          <!-- Particulars -->
+          <div class="field">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Particulars</label>
+            <input type="text" pInputText formControlName="particulars" class="w-full" />
+          </div>
+
+          <!-- Bank Fields (Only for Bank/Bkash) -->
+          <ng-container *ngIf="billForm.get('transactionType')?.value !== 1">
+            <div class="field">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name / Provider</label>
+              <input type="text" pInputText formControlName="bankName" class="w-full" />
+            </div>
+            <div class="field">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Account No</label>
+              <input type="text" pInputText formControlName="accountNo" class="w-full" />
+            </div>
+            <div class="field">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Transaction No</label>
+              <input type="text" pInputText formControlName="transactionNo" class="w-full" />
+            </div>
+          </ng-container>
         </div>
 
         <!-- Bill Details Section -->

@@ -41,6 +41,8 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<SMSHistory> SMSHistories { get; set; }
         public DbSet<BkashTransaction> BkashTransactions { get; set; }
+        public DbSet<CashBook> CashBooks { get; set; }
+        public DbSet<BankBook> BankBooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

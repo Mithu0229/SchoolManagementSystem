@@ -1,3 +1,5 @@
+using SchoolManagementSystem.Domain.Enums;
+
 namespace SchoolManagementSystem.Application.School.BillMasters.Models;
 
 public class BillMasterRequest
@@ -9,6 +11,12 @@ public class BillMasterRequest
     public int BillYear { get; set; }
     public decimal TotalAmount { get; set; }
     public bool IsActive { get; set; }
+    public TransactionType TransactionType { get; set; }
+    public string? BankName { get; set; }
+    public string? AccountNo { get; set; }
+    public string? TransactionNo { get; set; }
+    public string? VoucherNo { get; set; }
+    public string? Particulars { get; set; }
     public IList<BillDetailRequest> Details { get; set; } = new List<BillDetailRequest>();
 }
 

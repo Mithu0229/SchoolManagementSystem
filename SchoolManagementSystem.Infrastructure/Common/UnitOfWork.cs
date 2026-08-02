@@ -27,6 +27,8 @@ using SchoolManagementSystem.Infrastructure.Repositories.Students;
 using SchoolManagementSystem.Application.School.Teachers.Repositories;
 using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
 using SchoolManagementSystem.Application.School.BkashTransactions.Repositories;
+using SchoolManagementSystem.Application.School.CashBooks.Repositories;
+using SchoolManagementSystem.Application.School.BankBooks.Repositories;
 
 namespace SchoolManagementSystem.Infrastructure.Common
 {
@@ -422,6 +424,32 @@ namespace SchoolManagementSystem.Infrastructure.Common
                     this._bkashTransactionRepository = new BkashTransactionRepository(_context, _currentUserService);
                 }
                 return _bkashTransactionRepository;
+            }
+        }
+
+        public ICashBookRepository _cashBookRepository;
+        public ICashBookRepository CashBookRepository
+        {
+            get
+            {
+                if (this._cashBookRepository == null)
+                {
+                    this._cashBookRepository = new CashBookRepository(_context, _currentUserService);
+                }
+                return _cashBookRepository;
+            }
+        }
+
+        public IBankBookRepository _bankBookRepository;
+        public IBankBookRepository BankBookRepository
+        {
+            get
+            {
+                if (this._bankBookRepository == null)
+                {
+                    this._bankBookRepository = new BankBookRepository(_context, _currentUserService);
+                }
+                return _bankBookRepository;
             }
         }
         #endregion

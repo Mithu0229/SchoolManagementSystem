@@ -1,3 +1,5 @@
+using SchoolManagementSystem.Domain.Enums;
+
 namespace SchoolManagementSystem.Domain.Entities;
 
 public class BillMaster : AuditableEntity
@@ -8,6 +10,8 @@ public class BillMaster : AuditableEntity
     public int BillYear { get; set; }
 
     public decimal TotalAmount { get; set; }
+
+    public TransactionType TransactionType { get; set; }
 
     public Admission Admission { get; set; }
 

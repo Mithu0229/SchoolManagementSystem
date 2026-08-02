@@ -57,6 +57,11 @@ export class BillCollectionComponent implements OnInit {
   currentBill: BillMasterResponse | null = null;
   currentReceipt: any = null;
   feeHeads: any[] = [];
+  transactionTypes = [
+    { label: 'Cash', value: 1 },
+    { label: 'Bank', value: 2 },
+    { label: 'Bkash', value: 3 }
+  ];
 
   columns: TableColumn[] = [];
   tableConfig!: TableConfig;
@@ -168,6 +173,12 @@ export class BillCollectionComponent implements OnInit {
       billYear: [{ value: bill.billYear, disabled: true }],
       totalAmount: [bill.totalAmount],
       isActive: [{ value: bill.isActive, disabled: true }],
+      transactionType: [1],
+      bankName: [''],
+      accountNo: [''],
+      transactionNo: [''],
+      voucherNo: [''],
+      particulars: [''],
       details: this.fb.array(
         bill.details.map((d) =>
           this.fb.group({
@@ -291,6 +302,12 @@ export class BillCollectionComponent implements OnInit {
       billYear: formRaw.billYear,
       totalAmount: formRaw.totalAmount,
       isActive: formRaw.isActive,
+      transactionType: formRaw.transactionType,
+      bankName: formRaw.bankName,
+      accountNo: formRaw.accountNo,
+      transactionNo: formRaw.transactionNo,
+      voucherNo: formRaw.voucherNo,
+      particulars: formRaw.particulars,
       details: formRaw.details.map(
         (d: any): BillDetailRequest => ({
           id: d.id,

@@ -45,6 +45,12 @@ export interface BillMasterRequest {
   totalAmount: number;
   stdCID: string;
   isActive: boolean;
+  transactionType: number;
+  bankName?: string;
+  accountNo?: string;
+  transactionNo?: string;
+  voucherNo?: string;
+  particulars?: string;
   details: BillDetailRequest[];
 }
 
