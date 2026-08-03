@@ -9,143 +9,206 @@
   </div>
 
   <!-- Dialog Section -->
-  <p-dialog [(visible)]="admissionDialog" [style]="{width: '600px'}"
-    [header]="isEditMode ? 'Edit Admission' : 'Add New Admission'" [modal]="true"
-    styleClass="p-fluid rounded-xl overflow-hidden shadow-2xl">
-    <ng-template pTemplate="content">
-      <form [formGroup]="admissionForm" class="py-4">
+  <p-dialog [(visible)]="admissionDialog" [style]="{width: '750px'}"
+    [header]="isEditMode ? 'Edit Admission Profile' : 'New Student Admission'" [modal]="true"
+    styleClass="p-fluid rounded-2xl overflow-hidden shadow-2xl border-0" contentStyleClass="bg-gray-50/50 p-6">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <!-- Student Search by StdCID -->
-          <div class="field md:col-span-2">
-            <label for="stdCID" class="block text-sm font-medium text-gray-700 mb-1">Student <span
+    <ng-template pTemplate="content">
+      <form [formGroup]="admissionForm" class="py-2 space-y-6">
+
+        <!-- Section 1: Student Search/Info -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+          <div class="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100">
+            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+              <i class="pi pi-user text-sm"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Student Verification</h3>
+          </div>
+
+          <div class="field">
+            <label for="stdCID" class="block text-sm font-semibold text-gray-700 mb-2">Search Student ID <span
                 class="text-red-500">*</span></label>
-            <div class="flex gap-2">
-              <input type="text" pInputText id="stdCID" [(ngModel)]="searchStdCID" [ngModelOptions]="{standalone: true}"
-                placeholder="Enter Student ID (e.g. STD-0000001)"
-                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['studentId'].value === emptyGuid}"
-                class="flex-1" (keydown.enter)="searchStudent()" />
-              <p-button icon="pi pi-search" styleClass="p-button-primary" (click)="searchStudent()"
+            <div class="flex gap-3">
+              <span class="p-input-icon-left flex-1">
+                <input type="text" pInputText id="stdCID" [(ngModel)]="searchStdCID"
+                  [ngModelOptions]="{standalone: true}" placeholder="e.g. STD-0000001"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['studentId'].value === emptyGuid}"
+                  class="w-full p-inputtext-lg" (keydown.enter)="searchStudent()" />
+              </span>
+              <p-button icon="pi pi-search" label="Verify" styleClass="p-button-primary" (click)="searchStudent()"
                 [loading]="isSearching"></p-button>
             </div>
-            <div *ngIf="foundStudent" class="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2">
-              <i class="pi pi-check-circle text-green-600"></i>
-              <span class="text-sm text-green-800 font-medium">{{ foundStudent.fullName }} ({{ searchStdCID }})</span>
-            </div>
-            <div *ngIf="studentSearchError" class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
-              <i class="pi pi-times-circle text-red-600"></i>
-              <span class="text-sm text-red-700">{{ studentSearchError }}</span>
-            </div>
-          </div>
 
-          <!-- Branch -->
-          <div class="field">
-            <label for="branchId" class="block text-sm font-medium text-gray-700 mb-1">Branch <span
-                class="text-red-500">*</span></label>
-            <p-dropdown id="branchId" [options]="branches" formControlName="branchId" optionLabel="name"
-              optionValue="id" placeholder="Select Branch"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['branchId'].invalid}"></p-dropdown>
-          </div>
-
-          <!-- Academic Session -->
-          <div class="field">
-            <label for="academicSessionId" class="block text-sm font-medium text-gray-700 mb-1">Academic Session <span
-                class="text-red-500">*</span></label>
-            <p-dropdown id="academicSessionId" [options]="academicSessions" formControlName="academicSessionId"
-              optionLabel="name" optionValue="id" placeholder="Select Session"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['academicSessionId'].invalid}"></p-dropdown>
-          </div>
-
-          <!-- Class -->
-          <div class="field">
-            <label for="classId" class="block text-sm font-medium text-gray-700 mb-1">Class <span
-                class="text-red-500">*</span></label>
-            <p-dropdown id="classId" [options]="academicClasses" formControlName="classId" optionLabel="name"
-              optionValue="id" placeholder="Select Class"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['classId'].invalid}"></p-dropdown>
-          </div>
-
-          <!-- Section -->
-          <div class="field">
-            <label for="sectionId" class="block text-sm font-medium text-gray-700 mb-1">Section</label>
-            <p-dropdown id="sectionId" [options]="sections" formControlName="sectionId" optionLabel="name"
-              optionValue="id" placeholder="Select Section" [showClear]="true"></p-dropdown>
-          </div>
-
-          <!-- Shift -->
-          <div class="field">
-            <label for="shiftId" class="block text-sm font-medium text-gray-700 mb-1">Shift</label>
-            <p-dropdown id="shiftId" [options]="shifts" formControlName="shiftId" optionLabel="name" optionValue="id"
-              placeholder="Select Shift" [showClear]="true"></p-dropdown>
-          </div>
-
-          <!-- Group -->
-          <div class="field">
-            <label for="groupId" class="block text-sm font-medium text-gray-700 mb-1">Group</label>
-            <p-dropdown id="groupId" [options]="studentGroups" formControlName="groupId" optionLabel="name"
-              optionValue="id" placeholder="Select Group" [showClear]="true"></p-dropdown>
-          </div>
-
-          <!-- Teacher -->
-          <div class="field">
-            <label for="teacherId" class="block text-sm font-medium text-gray-700 mb-1">Teacher</label>
-            <p-dropdown id="teacherId" [options]="teachers" formControlName="teacherId" optionLabel="name"
-              optionValue="id" placeholder="Select Teacher" [showClear]="true"></p-dropdown>
-          </div>
-
-          <!-- Admission Date -->
-          <div class="field">
-            <label for="admissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date <span
-                class="text-red-500">*</span></label>
-            <p-calendar id="admissionDate" formControlName="admissionDate" appendTo="body" [showIcon]="true"
-              placeholder="Select Date"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['admissionDate'].invalid}"></p-calendar>
-          </div>
-
-          <!-- Roll No -->
-          <div class="field">
-            <label for="rollNo" class="block text-sm font-medium text-gray-700 mb-1">Roll No <span
-                class="text-red-500">*</span></label>
-            <input type="text" pInputText id="rollNo" formControlName="rollNo" placeholder="Roll No"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['rollNo'].invalid}" />
-          </div>
-
-          <div class="field">
-            <label for="monthlyFeeAmount" class="block text-sm font-medium text-gray-700 mb-1">Monthly Fee Amount <span
-                class="text-red-500">*</span></label>
-            <input type="number" pInputText id="monthlyFeeAmount" formControlName="monthlyFeeAmount"
-              placeholder="Monthly Fee Amount"
-              [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['monthlyFeeAmount'].invalid}" />
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <!-- Is Passed -->
-            <div class="field flex items-center mt-2">
-              <p-checkbox formControlName="isPassed" [binary]="true" inputId="isPassed"></p-checkbox>
-              <label for="isPassed" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Passed</label>
+            <!-- Success Card -->
+            <div *ngIf="foundStudent"
+              class="mt-4 p-4 bg-gradient-to-r from-green-50 to-green-100/50 border border-green-200 rounded-xl flex items-center gap-4 transition-all animate-fadein">
+              <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center shrink-0 shadow-sm">
+                <i class="pi pi-check text-white font-bold"></i>
+              </div>
+              <div>
+                <p class="text-sm text-green-900 font-bold text-lg">{{ foundStudent.fullName }}</p>
+                <p class="text-xs text-green-700 font-medium mt-0.5">Verified ID: {{ searchStdCID }}</p>
+              </div>
             </div>
 
-            <!-- Is Cancelled -->
-            <div class="field flex items-center mt-2">
-              <p-checkbox formControlName="isCancelled" [binary]="true" inputId="isCancelled"></p-checkbox>
-              <label for="isCancelled" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Cancelled</label>
-            </div>
-
-            <!-- Is Active -->
-            <div class="field flex items-center mt-2">
-              <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
-              <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active</label>
+            <!-- Error Card -->
+            <div *ngIf="studentSearchError"
+              class="mt-4 p-4 bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200 rounded-xl flex items-center gap-4 transition-all animate-fadein">
+              <div class="w-10 h-10 rounded-full bg-red-500 flex items-center justify-center shrink-0 shadow-sm">
+                <i class="pi pi-exclamation-triangle text-white font-bold"></i>
+              </div>
+              <div>
+                <span class="text-sm text-red-900 font-bold block">Verification Failed</span>
+                <span class="text-xs text-red-700 font-medium mt-0.5">{{ studentSearchError }}</span>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Section 2: Academic Assignment -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+          <div class="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100">
+            <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+              <i class="pi pi-book text-sm"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Academic Details</h3>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+            <!-- Branch -->
+            <div class="field flex flex-col">
+              <label for="branchId" class="block text-sm font-medium text-gray-700 mb-1">Branch <span
+                  class="text-red-500">*</span></label>
+              <p-dropdown id="branchId" [options]="branches" formControlName="branchId" optionLabel="name"
+                optionValue="id" placeholder="Select Branch" styleClass="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['branchId'].invalid}"></p-dropdown>
+            </div>
+
+            <!-- Academic Session -->
+            <div class="field flex flex-col">
+              <label for="academicSessionId" class="block text-sm font-medium text-gray-700 mb-1">Academic Session <span
+                  class="text-red-500">*</span></label>
+              <p-dropdown id="academicSessionId" [options]="academicSessions" formControlName="academicSessionId"
+                optionLabel="name" optionValue="id" placeholder="Select Session" styleClass="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['academicSessionId'].invalid}"></p-dropdown>
+            </div>
+
+            <!-- Class -->
+            <div class="field flex flex-col">
+              <label for="classId" class="block text-sm font-medium text-gray-700 mb-1">Class <span
+                  class="text-red-500">*</span></label>
+              <p-dropdown id="classId" [options]="academicClasses" formControlName="classId" optionLabel="name"
+                optionValue="id" placeholder="Select Class" styleClass="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['classId'].invalid}"></p-dropdown>
+            </div>
+
+            <!-- Section -->
+            <div class="field flex flex-col">
+              <label for="sectionId" class="block text-sm font-medium text-gray-700 mb-1">Section</label>
+              <p-dropdown id="sectionId" [options]="sections" formControlName="sectionId" optionLabel="name"
+                optionValue="id" placeholder="Select Section" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+
+            <!-- Shift -->
+            <div class="field flex flex-col">
+              <label for="shiftId" class="block text-sm font-medium text-gray-700 mb-1">Shift</label>
+              <p-dropdown id="shiftId" [options]="shifts" formControlName="shiftId" optionLabel="name" optionValue="id"
+                placeholder="Select Shift" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+
+            <!-- Group -->
+            <div class="field flex flex-col">
+              <label for="groupId" class="block text-sm font-medium text-gray-700 mb-1">Group</label>
+              <p-dropdown id="groupId" [options]="studentGroups" formControlName="groupId" optionLabel="name"
+                optionValue="id" placeholder="Select Group" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+
+            <!-- Teacher -->
+            <div class="field md:col-span-2 flex flex-col">
+              <label for="teacherId" class="block text-sm font-medium text-gray-700 mb-1">Assigned Teacher</label>
+              <p-dropdown id="teacherId" [options]="teachers" formControlName="teacherId" optionLabel="name"
+                optionValue="id" placeholder="Select Teacher" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Billing & Status -->
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+          <div class="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100">
+            <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+              <i class="pi pi-cog text-sm"></i>
+            </div>
+            <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Admission Settings</h3>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-5">
+            <!-- Admission Date -->
+            <div class="field flex flex-col">
+              <label for="admissionDate" class="block text-sm font-medium text-gray-700 mb-1">Admission Date <span
+                  class="text-red-500">*</span></label>
+              <p-calendar id="admissionDate" formControlName="admissionDate" appendTo="body" [showIcon]="true"
+                placeholder="Select Date" styleClass="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['admissionDate'].invalid}"></p-calendar>
+            </div>
+
+            <!-- Roll No -->
+            <div class="field flex flex-col">
+              <label for="rollNo" class="block text-sm font-medium text-gray-700 mb-1">Roll No <span
+                  class="text-red-500">*</span></label>
+              <input type="text" pInputText id="rollNo" formControlName="rollNo" placeholder="Enter Roll No"
+                class="w-full"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['rollNo'].invalid}" />
+            </div>
+
+            <!-- Monthly Fee Amount -->
+            <div class="field flex flex-col">
+              <label for="monthlyFeeAmount" class="block text-sm font-medium text-gray-700 mb-1">Monthly Fee Amount
+                <span class="text-red-500">*</span></label>
+              <div class="p-inputgroup w-full">
+                <input type="number" pInputText id="monthlyFeeAmount" formControlName="monthlyFeeAmount"
+                  placeholder="0.00" class="w-full"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && admissionForm.controls['monthlyFeeAmount'].invalid}" />
+              </div>
+            </div>
+
+            <!-- Status Toggles -->
+            <div
+              class="field md:col-span-3 flex flex-wrap gap-8 mt-2 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+              <!-- Is Passed -->
+              <div class="flex items-center gap-3">
+                <p-checkbox formControlName="isPassed" [binary]="true" inputId="isPassed"></p-checkbox>
+                <label for="isPassed" class="text-sm font-semibold text-gray-700 cursor-pointer select-none">Has
+                  Passed</label>
+              </div>
+
+              <!-- Is Cancelled -->
+              <div class="flex items-center gap-3">
+                <p-checkbox formControlName="isCancelled" [binary]="true" inputId="isCancelled"></p-checkbox>
+                <label for="isCancelled"
+                  class="text-sm font-semibold text-gray-700 cursor-pointer select-none">Cancelled</label>
+              </div>
+
+              <!-- Is Active -->
+              <div class="flex items-center gap-3">
+                <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+                <label for="isActive" class="text-sm font-semibold text-gray-700 cursor-pointer select-none">Active
+                  Admission</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </form>
     </ng-template>
 
     <ng-template pTemplate="footer">
-      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
-        <p-button label="Cancel" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+      <div class="flex justify-end gap-3 pt-4 pb-2">
+        <p-button label="Cancel" icon="pi pi-times"
+          styleClass="p-button-text text-gray-600 hover:bg-gray-100 !px-6 !py-2.5 !rounded-xl transition-colors font-medium"
           (click)="hideDialog()"></p-button>
-        <p-button label="Save" icon="pi pi-check" styleClass="p-button-primary" (click)="saveAdmission()"></p-button>
+        <p-button label="Save Admission" icon="pi pi-check"
+          styleClass="p-button-primary !px-6 !py-2.5 !rounded-xl shadow-md hover:shadow-lg transition-all font-semibold"
+          (click)="saveAdmission()"></p-button>
       </div>
     </ng-template>
   </p-dialog>
