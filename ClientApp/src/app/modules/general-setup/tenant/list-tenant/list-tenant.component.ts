@@ -43,7 +43,7 @@ export class TenantManagementComponent {
     private readonly route: Router,
     private readonly toastService: ToastService,
     private readonly tenantService: TenantService,
-    private readonly permissionService: PermissionService
+    private readonly permissionService: PermissionService,
   ) {}
 
   ngOnInit() {
@@ -62,7 +62,7 @@ export class TenantManagementComponent {
       createButtonLabel: 'Register New Tenant',
       createButtonPermission: this.permissionService.canAdd(
         'Tenant',
-        '/tenant'
+        '/tenant',
       ),
       hideSerial: true,
       customFilters: [
@@ -114,15 +114,15 @@ export class TenantManagementComponent {
               this.handleAction({ action: 'edit', rowData: row }),
             visible: () => this.permissionService.canEdit('Tenant', '/tenant'),
           },
-          {
-            label: 'Delete',
-            icon: 'pi pi-trash',
-            styleClass: 'p-button-danger',
-            callback: (row: any) =>
-              this.handleAction({ action: 'delete', rowData: row }),
-            visible: () =>
-              this.permissionService.canDelete('Tenant', '/tenant'),
-          },
+          // {
+          //   label: 'Delete',
+          //   icon: 'pi pi-trash',
+          //   styleClass: 'p-button-danger',
+          //   callback: (row: any) =>
+          //     this.handleAction({ action: 'delete', rowData: row }),
+          //   visible: () =>
+          //     this.permissionService.canDelete('Tenant', '/tenant'),
+          // },
         ],
       });
     }
@@ -176,7 +176,7 @@ export class TenantManagementComponent {
             `Tenant "${
               this.selectedTenant()?.tenantName
             }" has been deactivated successfully.`,
-            Severity.SUCCESS
+            Severity.SUCCESS,
           );
           this.showDialog.set(false);
           this.tableComponent.loadData(true);
@@ -186,14 +186,14 @@ export class TenantManagementComponent {
         } else {
           this.toastService.error(
             'Failed to deactivate tenant: ' + (response.errors?.[0] || ''),
-            Severity.ERROR
+            Severity.ERROR,
           );
         }
       },
       error: (error: any) => {
         this.toastService.error(
           'Failed to deactivate tenant. Please try again.',
-          Severity.ERROR
+          Severity.ERROR,
         );
         console.error('Delete tenant error:', error);
       },

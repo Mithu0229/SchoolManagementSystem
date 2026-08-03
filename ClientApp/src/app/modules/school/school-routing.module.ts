@@ -20,35 +20,102 @@ import { BillProcessComponent } from './components/bill-process/bill-process.com
 import { BillCollectionComponent } from './components/bill-collection/bill-collection.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
+import { authGuard } from '../../core/guards/auth.guard';
+import { permissionGuard } from '../../core/guards/permission.guard';
 
 const routes: Routes = [
   {
     path: '',
+    canActivate: [authGuard],
     component: AppLayout,
     children: [
-      { path: 'institute', component: InstituteComponent },
-      { path: 'branch', component: BranchComponent },
-      { path: 'financial-year', component: FinancialYearComponent },
-      { path: 'academic-session', component: AcademicSessionComponent },
-      { path: 'academic-class', component: AcademicClassComponent },
-      { path: 'section', component: SectionComponent },
-      { path: 'shift', component: ShiftComponent },
-      { path: 'student-group', component: StudentGroupComponent },
-      { path: 'fee-head', component: FeeHeadComponent },
-      { path: 'student-fee-ledger', component: StudentFeeLedgerComponent },
-      { path: 'student', component: StudentComponent },
-      { path: 'admission', component: AdmissionComponent },
-      { path: 'fee-template', component: FeeTemplateComponent },
-      { path: 'fee-collection', component: FeeCollectionComponent },
-      { path: 'bill-process', component: BillProcessComponent },
-      { path: 'bill-collection', component: BillCollectionComponent },
-      { path: '', redirectTo: 'institute', pathMatch: 'full' }
-    ]
-  }
+      {
+        path: 'institute',
+        component: InstituteComponent,
+        canActivate: [authGuard, permissionGuard('/institute')],
+      },
+      {
+        path: 'branch',
+        component: BranchComponent,
+        canActivate: [authGuard, permissionGuard('/branch')],
+      },
+      {
+        path: 'financial-year',
+        component: FinancialYearComponent,
+        canActivate: [authGuard, permissionGuard('/financial-year')],
+      },
+      {
+        path: 'academic-session',
+        component: AcademicSessionComponent,
+        canActivate: [authGuard, permissionGuard('/academic-session')],
+      },
+      {
+        path: 'academic-class',
+        component: AcademicClassComponent,
+        canActivate: [authGuard, permissionGuard('/academic-class')],
+      },
+      {
+        path: 'section',
+        component: SectionComponent,
+        canActivate: [authGuard, permissionGuard('/section')],
+      },
+      {
+        path: 'shift',
+        component: ShiftComponent,
+        canActivate: [authGuard, permissionGuard('/shift')],
+      },
+      {
+        path: 'student-group',
+        component: StudentGroupComponent,
+        canActivate: [authGuard, permissionGuard('/student-group')],
+      },
+      {
+        path: 'fee-head',
+        component: FeeHeadComponent,
+        canActivate: [authGuard, permissionGuard('/fee-head')],
+      },
+      {
+        path: 'student-fee-ledger',
+        component: StudentFeeLedgerComponent,
+        canActivate: [authGuard, permissionGuard('/student-fee-ledger')],
+      },
+      {
+        path: 'student',
+        component: StudentComponent,
+        canActivate: [authGuard, permissionGuard('/student')],
+      },
+      {
+        path: 'admission',
+        component: AdmissionComponent,
+        canActivate: [authGuard, permissionGuard('/admission')],
+      },
+      {
+        path: 'fee-template',
+        component: FeeTemplateComponent,
+        canActivate: [authGuard, permissionGuard('/fee-template')],
+      },
+      {
+        path: 'fee-collection',
+        component: FeeCollectionComponent,
+        canActivate: [authGuard, permissionGuard('/fee-collection')],
+      },
+      {
+        path: 'bill-process',
+        component: BillProcessComponent,
+        canActivate: [authGuard, permissionGuard('/bill-process')],
+      },
+      {
+        path: 'bill-collection',
+        component: BillCollectionComponent,
+        canActivate: [authGuard, permissionGuard('/bill-collection')],
+      },
+      { path: '', redirectTo: 'institute', pathMatch: 'full' },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class SchoolRoutingModule { }

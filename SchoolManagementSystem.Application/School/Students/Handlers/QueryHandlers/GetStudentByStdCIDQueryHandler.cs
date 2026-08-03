@@ -22,7 +22,7 @@ public class GetStudentByStdCIDQueryHandler : IHttpRequestHandler<GetStudentBySt
                 return Result.Fail<StudentByStdCIDResponse>(StatusCodes.Status400BadRequest, "StdCID is required.");
             }
 
-            var student = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted()
+            var student = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false,true)
                 .Where(x => x.StdCID == request.StdCID)
                 .Select(x => new StudentByStdCIDResponse
                 {

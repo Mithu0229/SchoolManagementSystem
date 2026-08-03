@@ -4,7 +4,7 @@ using SchoolManagementSystem.Application.School.AcademicClasses.Queries;
 
 namespace SchoolManagementSystem.API.Controllers;
 
-public class AcademicClassController : ProtectedBaseController
+public class AcademicClassController : PublicBaseController
 {
     [HttpPost("get-academic-class-list")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AcademicClassResponse))]

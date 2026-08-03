@@ -14,7 +14,7 @@ const routes: Routes = [
         path: '',
         loadComponent: () =>
           import('./list-tenant/list-tenant.component').then(
-            (m) => m.TenantManagementComponent
+            (m) => m.TenantManagementComponent,
           ),
         ////canActivate: [authGuard],
         data: {
@@ -26,7 +26,7 @@ const routes: Routes = [
         path: 'register',
         loadComponent: () =>
           import('./tenant-registration/tenant-registration.component').then(
-            (m) => m.TenantRegistrationComponent
+            (m) => m.TenantRegistrationComponent,
           ),
         ////canActivate: [authGuard, permissionGuard('/tenant')],
         data: {
@@ -37,36 +37,11 @@ const routes: Routes = [
           ],
         },
       },
-    ],
-  },
-  {
-    path: '',
-    component: AppLayout,
-    //canActivate: [authGuard],
-    children: [
-      {
-        path: 'edit',
-        loadComponent: () =>
-          import('./edit-tenant/edit-tenant.component').then(
-            (m) => m.EditTenantComponent
-          ),
-        //canActivate: [authGuard],
-        data: {
-          breadcrumb: 'Update Branch Profile',
-        },
-      },
-    ],
-  },
-  {
-    path: '',
-    component: AppLayout,
-    //canActivate: [authGuard],
-    children: [
       {
         path: 'edit/:id',
         loadComponent: () =>
           import('./edit-tenant/edit-tenant.component').then(
-            (m) => m.EditTenantComponent
+            (m) => m.EditTenantComponent,
           ),
         ////canActivate: [authGuard, permissionGuard('/tenant')],
         data: {

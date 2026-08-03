@@ -299,7 +299,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
 
       this.studentService.createStudent(formData).subscribe({
         next: (res) => {
-          this.router.navigateByUrl('/application');
+          this.router.navigateByUrl('/login');
           if (res.isSuccess) {
             this.toastService.success('Sitemap has been created successfully.');
             // this.resetForm();

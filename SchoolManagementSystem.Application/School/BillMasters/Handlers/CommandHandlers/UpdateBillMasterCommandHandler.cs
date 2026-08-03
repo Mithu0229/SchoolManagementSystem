@@ -136,7 +136,7 @@ public class UpdateBillMasterCommandHandler : IHttpRequestHandler<UpdateBillMast
                 var response = await httpClient.PostAsync("http://sms.songbirdtelecom.com:8746/sendtext", content);
 
 
-                var student = await _unitOfWork.StudentInfoRepository.GetSingleNoneDeletedAsync(x=>x.StdCID == request.BillMaster.StdCID);
+                var student = await _unitOfWork.StudentInfoRepository.GetSingleNoneDeletedAsync(x=>x.StdCID == request.BillMaster.StdCID,true);
                 // sms history
                 var smsHistory = new SMSHistory
                 {

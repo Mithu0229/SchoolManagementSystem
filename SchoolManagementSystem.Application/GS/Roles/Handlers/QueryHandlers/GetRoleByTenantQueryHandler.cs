@@ -34,7 +34,7 @@ public class GetRoleByTenantQueryHandler : IHttpRequestHandler<GetRoleByTenantQu
             //}
             //else
             //{
-                var result = await _unitOfWork.RoleRepository.GetAllNoneDeleted().Where(x => x.IsActive).Select(s => new
+                var result = await _unitOfWork.RoleRepository.GetAllNoneDeleted(false,true).Where(x => x.IsActive).Select(s => new
                 {
                     s.Id,
                     s.RoleName,

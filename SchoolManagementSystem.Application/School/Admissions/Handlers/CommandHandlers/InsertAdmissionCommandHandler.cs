@@ -15,11 +15,12 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
         {
             if (request is null) return Result.Fail<AdmissionResponse>(StatusCodes.Status406NotAcceptable);
             request.Admission.RollNo = request.Admission.RollNo.Trim();
-            var duplicate = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted()
+            var duplicate = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(false,true)
                 .Where(x => x.BranchId == request.Admission.BranchId && x.AcademicSessionId == request.Admission.AcademicSessionId && x.ClassId == request.Admission.ClassId && x.RollNo.ToLower() == request.Admission.RollNo.ToLower())
                 .FirstOrDefaultAsync(cancellationToken);
             if (duplicate is not null) return Result.Fail(StatusCodes.Status409Conflict, "Admission roll already exists!");
             var entity = request.Admission.Adapt<Admission>();
+            entity.Id = Guid.NewGuid(); 
             await _unitOfWork.AdmissionRepository.AddAsync(entity);
 
             if(request.Admission.MonthlyFeeAmount > 0)

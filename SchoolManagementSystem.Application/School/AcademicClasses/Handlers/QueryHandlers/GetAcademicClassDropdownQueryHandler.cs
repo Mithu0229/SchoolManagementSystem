@@ -15,7 +15,7 @@ public class GetAcademicClassDropdownQueryHandler : IHttpRequestHandler<GetAcade
     {
         try
         {
-            var items = await _unitOfWork.AcademicClassRepository.GetAllNoneDeleted(true)
+            var items = await _unitOfWork.AcademicClassRepository.GetAllNoneDeleted(false,true)
                 .Where(x => x.IsActive)
                 .Select(x => new DropdownModel { Id = x.Id, Name = x.ClassName })
                 .ToListAsync(cancellationToken);

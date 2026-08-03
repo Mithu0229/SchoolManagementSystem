@@ -109,7 +109,7 @@ public class UpdateUserCommandHandler : IHttpRequestHandler<UpdateUserCommand>
                 }
                 if (rolesToAdd.Any())
                 {
-                    var roles = await _unitOfWork.RoleRepository.GetAllNoneDeleted()
+                    var roles = await _unitOfWork.RoleRepository.GetAllNoneDeleted(false,true)
                         .Where(r => rolesToAdd.Contains(r.Id))
                         .ToListAsync();
 
