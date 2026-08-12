@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Models;
 using SchoolManagementSystem.Application.School.Students.Queries;
@@ -54,6 +55,20 @@ namespace SchoolManagementSystem.API.Controllers
         public async Task<IResult> GetStudentList([FromBody] PagedRequest request)
         {
             return await Mediator.Send(new GetStudentListQuery() { PagedRequest = request });//
+        }
+
+        [HttpPost("get-student-user-list")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<StudentUserResponse>))]
+        public async Task<IResult> GetStudentUserList([FromBody] PagedRequest request)
+        {
+            return await Mediator.Send(new GetStudentUserListQuery() { PagedRequest = request });
+        }
+
+        [HttpPut("update-student-user")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        public async Task<IResult> UpdateStudentUser([FromBody] UpdateStudentUserRequest request)
+        {
+            return await Mediator.Send(new UpdateStudentUserCommand() { Request = request });
         }
 
         [HttpPut("update-student")]

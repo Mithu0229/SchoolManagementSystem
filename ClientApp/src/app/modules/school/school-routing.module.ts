@@ -13,6 +13,7 @@ import { StudentGroupComponent } from './components/student-group/student-group.
 import { FeeHeadComponent } from './components/fee-head/fee-head.component';
 import { StudentFeeLedgerComponent } from './components/student-fee-ledger/student-fee-ledger.component';
 import { StudentComponent } from './components/student/student.component';
+import { StudentListComponent } from './components/student-list/student-list.component';
 import { AdmissionComponent } from './components/admission/admission.component';
 import { FeeTemplateComponent } from './components/fee-template/fee-template.component';
 import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
@@ -83,6 +84,11 @@ const routes: Routes = [
         path: 'student',
         component: StudentComponent,
         canActivate: [authGuard, permissionGuard('/student')],
+      },
+      {
+        path: 'student-list',
+        component: StudentListComponent,
+        canActivate: [authGuard, permissionGuard('/student-list')],
       },
       {
         path: 'admission',
