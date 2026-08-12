@@ -28,25 +28,10 @@ public class LoginService : ILoginService
     {
         try
         {
-            // --- Record login history ---
             var ua = _accessor.HttpContext.Request.Headers[HeaderNames.UserAgent];
             var uaParser = Parser.GetDefault();
             ClientInfo c = uaParser.Parse(ua);
-
-            //var loginHistory = new UsersLoginHistory
-            //{
-            //    Id = Guid.NewGuid(),
-            //    CreatedById = user.Id,
-            //    CreatedDate = DateTime.UtcNow,
-            //    IP = _accessor.HttpContext.Connection.RemoteIpAddress?.ToString(),
-            //    MAC = GetMacAddress(),
-            //    NetworkType = GetNetworkType(),
-            //    OperatingSystem = c.OS.ToString(),
-            //    TenantId = user.TenantId,
-            //};
-
-            //await _unitOfWork.UserLoginHistoryRepository.AddAsync(loginHistory);
-
+            
             user.IsActive = true;
             await _unitOfWork.UserRepository.UpdateAsync(user);
             //await _unitOfWork.CommitAsync();

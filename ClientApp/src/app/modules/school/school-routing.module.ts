@@ -19,6 +19,7 @@ import { FeeTemplateComponent } from './components/fee-template/fee-template.com
 import { FeeCollectionComponent } from './components/fee-collection/fee-collection.component';
 import { BillProcessComponent } from './components/bill-process/bill-process.component';
 import { BillCollectionComponent } from './components/bill-collection/bill-collection.component';
+import { PaidBillListComponent } from './components/paid-bill-list/paid-bill-list.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 import { authGuard } from '../../core/guards/auth.guard';
@@ -114,6 +115,11 @@ const routes: Routes = [
         path: 'bill-collection',
         component: BillCollectionComponent,
         canActivate: [authGuard, permissionGuard('/bill-collection')],
+      },
+      {
+        path: 'paid-bill-list',
+        component: PaidBillListComponent,
+        canActivate: [authGuard, permissionGuard('/paid-bill-list')],
       },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },
     ],

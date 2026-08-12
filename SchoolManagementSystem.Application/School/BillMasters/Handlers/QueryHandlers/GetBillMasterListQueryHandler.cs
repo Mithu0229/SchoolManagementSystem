@@ -13,7 +13,7 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
         try
         {
             var pagedRequest = request.PagedRequest ?? new PagedRequest();
-            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false,true);
+            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true).Where(x => !x.IsActive);
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();

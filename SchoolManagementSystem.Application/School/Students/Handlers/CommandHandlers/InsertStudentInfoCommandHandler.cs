@@ -57,20 +57,25 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
             studentInfo.Id = id;
 
             // Generate unique Student Custom ID (STD-0000001, STD-0000002, ...)
-            var lastStudent = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted()
-                .Where(x => x.StdCID != null && x.StdCID != "")
-                .OrderByDescending(x => x.StdCID)
-                .FirstOrDefaultAsync(cancellationToken);
+            //var lastStudent = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted()
+            //    .Where(x => x.StdCID != null && x.StdCID != "")
+            //    .OrderByDescending(x => x.StdCID)
+            //    .FirstOrDefaultAsync(cancellationToken);
 
-            int nextNumber = 1;
-            if (lastStudent != null && lastStudent.StdCID.StartsWith("STD-"))
+            //int nextNumber = 1;
+            //if (lastStudent != null && lastStudent.StdCID.StartsWith("STD-"))
+            //{
+            //    if (int.TryParse(lastStudent.StdCID.Substring(4), out int lastNumber))
+            //    {
+            //        nextNumber = lastNumber + 1;
+            //    }
+            //}
+            studentInfo.StdCID = DateTime.Now.ToString("yyyyMMddHHmmss");
+            var existingStudentId=await _unitOfWork.StudentInfoRepository.GetSingleAsync(x => x.StdCID == studentInfo.StdCID);
+            if(existingStudentId != null)
             {
-                if (int.TryParse(lastStudent.StdCID.Substring(4), out int lastNumber))
-                {
-                    nextNumber = lastNumber + 1;
-                }
+                studentInfo.StdCID = (Convert.ToInt64(studentInfo.StdCID) + 1).ToString();
             }
-            studentInfo.StdCID = $"STD-{nextNumber:D7}";
             studentInfo.IsActive = true;
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();

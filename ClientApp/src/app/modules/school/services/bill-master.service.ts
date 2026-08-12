@@ -61,6 +61,20 @@ export interface BillMasterList {
   pageSize: number;
 }
 
+export interface PaidBillResponse {
+  id: string;
+  admissionId: string;
+  studentName?: string;
+  stdCID?: string;
+  transactionType?: string;
+  billMonth: number;
+  monthName?: string;
+  billYear: number;
+  totalAmount: number;
+  isActive: boolean;
+  createdDate: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -79,6 +93,13 @@ export class BillMasterService {
     return this.http.post<ApiResponse<BillMasterList>>(
       `${this.apiUrl}/get-bill-master-list`,
       {},
+    );
+  }
+
+  getPaidBillList(request?: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/get-paid-bill-list`,
+      request || {},
     );
   }
 

@@ -11,6 +11,11 @@ public class BillMasterController : ProtectedBaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillMasterResponse))]
     public async Task<IResult> GetBillMasterList([FromBody] PagedRequest request) => await Mediator.Send(new GetBillMasterListQuery() { PagedRequest = request });
 
+    [HttpPost("get-paid-bill-list")]
+    [HttpPost("paid-bill-list")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaidBillResponse))]
+    public async Task<IResult> GetPaidBillList([FromBody] PagedRequest request) => await Mediator.Send(new GetPaidBillListQuery() { PagedRequest = request });
+
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillMasterResponse))]
     public async Task<IResult> Get(Guid id) => await Mediator.Send(new GetBillMasterByIdQuery(id));

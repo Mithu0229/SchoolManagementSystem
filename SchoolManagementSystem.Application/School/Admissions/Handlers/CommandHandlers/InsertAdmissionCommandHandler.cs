@@ -13,6 +13,14 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
     {
         try
         {
+            var student = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(false, true)
+                .Where(x => x.BranchId == request.Admission.BranchId && x.StudentId == request.Admission.StudentId)
+                .FirstOrDefaultAsync(cancellationToken);
+            if(student != null)
+            {
+                return Result.Fail<AdmissionResponse>(StatusCodes.Status406NotAcceptable, "Admission already exists");
+            }
+
             if (request is null) return Result.Fail<AdmissionResponse>(StatusCodes.Status406NotAcceptable);
             request.Admission.RollNo = request.Admission.RollNo.Trim();
             var duplicate = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(false,true)
