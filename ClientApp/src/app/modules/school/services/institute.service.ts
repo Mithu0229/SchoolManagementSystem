@@ -25,7 +25,7 @@ export interface InstituteList {
 })
 export class InstituteService {
   private http = inject(HttpClient);
-  private apiUrl = '/institute'; // Replace with actual API url if different
+  private apiUrl = '/Institute'; // Replace with actual API url if different
 
   getInstitutes(): Observable<ApiResponse<InstituteList>> {
     return this.http.post<ApiResponse<InstituteList>>(`${this.apiUrl}/get-institute-list`, {});

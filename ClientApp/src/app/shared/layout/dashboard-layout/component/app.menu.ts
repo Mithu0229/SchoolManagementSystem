@@ -25,10 +25,10 @@ import { AuthService } from '../../../../core/services/auth.service';
     </ul>
   `,
   styles: `
-        .items {
-            color: #ffffff !important;
-        }
-    `,
+    .items {
+      color: #ffffff !important;
+    }
+  `,
 })
 export class AppMenu {
   model: MenuItem[] = [];
@@ -36,6 +36,7 @@ export class AppMenu {
   constructor(private readonly authService: AuthService) {
     this.authService.getMenuList().subscribe({
       next: (response: any) => {
+        debugger;
         if (response.isSuccess) {
           this.model = response.data ?? [];
           localStorage.setItem('menuList', JSON.stringify(this.model));

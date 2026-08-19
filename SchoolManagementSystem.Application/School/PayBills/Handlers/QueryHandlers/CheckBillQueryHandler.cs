@@ -1,25 +1,19 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using SchoolManagementSystem.Application.Common;
+using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
 using SchoolManagementSystem.Application.School.PayBills.Models;
-using SchoolManagementSystem.Application.School.PayBills.Queries;
 using System.Text.Json;
 
 namespace SchoolManagementSystem.Application.School.PayBills.Handlers.QueryHandlers;
 
-public class CheckBillQueryHandler : IRequestHandler<CheckBillQuery, CheckBillResponse>
+public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IConfiguration _configuration;
-
-    public CheckBillQueryHandler(IUnitOfWork unitOfWork, IConfiguration configuration)
+    public CheckBillQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _configuration = configuration;
     }
 
-    public async Task<CheckBillResponse> Handle(CheckBillQuery queryRequest, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(CheckBillCommand queryRequest, CancellationToken cancellationToken)
     {
         var req = queryRequest.Request;
         var refId = req.GetReferenceId();
@@ -30,65 +24,55 @@ public class CheckBillQueryHandler : IRequestHandler<CheckBillQuery, CheckBillRe
             string.IsNullOrWhiteSpace(refId) ||
             string.IsNullOrWhiteSpace(req.BillMonth))
         {
-            return new CheckBillResponse
-            {
-                ErrorCode = "406",
-                ErrorMsg = "Mandatory Field missing"
-            };
+            return Result.Fail<CheckBillResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
         }
 
         // 2. Authentication Check (Code 403)
-        if (!ValidateCredentials(req.UserName, req.Password))
+        if (await ValidateCredentials(req.UserName, req.Password) == false)
         {
-            return new CheckBillResponse
-            {
-                ErrorCode = "403",
-                ErrorMsg = "Authentication failed"
-            };
+            return Result.Fail<CheckBillResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
         }
 
         // 3. Parse BillMonth (MMYYYY)
         if (!TryParseBillMonth(req.BillMonth, out int month, out int year))
         {
-            return new CheckBillResponse
+            return Result.Fail(new CheckBillResponse
             {
                 ErrorCode = "435",
                 ErrorMsg = "Data Mismatch"
-            };
+            });
         }
 
         try
         {
             // 4. Lookup Bill
             var searchRef = refId.Trim().ToLower();
-            var bill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true)
+            var bill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
                 .Include(x => x.Admission)
                     .ThenInclude(a => a.Student)
                 .Include(x => x.Details)
                     .ThenInclude(d => d.FeeHead)
                 .Where(x => x.BillMonth == month && x.BillYear == year &&
-                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StdCID.ToLower() == searchRef) ||
-                             (x.Admission != null && x.Admission.RollNo.ToLower() == searchRef) ||
-                             x.Id.ToString().ToLower() == searchRef))
+                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StudentEmail!.ToLower() == req.UserName)))
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (bill == null)
             {
-                return new CheckBillResponse
+                return Result.Fail(new CheckBillResponse
                 {
                     ErrorCode = "404",
                     ErrorMsg = "Data not found"
-                };
+                });
             }
 
             // 5. Already Paid Check (Code 436)
             if (bill.IsActive)
             {
-                return new CheckBillResponse
+                return Result.Success(new CheckBillResponse
                 {
                     ErrorCode = "436",
                     ErrorMsg = "Already paid"
-                };
+                });
             }
 
             // 6. Amount Check (if provided)
@@ -98,20 +82,20 @@ public class CheckBillQueryHandler : IRequestHandler<CheckBillQuery, CheckBillRe
                 {
                     if (requestedAmount < bill.TotalAmount)
                     {
-                        return new CheckBillResponse
+                        return Result.Fail(new CheckBillResponse
                         {
                             ErrorCode = "438",
                             ErrorMsg = "Minimum amount not paid"
-                        };
+                        });
                     }
 
                     if (requestedAmount != bill.TotalAmount)
                     {
-                        return new CheckBillResponse
+                        return Result.Fail(new CheckBillResponse
                         {
                             ErrorCode = "439",
                             ErrorMsg = "Pay amount and biller amount not match"
-                        };
+                        });
                     }
                 }
             }
@@ -140,7 +124,7 @@ public class CheckBillQueryHandler : IRequestHandler<CheckBillQuery, CheckBillRe
                 consumerName = bill.Admission?.Student?.StdCID;
             }
 
-            return new CheckBillResponse
+            return Result.Success(new CheckBillResponse
             {
                 ErrorCode = "200",
                 ErrorMsg = "Successful",
@@ -150,31 +134,25 @@ public class CheckBillQueryHandler : IRequestHandler<CheckBillQuery, CheckBillRe
                 BillDueDate = dueDateStr,
                 QueryTime = queryTimeStr,
                 AmountBreakdown = breakdownStr
-            };
+            });
         }
         catch (Exception ex)
         {
-            return new CheckBillResponse
+            return Result.Fail(new CheckBillResponse
             {
                 ErrorCode = "435",
                 ErrorMsg = $"Data Mismatch: {ex.Message}"
-            };
+            });
         }
     }
 
-    private bool ValidateCredentials(string userName, string password)
+    private async Task<bool> ValidateCredentials(string userName, string password)
     {
-        var configuredUser = _configuration["PayBillSettings:UserName"];
-        var configuredPass = _configuration["PayBillSettings:Password"];
+        var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.Email == userName);
+        if (user == null)
+            return false;
 
-        if (!string.IsNullOrEmpty(configuredUser) && !string.IsNullOrEmpty(configuredPass))
-        {
-            return string.Equals(userName, configuredUser, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(password, configuredPass);
-        }
-
-        // Fallback: check not null/empty
-        return !string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password);
+        return BCrypt.Net.BCrypt.Verify(password, user.Password);
     }
 
     private bool TryParseBillMonth(string billMonth, out int month, out int year)

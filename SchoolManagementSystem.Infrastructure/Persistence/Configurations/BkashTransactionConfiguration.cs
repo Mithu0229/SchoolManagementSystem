@@ -13,7 +13,7 @@ public class BkashTransactionConfiguration : AuditableEntityConfiguration<BkashT
         entityTypeBuilder.Property(x => x.Date).IsRequired();
         entityTypeBuilder.Property(x => x.TransactionType).HasMaxLength(10).IsRequired();
         entityTypeBuilder.Property(x => x.Amount).HasColumnType("decimal(18,2)").IsRequired();
-        entityTypeBuilder.Property(x => x.FromNumber).HasMaxLength(20).IsRequired();
+        //entityTypeBuilder.Property(x => x.FromNumber).HasMaxLength(20).IsRequired();
         entityTypeBuilder.Property(x => x.Remarks).HasMaxLength(500);
 
         entityTypeBuilder.ToTable("tb_sch_BkashTransactions");

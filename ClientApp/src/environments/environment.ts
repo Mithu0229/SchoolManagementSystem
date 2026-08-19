@@ -1,4 +1,4 @@
-
- export const environment = {
-    apiUrl:"http://localhost:5015/api"
- }
+export const environment = {
+  apiUrl: 'http://localhost:5015/api',
+  //apiUrl: 'https://smsapi.edugateserp.com/api',
+};

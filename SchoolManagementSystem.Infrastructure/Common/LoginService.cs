@@ -52,8 +52,8 @@ public class LoginService : ILoginService
             var tenantIdClaimValue = user.TenantId?.ToString() ?? string.Empty;
 
             var tokenOptions = new JwtSecurityToken(
-                issuer: "http://localhost:5015/",//_appSettings.Domain,
-                audience: "http://localhost:5015/",// _appSettings.Domain,
+                issuer: "test",//_appSettings.Domain,
+                audience: "test",// _appSettings.Domain,
                 claims: new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),

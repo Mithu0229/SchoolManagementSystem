@@ -161,7 +161,7 @@ public class BillPaymentCommandHandler : IRequestHandler<BillPaymentCommand, Bil
                 Date = DateTime.Now,
                 TransactionType = "PayBill",
                 Amount = payAmount,
-                FromNumber = req.UserMobileNumber ?? "",
+                //FromNumber = req.UserMobileNumber ?? "",
                 Remarks = $"TrxId:{req.TrxId}, StdCID:{bill.Admission?.Student?.StdCID}, Month:{req.BillMonth}",
                 IsActive = true
             };

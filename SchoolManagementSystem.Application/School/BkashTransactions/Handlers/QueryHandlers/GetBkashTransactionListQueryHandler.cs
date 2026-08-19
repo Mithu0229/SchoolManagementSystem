@@ -31,7 +31,7 @@ public class GetBkashTransactionListQueryHandler : IHttpRequestHandler<GetBkashT
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();
-                query = query.Where(x => x.FromNumber.ToLower().Contains(search) ||
+                query = query.Where(x => 
                                          x.TransactionType.ToLower().Contains(search));
             }
 

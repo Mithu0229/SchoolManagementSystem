@@ -5,6 +5,8 @@ using SchoolManagementSystem.Application.School.Institutes.Queries;
 
 namespace SchoolManagementSystem.API.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class InstituteController : ProtectedBaseController
 {
     private readonly IWebHostEnvironment _env;

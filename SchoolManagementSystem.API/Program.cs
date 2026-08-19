@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AppCORSPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "https://sms.edugateserp.com", "http://sms.edugateserp.com", "http://localhost:5015")
               .AllowAnyMethod()
               .AllowAnyHeader();
         // .AllowCredentials(); // Use only if needed
@@ -96,8 +96,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuer = "http://localhost:5015/",
-        ValidAudience = "http://localhost:5015/",
+        ValidIssuer = "test",
+        ValidAudience = "test",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"))
     };
 });
@@ -131,14 +131,14 @@ RepositoryDependencyContainer.RegisterServices(builder.Services);
 ServiceDependencyContainer.RegisterServices(builder.Services);
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "PIP");
     });
-}
+//}
 
 // Configure the HTTP request pipeline
 //if (app.Environment.IsDevelopment())

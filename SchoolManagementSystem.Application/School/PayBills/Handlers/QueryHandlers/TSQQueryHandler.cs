@@ -1,25 +1,21 @@
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using SchoolManagementSystem.Application.Common;
+using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
+using SchoolManagementSystem.Application.School.BkashTransactions.Models;
 using SchoolManagementSystem.Application.School.PayBills.Models;
-using SchoolManagementSystem.Application.School.PayBills.Queries;
 using System.Text.Json;
 
 namespace SchoolManagementSystem.Application.School.PayBills.Handlers.QueryHandlers;
 
-public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
+public class TSQQueryHandler : IHttpRequestHandler<TSQQueryCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IConfiguration _configuration;
 
-    public TSQQueryHandler(IUnitOfWork unitOfWork, IConfiguration configuration)
+    public TSQQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _configuration = configuration;
     }
 
-    public async Task<TSQResponse> Handle(TSQQuery queryRequest, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(TSQQueryCommand queryRequest, CancellationToken cancellationToken)
     {
         var req = queryRequest.Request;
 
@@ -28,21 +24,13 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
             string.IsNullOrWhiteSpace(req.Password) ||
             string.IsNullOrWhiteSpace(req.TrxId))
         {
-            return new TSQResponse
-            {
-                ErrorCode = "406",
-                ErrorMsg = "Mandatory Field missing"
-            };
+            return Result.Fail<TSQResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
         }
 
         // 2. Authentication Check (Code 403)
-        if (!ValidateCredentials(req.UserName, req.Password))
+        if (await ValidateCredentials(req.UserName, req.Password) == false)
         {
-            return new TSQResponse
-            {
-                ErrorCode = "403",
-                ErrorMsg = "Authentication failed"
-            };
+            return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
         }
 
         try
@@ -50,7 +38,7 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
             var trxId = req.TrxId.Trim();
 
             // Search in BankBook first (or BkashTransaction)
-            var bankBook = await _unitOfWork.BankBookRepository.GetAllNoneDeleted()
+            var bankBook = await _unitOfWork.BankBookRepository.GetAllNoneDeleted(false, true)
                 .Include(x => x.BillMaster)
                     .ThenInclude(b => b.Details)
                         .ThenInclude(d => d.FeeHead)
@@ -74,7 +62,7 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
                 var payTimeStr = bankBook.TransactionDate.ToString("yyyyMMddHHmmss");
                 var amountVal = bankBook.Debit > 0 ? bankBook.Debit : bankBook.Credit;
 
-                return new TSQResponse
+                var entity = new TSQResponse
                 {
                     ErrorCode = "200",
                     ErrorMsg = "Successful",
@@ -85,10 +73,12 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
                     CustomMessage = "{Status: Success}",
                     AmountBreakdown = breakdownStr
                 };
+
+                return Result.Success(entity, "Successful " + AlertMessage.SaveMessage);
             }
 
             // Search in BkashTransaction fallback
-            var bkashTx = await _unitOfWork.BkashTransactionRepository.GetAllNoneDeleted()
+            var bkashTx = await _unitOfWork.BkashTransactionRepository.GetAllNoneDeleted(false, true)
                 .Where(x => x.Remarks.Contains(trxId))
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -96,7 +86,7 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
             {
                 var payTimeStr = bkashTx.Date.ToString("yyyyMMddHHmmss");
 
-                return new TSQResponse
+                var bkObj = new TSQResponse
                 {
                     ErrorCode = "200",
                     ErrorMsg = "Successful",
@@ -106,36 +96,35 @@ public class TSQQueryHandler : IRequestHandler<TSQQuery, TSQResponse>
                     RefNumber = bkashTx.Id.ToString(),
                     CustomMessage = "{Status: Success}"
                 };
+
+                return Result.Success(bkObj, "Successful " + AlertMessage.SaveMessage);
+
             }
 
             // If not found
-            return new TSQResponse
+            return Result.Fail(new TSQResponse
             {
                 ErrorCode = "404",
                 ErrorMsg = "Data not found"
-            };
+            });
         }
         catch (Exception ex)
         {
-            return new TSQResponse
+            return Result.Fail(new TSQResponse
             {
                 ErrorCode = "435",
                 ErrorMsg = $"Data Mismatch: {ex.Message}"
-            };
+            });
         }
     }
 
-    private bool ValidateCredentials(string userName, string password)
+    private async Task<bool> ValidateCredentials(string userName, string password)
     {
-        var configuredUser = _configuration["PayBillSettings:UserName"];
-        var configuredPass = _configuration["PayBillSettings:Password"];
+        var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.Email == userName);
+        if (user == null)
+            return false;
 
-        if (!string.IsNullOrEmpty(configuredUser) && !string.IsNullOrEmpty(configuredPass))
-        {
-            return string.Equals(userName, configuredUser, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(password, configuredPass);
-        }
-
-        return !string.IsNullOrWhiteSpace(userName) && !string.IsNullOrWhiteSpace(password);
+        return BCrypt.Net.BCrypt.Verify(password, user.Password);
     }
+
 }
