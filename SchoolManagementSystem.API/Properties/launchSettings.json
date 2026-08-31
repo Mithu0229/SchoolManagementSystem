@@ -8,7 +8,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://smsapi.edugateserp.com"
+      "applicationUrl": "http://localhost:5015"
     },
     "https": {
       "commandName": "Project",
@@ -18,7 +18,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://smsapi.edugateserp.com"
+      "applicationUrl": "http://localhost:5015"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -34,8 +34,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://smsapi.edugateserp.com/",
-      "sslPort": 9438 //44316
+      "applicationUrl": "http://localhost:5015/",
+      "sslPort": 44316
     }
   }
 }

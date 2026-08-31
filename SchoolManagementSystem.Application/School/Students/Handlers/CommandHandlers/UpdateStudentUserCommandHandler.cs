@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Models;
 
@@ -7,10 +8,12 @@ namespace SchoolManagementSystem.Application.School.Students.Handlers.CommandHan
 public class UpdateStudentUserCommandHandler : IHttpRequestHandler<UpdateStudentUserCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ISmsService _smsService;
 
-    public UpdateStudentUserCommandHandler(IUnitOfWork unitOfWork)
+    public UpdateStudentUserCommandHandler(IUnitOfWork unitOfWork, ISmsService smsService)
     {
         _unitOfWork = unitOfWork;
+        _smsService = smsService;
     }
 
     public async Task<IResult> Handle(UpdateStudentUserCommand request, CancellationToken cancellationToken)
@@ -39,6 +42,19 @@ public class UpdateStudentUserCommandHandler : IHttpRequestHandler<UpdateStudent
 
             await _unitOfWork.UserRepository.UpdateAsync(user);
             await _unitOfWork.CommitAsync();
+
+            if (request.Request.SendSms)
+            {
+                var student = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false,true).FirstOrDefaultAsync(x=>x.Id==request.Request.StudentId);
+                if (student != null && !string.IsNullOrEmpty(student.StudentPhone))
+                {
+                    string passwordToSend = string.IsNullOrEmpty(request.Request.Password) ? "your current password" : request.Request.Password;
+                    string loginUrl = "http://edugates.net/login"; // placeholder, configure as needed
+                    string message = $"Dear Student, your username is {student.StdCID} and password is {passwordToSend}. Login at: {loginUrl}";
+                    
+                    await _smsService.SendSmsAsync(student.StudentPhone, message);
+                }
+            }
 
             return Result.Success(true, StatusCodes.Status200OK);
         }

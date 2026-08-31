@@ -72,6 +72,7 @@ export class StudentListComponent implements OnInit {
       fullName: [{ value: '', disabled: true }],
       isActive: [false],
       password: [''],
+      sendSms: [false],
     });
   }
 
@@ -101,6 +102,7 @@ export class StudentListComponent implements OnInit {
       fullName: student.fullName,
       isActive: student.isActive,
       password: '',
+      sendSms: false,
     });
     this.studentDialog = true;
   }
@@ -121,6 +123,7 @@ export class StudentListComponent implements OnInit {
       studentId: this.studentForm.get('studentId')?.value,
       isActive: this.studentForm.get('isActive')?.value,
       password: this.studentForm.get('password')?.value,
+      sendSms: this.studentForm.get('sendSms')?.value,
     };
 
     this.http.put(`/StudentInfo/update-student-user`, payload).subscribe({

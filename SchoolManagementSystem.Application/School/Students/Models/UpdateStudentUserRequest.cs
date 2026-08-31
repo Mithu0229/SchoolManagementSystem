@@ -5,4 +5,5 @@ public class UpdateStudentUserRequest
     public Guid StudentId { get; set; }
     public bool IsActive { get; set; }
     public string Password { get; set; }
+    public bool SendSms { get; set; }
 }

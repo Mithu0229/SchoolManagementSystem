@@ -60,7 +60,7 @@ export class BillCollectionComponent implements OnInit {
   transactionTypes = [
     { label: 'Cash', value: 1 },
     { label: 'Bank', value: 2 },
-    { label: 'Bkash', value: 3 }
+    { label: 'Bkash', value: 3 },
   ];
 
   columns: TableColumn[] = [];

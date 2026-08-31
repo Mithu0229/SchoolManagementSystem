@@ -34,9 +34,15 @@
           </div>
 
           <!-- Is Active -->
-          <div class="field col-span-1 md:col-span-2 flex items-center mt-2">
+          <div class="field col-span-1 md:col-span-1 flex items-center mt-2">
             <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
             <label for="isActive" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Active</label>
+          </div>
+
+          <!-- Send SMS -->
+          <div class="field col-span-1 md:col-span-1 flex items-center mt-2">
+            <p-checkbox formControlName="sendSms" [binary]="true" inputId="sendSms"></p-checkbox>
+            <label for="sendSms" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer">Send SMS</label>
           </div>
         </div>
       </form>
