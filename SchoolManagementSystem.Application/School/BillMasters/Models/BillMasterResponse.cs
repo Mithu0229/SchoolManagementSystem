@@ -9,6 +9,8 @@ public class BillMasterResponse
     public int BillMonth { get; set; }
     public int BillYear { get; set; }
     public decimal TotalAmount { get; set; }
+    public decimal PartialAmount { get; set; }
+    public bool IsPaid { get; set; }
     public bool IsActive { get; set; }
     public IList<BillDetailResponse> Details { get; set; } = new List<BillDetailResponse>();
 }

@@ -20,6 +20,8 @@ import { FeeCollectionComponent } from './components/fee-collection/fee-collecti
 import { BillProcessComponent } from './components/bill-process/bill-process.component';
 import { BillCollectionComponent } from './components/bill-collection/bill-collection.component';
 import { PaidBillListComponent } from './components/paid-bill-list/paid-bill-list.component';
+import { MultiMonthBillCollectionComponent } from './components/multi-month-bill-collection/multi-month-bill-collection.component';
+import { StudentPaidBillsComponent } from './components/student-paid-bills/student-paid-bills.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 import { authGuard } from '../../core/guards/auth.guard';
@@ -120,6 +122,16 @@ const routes: Routes = [
         path: 'paid-bill-list',
         component: PaidBillListComponent,
         canActivate: [authGuard, permissionGuard('/paid-bill-list')],
+      },
+      {
+        path: 'multi-month-bill-collection',
+        component: MultiMonthBillCollectionComponent,
+        canActivate: [authGuard, permissionGuard('/multi-month-bill-collection')],
+      },
+      {
+        path: 'student-paid-bills',
+        component: StudentPaidBillsComponent,
+        //canActivate: [authGuard, permissionGuard('/student-paid-bills')],
       },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },
     ],

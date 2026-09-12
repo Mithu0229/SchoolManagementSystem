@@ -20,18 +20,16 @@ public class TSQQueryHandler : IHttpRequestHandler<TSQQueryCommand>
         var req = queryRequest.Request;
 
         // 1. Mandatory Field Check (Code 406)
-        if (string.IsNullOrWhiteSpace(req.UserName) ||
-            string.IsNullOrWhiteSpace(req.Password) ||
-            string.IsNullOrWhiteSpace(req.TrxId))
+        if (string.IsNullOrWhiteSpace(req.TrxId))
         {
             return Result.Fail<TSQResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
         }
 
         // 2. Authentication Check (Code 403)
-        if (await ValidateCredentials(req.UserName, req.Password) == false)
-        {
-            return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-        }
+        //if (await ValidateCredentials(req.UserName, req.Password) == false)
+        //{
+        //    return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
+        //}
 
         try
         {
@@ -42,63 +40,24 @@ public class TSQQueryHandler : IHttpRequestHandler<TSQQueryCommand>
                 .Include(x => x.BillMaster)
                     .ThenInclude(b => b.Details)
                         .ThenInclude(d => d.FeeHead)
-                .Where(x => x.TransactionNo == trxId || x.VoucherNo == trxId)
-                .FirstOrDefaultAsync(cancellationToken);
+                .Where(x => x.TransactionNo == trxId || x.VoucherNo == trxId && x.Debit == 0)
+                .ToListAsync(cancellationToken);
 
             if (bankBook != null)
             {
-                string? breakdownStr = null;
-                if (bankBook.BillMaster?.Details != null && bankBook.BillMaster.Details.Any())
-                {
-                    var breakdownDict = bankBook.BillMaster.Details
-                        .Where(d => d.FeeHead != null)
-                        .ToDictionary(
-                            d => d.FeeHead?.FeeHeadName ?? "Fee",
-                            d => (int)d.Amount
-                        );
-                    breakdownStr = JsonSerializer.Serialize(breakdownDict);
-                }
-
-                var payTimeStr = bankBook.TransactionDate.ToString("yyyyMMddHHmmss");
-                var amountVal = bankBook.Debit > 0 ? bankBook.Debit : bankBook.Credit;
-
+               
                 var entity = new TSQResponse
                 {
                     ErrorCode = "200",
                     ErrorMsg = "Successful",
-                    TotalAmount = amountVal.ToString("0.##"),
+                    TotalAmount = bankBook.Sum(x=>x.Credit).ToString("0.##"),
                     TrxId = trxId,
-                    MiddlewarePayTime = payTimeStr,
-                    RefNumber = bankBook.BillMasterId.ToString(),
+                    RefNumber = bankBook.FirstOrDefault()!.AccountNo.ToString(),
                     CustomMessage = "{Status: Success}",
-                    AmountBreakdown = breakdownStr
+                    MiddlewarePayTime =bankBook.FirstOrDefault()!.TransactionDate.TimeOfDay.ToString()
                 };
 
                 return Result.Success(entity, "Successful " + AlertMessage.SaveMessage);
-            }
-
-            // Search in BkashTransaction fallback
-            var bkashTx = await _unitOfWork.BkashTransactionRepository.GetAllNoneDeleted(false, true)
-                .Where(x => x.Remarks.Contains(trxId))
-                .FirstOrDefaultAsync(cancellationToken);
-
-            if (bkashTx != null)
-            {
-                var payTimeStr = bkashTx.Date.ToString("yyyyMMddHHmmss");
-
-                var bkObj = new TSQResponse
-                {
-                    ErrorCode = "200",
-                    ErrorMsg = "Successful",
-                    TotalAmount = bkashTx.Amount.ToString("0.##"),
-                    TrxId = trxId,
-                    MiddlewarePayTime = payTimeStr,
-                    RefNumber = bkashTx.Id.ToString(),
-                    CustomMessage = "{Status: Success}"
-                };
-
-                return Result.Success(bkObj, "Successful " + AlertMessage.SaveMessage);
-
             }
 
             // If not found

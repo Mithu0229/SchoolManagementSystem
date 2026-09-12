@@ -13,7 +13,13 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
         try
         {
             var pagedRequest = request.PagedRequest ?? new PagedRequest();
-            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true).Where(x => !x.IsActive);
+            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true).Where(x => !x.IsPaid);
+            
+            // Filter out future months
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            query = query.Where(x => x.BillYear < currentYear || (x.BillYear == currentYear && x.BillMonth <= currentMonth));
+
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {
                 var search = pagedRequest.Search.Trim().ToLower();
@@ -33,6 +39,8 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
                 BillMonth = x.BillMonth,
                 BillYear = x.BillYear,
                 TotalAmount = x.TotalAmount,
+                PartialAmount = x.CollectionAmount,
+                IsPaid = x.IsPaid,
                 IsActive = x.IsActive
             }).ToListAsync(cancellationToken);
             return Result.Success(new PagedResult<BillMasterResponse> { Items = items, TotalRecord = totalRecord, Page = pagedRequest.Page, PageSize = pagedRequest.PageSize });

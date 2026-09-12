@@ -27,6 +27,7 @@ export interface BillMasterResponse {
   billYear: number;
   totalAmount: number;
   isActive: boolean;
+  partialAmount: number;
   details: BillDetailResponse[];
 }
 
@@ -75,6 +76,45 @@ export interface PaidBillResponse {
   createdDate: string;
 }
 
+export interface MultiMonthBillCollectionRequest {
+  studentId: string;
+  billMasterIds: string[];
+  collectionAmount: number;
+  transactionType: number;
+  bankName?: string;
+  accountNo?: string;
+  transactionNo?: string;
+  voucherNo?: string;
+  particulars?: string;
+  additionalDetails: any;
+}
+
+export interface MultiMonthBillCollectionResponse {
+  voucherNo: string;
+  paidBillsCount: number;
+}
+
+export interface MultiMonthReceiptDetail {
+  month: string;
+  total: number;
+  collection: number;
+  due: number;
+}
+
+export interface MultiMonthMoneyReceiptResponse {
+  receiptNo: string;
+  date: string;
+  studentName: string;
+  admissionNo: string;
+  className: string;
+  details: MultiMonthReceiptDetail[];
+  totalAmount: number;
+  collectionAmount: number;
+  dueAmount: number;
+  paymentMethod: string;
+  transactionType: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -121,6 +161,23 @@ export class BillMasterService {
   getMoneyReceipt(id: string): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(
       `${this.apiUrl}/get-money-receipt/${id}`,
+    );
+  }
+
+  processMultiMonthBill(
+    request: MultiMonthBillCollectionRequest,
+  ): Observable<ApiResponse<MultiMonthBillCollectionResponse>> {
+    return this.http.post<ApiResponse<MultiMonthBillCollectionResponse>>(
+      `${this.apiUrl}/process-multi-month-bill`,
+      request,
+    );
+  }
+
+  getMultiMonthMoneyReceipt(
+    voucherNo: string,
+  ): Observable<ApiResponse<MultiMonthMoneyReceiptResponse>> {
+    return this.http.get<ApiResponse<MultiMonthMoneyReceiptResponse>>(
+      `${this.apiUrl}/get-multi-month-money-receipt/${voucherNo}`,
     );
   }
 }

@@ -109,7 +109,7 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
     private studentService: StudentService,
     private toastService: ToastService,
     private readonly router: Router,
-    private academicClassService: AcademicClassService
+    private academicClassService: AcademicClassService,
   ) {
     super();
     this.buildForm();
@@ -123,11 +123,13 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
   }
 
   loadApplicationForClassList() {
-    this.academicClassService.getAcademicClassDropdown().subscribe((res: any) => {
-      if (res.isSuccess) {
-        this.applicationForClassList = res.data;
-      }
-    });
+    this.academicClassService
+      .getAcademicClassDropdown()
+      .subscribe((res: any) => {
+        if (res.isSuccess) {
+          this.applicationForClassList = res.data;
+        }
+      });
   }
 
   onFileChange(event: Event) {
@@ -301,11 +303,12 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
         next: (res) => {
           this.router.navigateByUrl('/login');
           if (res.isSuccess) {
-            this.toastService.success('Sitemap has been created successfully.');
+            this.toastService.success(
+              'You account has been created successfully.',
+            );
             // this.resetForm();
           } else {
-            let errorMessage =
-              'Failed to create sitemap. Please try again later.';
+            let errorMessage = 'Failed to create user. Please try again later.';
             if (res.notificationMessage && res.notificationMessage !== '') {
               errorMessage = res.notificationMessage;
             } else if (res.errors?.[0]) {

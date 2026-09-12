@@ -1,20 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using SchoolManagementSystem.Application.GS.Users.Commands;
-using SchoolManagementSystem.Application.GS.Users.Models;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Models;
 using SchoolManagementSystem.Domain.Entities.Students;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Dapper.SqlMapper;
 
 namespace SchoolManagementSystem.Application.School.Students.Handlers.CommandHandlers;
 
-public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentInfoCommand>
+public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudentInfoCommand>
 {
     private IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
@@ -39,13 +29,13 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
                 var user = new User()
                 {
                     Id = Guid.NewGuid(),
-                    FirstName = request.StudentInfo.FullName,
-                    LastName = request.StudentInfo.FullName,
-                    Email = request.StudentInfo.FullName.Replace(" ", "") + "@gmail.com" ,
+                    FirstName = request.StudentInfo.FullName!,
+                    LastName = request.StudentInfo.FullName!,
+                    Email = request.StudentInfo.FullName!.Replace(" ", "") + "@gmail.com",
                     Password = request.StudentInfo.FullName,
                     UserType = Domain.Enums.UserTypes.Student,
-                    PhoneNumber = request.StudentInfo.StudentPhone,
-                    IsActive = true,
+                    PhoneNumber = request.StudentInfo.StudentPhone!,
+                    IsActive = false,
                     StudentId = id
 
                 };
@@ -71,18 +61,18 @@ public class InsertStudentInfoCommandHandler: IHttpRequestHandler<InsertStudentI
             //    }
             //}
             studentInfo.StdCID = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var existingStudentId=await _unitOfWork.StudentInfoRepository.GetSingleAsync(x => x.StdCID == studentInfo.StdCID);
-            if(existingStudentId != null)
+            var existingStudentId = await _unitOfWork.StudentInfoRepository.GetSingleAsync(x => x.StdCID == studentInfo.StdCID);
+            if (existingStudentId != null)
             {
                 studentInfo.StdCID = (Convert.ToInt64(studentInfo.StdCID) + 1).ToString();
             }
-            studentInfo.IsActive = true;
+            studentInfo.IsActive = false;
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();
             var response = studentInfo.Adapt<StudentInfoResponse>();
             return Result.Success(response, StatusCodes.Status201Created);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }

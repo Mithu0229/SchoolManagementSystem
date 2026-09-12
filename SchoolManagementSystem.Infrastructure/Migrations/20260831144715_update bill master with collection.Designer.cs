@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SchoolManagementSystem.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using SchoolManagementSystem.Infrastructure.Persistence;
 namespace SchoolManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260831144715_update bill master with collection")]
+    partial class updatebillmasterwithcollection
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,9 +525,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<int>("BillYear")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("CollectionAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("CreatedById")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnOrder(103);
@@ -543,9 +543,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<decimal>("DueAmount")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid?>("InstituteId")
                         .HasColumnType("uniqueidentifier");
 
@@ -559,9 +556,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasDefaultValue(false)
                         .HasColumnOrder(100);
 
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
-
                     b.Property<Guid?>("ModifiedById")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnOrder(105);
@@ -570,9 +564,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
 
-                    b.Property<DateTime?>("PaymentDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -580,6 +571,7 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("VoucherNo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
 using SchoolManagementSystem.Application.School.PayBills.Models;
-using System.Text.Json;
 
 namespace SchoolManagementSystem.Application.School.PayBills.Handlers.QueryHandlers;
 
@@ -19,19 +18,17 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
         var refId = req.GetReferenceId();
 
         // 1. Mandatory Field Check (Code 406)
-        if (string.IsNullOrWhiteSpace(req.UserName) ||
-            string.IsNullOrWhiteSpace(req.Password) ||
-            string.IsNullOrWhiteSpace(refId) ||
+        if (string.IsNullOrWhiteSpace(refId) ||
             string.IsNullOrWhiteSpace(req.BillMonth))
         {
             return Result.Fail<CheckBillResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
         }
 
         // 2. Authentication Check (Code 403)
-        if (await ValidateCredentials(req.UserName, req.Password) == false)
-        {
-            return Result.Fail<CheckBillResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-        }
+        //if (await ValidateCredentials(req.UserName, req.Password) == false)
+        //{
+        //    return Result.Fail<CheckBillResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
+        //}
 
         // 3. Parse BillMonth (MMYYYY)
         if (!TryParseBillMonth(req.BillMonth, out int month, out int year))
@@ -45,28 +42,29 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
 
         try
         {
-            // 4. Lookup Bill
             var searchRef = refId.Trim().ToLower();
             var bill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
                 .Include(x => x.Admission)
                     .ThenInclude(a => a.Student)
                 .Include(x => x.Details)
                     .ThenInclude(d => d.FeeHead)
-                .Where(x => x.BillMonth == month && x.BillYear == year &&
-                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StudentEmail!.ToLower() == req.UserName)))
-                .FirstOrDefaultAsync(cancellationToken);
+                .Where(x => (x.BillYear < year ||
+                            (x.BillYear == year && x.BillMonth <= month))
+                            && !x.IsPaid && !x.IsActive &&
+                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StdCID!.ToLower() == req.RefID)))
+                .ToListAsync(cancellationToken);
 
-            if (bill == null)
+            if (bill.Count == 0)
             {
                 return Result.Fail(new CheckBillResponse
                 {
                     ErrorCode = "404",
-                    ErrorMsg = "Data not found"
+                    ErrorMsg = "Data not found or already paid"
                 });
             }
 
             // 5. Already Paid Check (Code 436)
-            if (bill.IsActive)
+            if (bill.Any(x => x.IsActive))
             {
                 return Result.Success(new CheckBillResponse
                 {
@@ -76,52 +74,52 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
             }
 
             // 6. Amount Check (if provided)
-            if (!string.IsNullOrWhiteSpace(req.Amount))
-            {
-                if (decimal.TryParse(req.Amount, out var requestedAmount))
-                {
-                    if (requestedAmount < bill.TotalAmount)
-                    {
-                        return Result.Fail(new CheckBillResponse
-                        {
-                            ErrorCode = "438",
-                            ErrorMsg = "Minimum amount not paid"
-                        });
-                    }
+            //if (!string.IsNullOrWhiteSpace(req.Amount))
+            //{
+            //    if (decimal.TryParse(req.Amount, out var requestedAmount))
+            //    {
+            //        if (requestedAmount < bill.TotalAmount)
+            //        {
+            //            return Result.Fail(new CheckBillResponse
+            //            {
+            //                ErrorCode = "438",
+            //                ErrorMsg = "Minimum amount not paid"
+            //            });
+            //        }
 
-                    if (requestedAmount != bill.TotalAmount)
-                    {
-                        return Result.Fail(new CheckBillResponse
-                        {
-                            ErrorCode = "439",
-                            ErrorMsg = "Pay amount and biller amount not match"
-                        });
-                    }
-                }
-            }
+            //        if (requestedAmount != bill.TotalAmount)
+            //        {
+            //            return Result.Fail(new CheckBillResponse
+            //            {
+            //                ErrorCode = "439",
+            //                ErrorMsg = "Pay amount and biller amount not match"
+            //            });
+            //        }
+            //    }
+            //}
 
             // Build Amount Breakdown
-            string? breakdownStr = null;
-            if (bill.Details != null && bill.Details.Any())
-            {
-                var breakdownDict = bill.Details
-                    .Where(d => d.FeeHead != null)
-                    .ToDictionary(
-                        d => d.FeeHead?.FeeHeadName ?? "Fee",
-                        d => (int)d.Amount
-                    );
-                breakdownStr = JsonSerializer.Serialize(breakdownDict);
-            }
+            //string? breakdownStr = null;
+            //if (bill.Details != null && bill.Details.Any())
+            //{
+            //    var breakdownDict = bill.Details
+            //        .Where(d => d.FeeHead != null)
+            //        .ToDictionary(
+            //            d => d.FeeHead?.FeeHeadName ?? "Fee",
+            //            d => (int)d.Amount
+            //        );
+            //    breakdownStr = JsonSerializer.Serialize(breakdownDict);
+            //}
 
             // Bill Due Date (last day of the bill month)
             var lastDayOfMonth = DateTime.DaysInMonth(year, month);
             var dueDateStr = new DateTime(year, month, lastDayOfMonth).ToString("yyyyMMdd");
             var queryTimeStr = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-            var consumerName = bill.Admission?.Student?.FullName;
+            var consumerName = bill.FirstOrDefault()!.Admission?.Student?.FullName;
             if (string.IsNullOrWhiteSpace(consumerName))
             {
-                consumerName = bill.Admission?.Student?.StdCID;
+                consumerName = bill.FirstOrDefault()!.Admission?.Student?.StdCID;
             }
 
             return Result.Success(new CheckBillResponse
@@ -130,10 +128,10 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
                 ErrorMsg = "Successful",
                 ConsumerName = consumerName,
                 BillMonth = req.BillMonth,
-                BillAmount = bill.TotalAmount.ToString("0.##"),
-                BillDueDate = dueDateStr,
-                QueryTime = queryTimeStr,
-                AmountBreakdown = breakdownStr
+                BillAmount = bill.Sum(x => x.TotalAmount).ToString("0.##"),
+                //BillDueDate = dueDateStr,
+                //QueryTime = queryTimeStr,
+                //AmountBreakdown = breakdownStr
             });
         }
         catch (Exception ex)

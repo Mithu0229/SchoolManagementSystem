@@ -39,7 +39,8 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
                         BillYear = DateTime.Now.Year,
                         TotalAmount = request.Admission.MonthlyFeeAmount,
                         IsActive = false,
-                        Details = new List<BillDetail>()
+                        Details = new List<BillDetail>(),
+                        VoucherNo = i.ToString()
                     };
 
 
@@ -60,6 +61,14 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
             await _unitOfWork.CommitAsync(cancellationToken);
             return Result.Success(entity.Adapt<AdmissionResponse>(), "Admission " + AlertMessage.SaveMessage);
         }
-        catch (Exception ex) { return Result.Fail<AdmissionResponse>(StatusCodes.Status500InternalServerError, ex.Message); }
+        catch (Exception ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+
+            return Result.Fail<AdmissionResponse>(
+                StatusCodes.Status500InternalServerError,
+                $"Error: {message}"
+            );
+        }
     }
 }

@@ -1,11 +1,11 @@
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SchoolManagementSystem.Application.School.BillMasters.Commands;
+using SchoolManagementSystem.Application.School.BillMasters.Models;
 using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
 using SchoolManagementSystem.Application.School.BkashTransactions.Models;
-using SchoolManagementSystem.Application.School.PayBills.Models;
-using SchoolManagementSystem.Domain.Entities.Schools;
 using SchoolManagementSystem.Domain.Enums;
-using System.Text.Json;
 
 namespace SchoolManagementSystem.Application.School.BkashTransactions.Handlers.CommandHandlers;
 
@@ -13,10 +13,13 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
 {
     private IUnitOfWork _unitOfWork;
     private readonly IConfiguration _configuration;
-    public InsertBkashTransactionCommandHandler(IUnitOfWork unitOfWork, IConfiguration configuration)
+    private readonly IMediator _mediator;
+    public InsertBkashTransactionCommandHandler(IUnitOfWork unitOfWork, IConfiguration configuration,
+    IMediator mediator)
     {
         _unitOfWork = unitOfWork;
         _configuration = configuration;
+        _mediator = mediator;
     }
 
     public async Task<IResult> Handle(InsertBkashTransactionCommand request, CancellationToken cancellationToken)
@@ -28,21 +31,19 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
             var req = request.BkashTransaction;
 
             // 1. Mandatory Field Check (Code 406)
-            if (string.IsNullOrWhiteSpace(req.UserName) ||
-                string.IsNullOrWhiteSpace(req.Password) ||
-                string.IsNullOrWhiteSpace(req.BillMonth) ||
-                string.IsNullOrWhiteSpace(req.Amount.ToString()) ||
+            if (string.IsNullOrWhiteSpace(req.BillMonth) ||
+                string.IsNullOrWhiteSpace(req.RefId) ||
                 string.IsNullOrWhiteSpace(req.TrxId) ||
-                string.IsNullOrWhiteSpace(req.PayTime))
+                string.IsNullOrWhiteSpace(req.Amount.ToString()))
             {
                 return Result.Fail<BkashTransactionResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
             }
 
             // 2. Authentication Check (Code 403)
-            if (await ValidateCredentials(req.UserName, req.Password) == false)
-            {
-                return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-            }
+            //if (await ValidateCredentials(req.UserName, req.Password) == false)
+            //{
+            //    return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
+            //}
 
             // 3. Parse BillMonth (MMYYYY)
             if (!TryParseBillMonth(req.BillMonth, out int month, out int year))
@@ -50,215 +51,84 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
                 return Result.Fail<BkashTransactionResponse>(435, "Data Mismatch");
 
             }
+            var billMaster = await _unitOfWork.BillMasterRepository
+                        .GetAllNoneDeleted(false, true)
+                        .Include(x => x.Admission)
+                            .ThenInclude(x => x.Student)
+                        .Include(x => x.Details)
+                        .Where(x =>
+                            (x.BillYear < year ||
+                            (x.BillYear == year && x.BillMonth <= month))
+                            && !x.IsPaid)
+                        .OrderBy(x => x.BillYear)
+                        .ThenBy(x => x.BillMonth)
+                        .ToListAsync(cancellationToken);
 
-            // 4. Parse Amount
-            if (!decimal.TryParse(req.Amount.ToString(), out var payAmount) || payAmount <= 0)
+            var unpaidBillMasterIds = billMaster
+                .Where(x => x.Admission.Student.StdCID == req.RefId)
+                .Select(x => x.Id)
+                .ToList();
+
+            MultiMonthBillCollectionRequest requestMul = new MultiMonthBillCollectionRequest
             {
-                return Result.Fail<BkashTransactionResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
-            }
+                BillMonth = month,
+                BillYear = year,
+                CollectionAmount = req.Amount,
+                BillMasterIds = unpaidBillMasterIds,
+                TransactionType = TransactionType.Bkash,
+                TrxId = req.TrxId
 
-            try
-            {
-                // 5. Duplicate Transaction Check (Code 436)
-                var existingTx = await _unitOfWork.BkashTransactionRepository.GetAllNoneDeleted(false,true)
-                    .FirstOrDefaultAsync(x => x.Remarks.Contains(req.TrxId), cancellationToken);
-                if (existingTx != null)
-                {
-                    return Result.Fail<BkashTransactionResponse>(436, "Already paid");
-                }
+            };
 
-                // 6. Lookup Bill
-                var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.Email == req.UserName);
-                if (user != null)
-                {
+            //     var entity = await _mediator.Send(
+            //            new MultiMonthBillCollectionCommand()
+            //            {
+            //                Request = requestMul
+            //            },
+            //cancellationToken);
 
-                    var bill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
-                    .Include(x => x.Admission)
-                        .ThenInclude(a => a.Student)
-                    .Include(x => x.Details)
-                        .ThenInclude(d => d.FeeHead)
-                    .Where(x => x.BillMonth == month && x.BillYear == year && x.Admission.StudentId == user.StudentId)
-                    .FirstOrDefaultAsync(cancellationToken);
+            //     return Result.Success(entity, "BkashTransaction " + AlertMessage.SaveMessage);
 
-                    if (bill == null)
-                    {
-                        return Result.Fail<BkashTransactionResponse>(404, "Data not found");
-                    }
-
-                    // 7. Already Paid Check (Code 436)
-                    if (bill.IsActive)
-                    {
-                        return Result.Fail<BkashTransactionResponse>(436, "Already paid");
-                    }
-
-                    // 8. Amount Check
-                    if (payAmount < bill.TotalAmount)
-                    {
-                        return Result.Fail<BkashTransactionResponse>(438, "Minimum amount not paid");
-                    }
-
-                    if (payAmount != bill.TotalAmount)
-                    {
-                        return Result.Fail<BkashTransactionResponse>(439, "Pay amount and biller amount not match");
-                    }
-
-                    // 9. Process Payment
-                    bill.IsActive = true;
-                    bill.TransactionType = TransactionType.Bkash;
-                    await _unitOfWork.BillMasterRepository.UpdateAsync(bill);
-
-                    // Record BkashTransaction
-                    var bkashTx = new BkashTransaction
-                    {
-                        Id = Guid.NewGuid(),
-                        CustomerNo = req.CustomerNo,
-                        BillMonth = req.BillMonth,
-                        UserMobileNumber = req.UserMobileNumber,
-                        TrxId = req.TrxId,
-                        PayTime = req.PayTime,
-                        Date = DateTime.Now,
-                        TransactionType = "PayBill",
-                        Amount = payAmount,
-                        Remarks = $"TrxId:{req.TrxId}, StdCID:{bill.Admission?.Student?.StdCID}, Month:{req.BillMonth}",
-                        IsActive = true
-                    };
-                    await _unitOfWork.BkashTransactionRepository.AddAsync(bkashTx);
-
-                    // Record BankBook Debit and Credit Entries
-                    var bankBookDebit = new BankBook
-                    {
-                        BillMasterId = bill.Id,
-                        TransactionDate = DateTime.Now,
-                        Debit = payAmount,
-                        Credit = 0,
-                        Balance = 0,
-                        BankName = "bKash",
-                        AccountNo = req.UserMobileNumber ?? "bKash",
-                        TransactionNo = req.TrxId,
-                        TransactionType = TransactionType.Bkash,
-                        VoucherNo = req.TrxId,
-                        Particulars = $"bKash Pay Bill - Std: {bill.Admission?.Student?.StdCID}"
-                    };
-                    await _unitOfWork.BankBookRepository.AddAsync(bankBookDebit);
-
-                    var bankBookCredit = new BankBook
-                    {
-                        BillMasterId = bill.Id,
-                        TransactionDate = DateTime.Now,
-                        Debit = 0,
-                        Credit = payAmount,
-                        Balance = 0,
-                        BankName = "bKash",
-                        AccountNo = bill.Admission?.Student?.StdCID ?? "Student",
-                        TransactionNo = req.TrxId,
-                        TransactionType = TransactionType.Bkash,
-                        VoucherNo = req.TrxId,
-                        Particulars = $"Bill Collection - bKash Trx: {req.TrxId}"
-                    };
-                    await _unitOfWork.BankBookRepository.AddAsync(bankBookCredit);
-
-                    // Send SMS notification if configured
-                    var studentPhone = bill.Admission?.Student?.StudentPhone;
-                    if (!string.IsNullOrWhiteSpace(studentPhone))
-                    {
-                        try
+            var result = await _mediator.Send(
+                        new MultiMonthBillCollectionCommand
                         {
-                            string stdName = bill.Admission?.Student?.FullName ?? bill.Admission?.Student?.StdCID ?? "Student";
-                            string smsMessage = $"The bill for student {stdName} has been paid successfully via bKash. TrxId: {req.TrxId}, Paid Amount: ৳{payAmount:N2}.";
+                            Request = requestMul
+                        },
+                        cancellationToken);
 
-                            var smsPayload = new
-                            {
-                                apikey = _configuration["SmsSettings:ApiKey"],
-                                secretkey = _configuration["SmsSettings:SecretKey"],
-                                callerID = _configuration["SmsSettings:CallerID"],
-                                toUser = studentPhone,
-                                messageContent = smsMessage
-                            };
-
-                            using var httpClient = new System.Net.Http.HttpClient();
-                            var content = new System.Net.Http.StringContent(JsonSerializer.Serialize(smsPayload), System.Text.Encoding.UTF8, "application/json");
-                            await httpClient.PostAsync("http://sms.songbirdtelecom.com:8746/sendtext", content);
-
-                            if (bill.Admission?.Student != null)
-                            {
-                                var smsHistory = new SMSHistory
-                                {
-                                    Id = Guid.NewGuid(),
-                                    SMSType = "bKash PayBill",
-                                    Message = smsMessage,
-                                    Phone = studentPhone,
-                                    StudentId = bill.Admission.Student.Id,
-                                    IsActive = true
-                                };
-                                await _unitOfWork.SMSHistoryRepository.AddAsync(smsHistory);
-                            }
-
-                        }
-                        catch (Exception smsEx)
-                        {
-                            Console.WriteLine($"SMS Error during PayBill: {smsEx.Message}");
-                        }
-                    }
-
-                    await _unitOfWork.CommitAsync(cancellationToken);
-
-                    // Build Amount Breakdown
-                    string? breakdownStr = null;
-                    if (bill.Details != null && bill.Details.Any())
-                    {
-                        var breakdownDict = bill.Details
-                            .Where(d => d.FeeHead != null)
-                            .ToDictionary(
-                                d => d.FeeHead?.FeeHeadName ?? "Fee",
-                                d => (int)d.Amount
-                            );
-                        breakdownStr = JsonSerializer.Serialize(breakdownDict);
-                    }
-
-                    var consumerName = bill.Admission?.Student?.FullName;
-                    if (string.IsNullOrWhiteSpace(consumerName))
-                    {
-                        consumerName = bill.Admission?.Student?.StdCID;
-                    }
-
-                    var middlewarePayTimeStr = DateTime.Now.ToString("yyyyMMddHHmmss");
-                    var entity = new BillPaymentResponse
-                    {
-                        ErrorCode = "200",
-                        ErrorMsg = "Successful",
-                        ConsumerName = consumerName,
-                        TotalAmount = payAmount.ToString("0.##"),
-                        TrxId = req.TrxId,
-                        MiddlewarePayTime = middlewarePayTimeStr,
-                        RefNumber = bill.Id.ToString(),
-                        CustomMessage = "{Token: Paid successfully}",
-                        AmountBreakdown = breakdownStr
-                    };
-
-                    return Result.Success(entity, "BkashTransaction " + AlertMessage.SaveMessage);
-
-                }
-            }
-            catch (Exception ex)
+            if (!result.IsSuccess)
             {
-                return Result.Fail<BkashTransactionResponse>(435, $"Data Mismatch: {ex.Message}");
+                return result;
             }
 
-            return Result.Fail<BkashTransactionResponse>(435, "Data Mismatch");
+            var collectionResult = result as IResult<MultiMonthBillCollectionResponse>;
+            var collectionResponse = collectionResult?.Data;
+
+            if (collectionResponse == null)
+            {
+                return Result.Fail<BkashTransactionResponse>(
+                    StatusCodes.Status500InternalServerError,
+                    "Invalid bill collection response");
+            }
+
+            var response = new BkashTransactionResponse
+            {
+                TrxId = collectionResponse.TrxId,
+                TotalAmount = collectionResponse.PaidAmount.ToString(),
+                ErrorMsg = collectionResponse.Message!,
+                ErrorCode = "200",
+                ConsumerName = collectionResponse.StCID
+
+            };
+
+            return Result.Success(
+                response,
+                "BkashTransaction " + AlertMessage.SaveMessage);
         }
         catch (Exception ex)
         {
             return Result.Fail<BkashTransactionResponse>(435, $"Data Mismatch: {ex.Message}");
         }
-    }
-
-    private async Task<bool> ValidateCredentials(string userName, string password)
-    {
-        var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false,true).FirstOrDefaultAsync(x => x.Email == userName);
-        if (user == null)
-            return false;
-
-        return BCrypt.Net.BCrypt.Verify(password, user.Password);
     }
 
     private bool TryParseBillMonth(string billMonth, out int month, out int year)

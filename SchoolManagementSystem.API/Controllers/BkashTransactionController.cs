@@ -5,7 +5,7 @@ using SchoolManagementSystem.Application.School.PayBills.Models;
 
 namespace SchoolManagementSystem.API.Controllers;
 
-public class BkashTransactionController : ProtectedBaseController
+public class BkashTransactionController : PublicBaseController
 {
     [HttpPost("get-bkash-transaction-list")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BkashTransactionResponse))]

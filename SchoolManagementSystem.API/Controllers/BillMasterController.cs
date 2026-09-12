@@ -24,6 +24,10 @@ public class BillMasterController : ProtectedBaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillMasterResponse))]
     public async Task<IResult> ProcessBill([FromBody] ProcessBillRequest request) => await Mediator.Send(new InsertBillMasterCommand() { ProcessBill = request });
 
+    [HttpPost("process-multi-month-bill")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MultiMonthBillCollectionResponse))]
+    public async Task<IResult> ProcessMultiMonthBill([FromBody] MultiMonthBillCollectionRequest request) => await Mediator.Send(new MultiMonthBillCollectionCommand() { Request = request });
+
     [HttpPut("update-bill-master")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BillMasterResponse))]
     public async Task<IResult> Put([FromBody] BillMasterRequest request) => await Mediator.Send(new UpdateBillMasterCommand() { BillMaster = request });
@@ -34,6 +38,10 @@ public class BillMasterController : ProtectedBaseController
     [HttpGet("get-money-receipt/{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MoneyReceiptResponse))]
     public async Task<IResult> GetMoneyReceipt(Guid id) => await Mediator.Send(new GetMoneyReceiptQuery(id));
+
+    [HttpGet("get-multi-month-money-receipt/{voucherNo}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MultiMonthMoneyReceiptResponse))]
+    public async Task<IResult> GetMultiMonthMoneyReceipt(string voucherNo) => await Mediator.Send(new GetMultiMonthMoneyReceiptQuery(voucherNo));
 
     [HttpGet("get-bill-master-dropdown")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<DropdownModel>))]
