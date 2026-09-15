@@ -54,4 +54,12 @@ public class BillMasterController : ProtectedBaseController
     [HttpGet("get-paid-fees-by-student/{studentId}/{isActive}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<PaidFeeResponse>))]
     public async Task<IResult> GetPaidFeesByStudentId(Guid studentId, bool isActive) => await Mediator.Send(new GetPaidFeesByStudentIdQuery(studentId, isActive));
+
+    [HttpGet("get-fee-info-by-student/{studentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FeeInfoResponse))]
+    public async Task<IResult> GetFeeInfoByStudentId(Guid studentId) => await Mediator.Send(new GetFeeInfoByStudentIdQuery(studentId));
+
+    [HttpGet("get-student-paid-bill-report/{studentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(MoneyReceiptResponse))]
+    public async Task<IResult> GetStudentPaidBillReport(Guid studentId) => await Mediator.Send(new GetStudentPaidBillReportQuery(studentId));
 }

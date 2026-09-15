@@ -4,28 +4,45 @@
     </header>
 
     <div class="panel-body">
-        <div class="summary-grid">
-            <div class="summary-card" *ngFor="let item of summary">
-                <p>{{ item.title }}</p>
-                <h4>{{ item.amount }}</h4>
-            </div>
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state">
+            <p>Loading fee information...</p>
         </div>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of history">
-                    <td>{{ row.month }}</td>
-                    <td>{{ row.amount }}</td>
-                    <td>{{ row.status }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <ng-container *ngIf="!loading">
+            <div class="summary-grid" *ngIf="summary.length > 0">
+                <div class="summary-card" *ngFor="let item of summary">
+                    <p>{{ item.title }}</p>
+                    <h4>{{ item.amount }}</h4>
+                </div>
+            </div>
+            
+            <div *ngIf="summary.length === 0 && history.length === 0" class="empty-state">
+                <p>No fee information available.</p>
+            </div>
+
+            <div class="table-responsive" *ngIf="history.length > 0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let row of history">
+                            <td>{{ row.month }}</td>
+                            <td>{{ row.amount }}</td>
+                            <td>
+                                <span class="status-badge" [class.paid]="row.status === 'Paid'" [class.due]="row.status === 'Due'">
+                                    {{ row.status }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
     </div>
 </article>

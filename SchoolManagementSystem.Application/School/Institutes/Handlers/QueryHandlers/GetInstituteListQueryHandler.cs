@@ -17,7 +17,7 @@ public class GetInstituteListQueryHandler : IHttpRequestHandler<GetInstituteList
         try
         {
             var pagedRequest = request.PagedRequest ?? new PagedRequest();
-            var query = _unitOfWork.InstituteRepository.GetAllNoneDeleted(true);
+            var query = _unitOfWork.InstituteRepository.GetAllNoneDeleted(false,true);
 
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {

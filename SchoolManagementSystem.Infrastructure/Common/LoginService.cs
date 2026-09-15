@@ -81,7 +81,7 @@ public class LoginService : ILoginService
             {
                 TenantId = user.TenantId,
                 TenantName = user.Tenant?.TenantName,
-                UserName = user != null ? $"{user.FirstName} {user.LastName}" : null,
+                UserName = user != null ? $"{user.FirstName}" : null,
                 UserEmail = user?.Email,
                 StudentId = user.StudentId
             };

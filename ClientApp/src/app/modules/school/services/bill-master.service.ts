@@ -180,4 +180,12 @@ export class BillMasterService {
       `${this.apiUrl}/get-multi-month-money-receipt/${voucherNo}`,
     );
   }
+
+  getStudentPaidBillReport(
+    studentId: string,
+  ): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `${this.apiUrl}/get-student-paid-bill-report/${studentId}`,
+    );
+  }
 }

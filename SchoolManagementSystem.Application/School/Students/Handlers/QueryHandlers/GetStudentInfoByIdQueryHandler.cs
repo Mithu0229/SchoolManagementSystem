@@ -22,7 +22,7 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
             if (request.Id != Guid.Empty)
             {
                 var studentInfo = await _unitOfWork.StudentInfoRepository
-                    .GetAllNoneDeleted()
+                    .GetAllNoneDeleted(false,true)
                     .Include(x => x.GuardianInfo)
                     .Include(x => x.LocalGuardianInfo)
                     .FirstOrDefaultAsync(x => x.Id == request.Id);

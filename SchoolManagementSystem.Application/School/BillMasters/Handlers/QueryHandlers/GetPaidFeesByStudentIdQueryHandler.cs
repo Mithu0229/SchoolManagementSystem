@@ -20,12 +20,12 @@ public class GetPaidFeesByStudentIdQueryHandler : IHttpRequestHandler<GetPaidFee
         {
             var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true)
                 .Include(x => x.Admission)
-                .Where(x => x.Admission.StudentId == request.StudentId );//&& x.IsActive == request.IsActive
+                .Where(x => x.Admission.StudentId == request.StudentId && x.IsPaid == true);//&& x.IsActive == request.IsActive
 
             var items = await query.Select(x => new PaidFeeResponse
             {
                 Id = x.Id,
-                Date = (x.ModifiedDate ?? x.CreatedDate).ToString("dd/MMM/yy"),
+                Date = (x.PaymentDate ?? x.CreatedDate).ToString("dd/MMM/yy"),
                 Amount = x.TotalAmount.ToString("0.##"),
                 Slip = "Print"
             }).ToListAsync(cancellationToken);

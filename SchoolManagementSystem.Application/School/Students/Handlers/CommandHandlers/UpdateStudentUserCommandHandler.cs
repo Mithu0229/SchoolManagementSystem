@@ -32,6 +32,17 @@ public class UpdateStudentUserCommandHandler : IHttpRequestHandler<UpdateStudent
             {
                 return Result.Fail<bool>(StatusCodes.Status404NotFound);
             }
+            if(user != null)
+            {
+                var student =  await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false, true)
+                .FirstOrDefaultAsync(u => u.Id == request.Request.StudentId, cancellationToken);
+                if(student != null)
+                {
+                    student.IsActive = request.Request.IsActive;
+                    await _unitOfWork.StudentInfoRepository.UpdateAsync(student);
+                }
+
+            }
 
             user.IsActive = request.Request.IsActive;
 

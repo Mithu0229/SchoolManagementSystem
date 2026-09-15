@@ -51,7 +51,7 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
                         Id = Guid.NewGuid(),
                         BillMasterId = bill.Id,
                         FeeTemplateDetailId = Guid.Empty,
-                        FeeHeadId = Guid.Empty,
+                        FeeHeadId = Guid.Parse("28A6E032-647D-40DC-B31D-0754FDE086E8"),//monthly fee head
                         Amount = request.Admission.MonthlyFeeAmount
                     };
                     bill.Details.Add(billDetail);

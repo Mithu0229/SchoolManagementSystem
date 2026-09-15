@@ -56,10 +56,7 @@ export class DashboardTabComponent implements OnInit {
   studentForm!: FormGroup;
   studentData: any = {};
 
-  student = {
-    name: 'Ibtida Elaf Jinan',
-    initials: 'IJ',
-  };
+  student: any = {};
 
   profileFields: StudentProfileField[] = [
     { label: 'DOB', value: '11/Feb/2015', key: 'dateOfBirth' },
@@ -79,10 +76,7 @@ export class DashboardTabComponent implements OnInit {
 
   paidFees: PaidFeeRow[] = [];
 
-  readonly classTeacher = {
-    name: 'Ms. Rokhsana Titlee',
-    phone: '01915686300',
-  };
+  readonly classTeacher: any = {};
 
   ngOnInit(): void {
     this.initForm();

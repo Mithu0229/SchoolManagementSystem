@@ -15,28 +15,73 @@ public class GetFeesDueByStudentIdQueryHandler : IHttpRequestHandler<GetFeesDueB
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IResult> Handle(GetFeesDueByStudentIdQuery request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(
+     GetFeesDueByStudentIdQuery request,
+     CancellationToken cancellationToken)
     {
         try
         {
-            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true)
-                .Include(x => x.Admission)
-                .Where(x => x.Admission.StudentId == request.StudentId
-                            && x.BillMonth == request.Month
-                            && x.BillYear == request.Year);
+            // Create date using requested year/month and current day
+            var currentDay = DateTime.Now.Day;
 
-            var items = await query.Select(x => new FeesDueResponse
+            // Prevent invalid date, e.g. February 30
+            var day = Math.Min(
+                currentDay,
+                DateTime.DaysInMonth(request.Year, request.Month)
+            );
+
+            var installmentDate = new DateTime(
+                request.Year,
+                request.Month,
+                day
+            );
+
+            // Get student's unpaid bills up to requested month
+            var bills = await _unitOfWork.BillMasterRepository
+                .GetAllNoneDeleted(false, true)
+                .Where(x =>
+                    x.Admission != null &&
+                    x.Admission.Student != null &&
+                    x.Admission.StudentId == request.StudentId &&
+                    !x.IsPaid &&
+                    !x.IsActive &&
+                    (
+                        x.BillYear < request.Year ||
+                        (
+                            x.BillYear == request.Year &&
+                            x.BillMonth <= request.Month
+                        )
+                    )
+                )
+                .ToListAsync(cancellationToken);
+
+            // Calculate total due amount
+            var totalAmount = bills.Sum(x => x.TotalAmount);
+
+            // Get month name
+            var installment = CultureInfo.CurrentCulture
+                .DateTimeFormat
+                .GetMonthName(request.Month);
+
+            // Create response
+            var response = new List<FeesDueResponse>
+        {
+            new FeesDueResponse
             {
-                Installment = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(x.BillMonth),
-                Date = "-", // You can format a specific date if applicable
-                Amount = $"{x.TotalAmount:N2}/-"
-            }).ToListAsync(cancellationToken);
+                Amount = totalAmount.ToString(),
+                Date = installmentDate.ToString("dd/MM/yyyy"),
+                Installment = installment
+            }
+        };
 
-            return Result.Success(items);
+            return Result.Success(response);
         }
         catch (Exception ex)
         {
-            return Result.Fail<List<FeesDueResponse>>(StatusCodes.Status500InternalServerError, ex.Message);
+            return Result.Fail<List<FeesDueResponse>>(
+                StatusCodes.Status500InternalServerError,
+                ex.Message
+            );
         }
     }
 }

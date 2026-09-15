@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { StudentService } from '../../../../../core/services/student.service';
 
 interface FeeSummary {
   title: string;
@@ -19,16 +20,30 @@ interface FeeHistory {
   templateUrl: './fees-info-tab.component.html',
   styleUrl: './fees-info-tab.component.scss',
 })
-export class FeesInfoTabComponent {
-  readonly summary: FeeSummary[] = [
-    { title: 'Monthly Fee', amount: 'Tk 3,500' },
-    { title: 'Exam Fee', amount: 'Tk 1,000' },
-    { title: 'Transport', amount: 'Tk 1,200' },
-  ];
+export class FeesInfoTabComponent implements OnInit {
+  summary: FeeSummary[] = [];
+  history: FeeHistory[] = [];
+  loading = true;
 
-  readonly history: FeeHistory[] = [
-    { month: 'January', amount: 'Tk 5,700', status: 'Paid' },
-    { month: 'February', amount: 'Tk 5,700', status: 'Paid' },
-    { month: 'March', amount: 'Tk 11,190', status: 'Due' },
-  ];
+  constructor(private studentService: StudentService) {}
+
+  ngOnInit(): void {
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      this.studentService.getFeeInfoByStudent(studentId).subscribe({
+        next: (res) => {
+          if (res.isSuccess && res.data) {
+            this.summary = res.data.summary || [];
+            this.history = res.data.history || [];
+          }
+          this.loading = false;
+        },
+        error: () => {
+          this.loading = false;
+        }
+      });
+    } else {
+      this.loading = false;
+    }
+  }
 }

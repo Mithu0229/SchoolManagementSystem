@@ -63,6 +63,12 @@ export class StudentService {
     );
   }
 
+  getFeeInfoByStudent(studentId: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `BillMaster/get-fee-info-by-student/${studentId}`
+    );
+  }
+
   getSmsHistoryByStudent(studentId: string): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(
       `Student/get-sms-history/${studentId}`

@@ -26,6 +26,10 @@ public class UserLoginCommandHandler : IHttpRequestHandler<UserLoginCommand>
                 return Result.Fail<LoginUserResponse>(StatusCodes.Status400BadRequest, "Wrong Email or Password.");
             else
             {
+                if (!user.IsActive)
+                {
+                    return Result.Fail<LoginUserResponse>(StatusCodes.Status400BadRequest, "User not active contact with authorize person.");
+                }
                 var loginResult = await _loginService.LoginSuccessAsync(user, request.LoginUser.RememberMe, cancellationToken);
                 return Result.Success(loginResult);
             }

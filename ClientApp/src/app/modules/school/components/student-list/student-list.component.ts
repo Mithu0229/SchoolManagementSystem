@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, TitleCasePipe, DecimalPipe } from '@angular/common';
+import { BillMasterService } from '../../services/bill-master.service';
 import {
   FormBuilder,
   FormGroup,
@@ -61,10 +62,14 @@ export class StudentListComponent implements OnInit {
   studentForm: FormGroup;
   submitted: boolean = false;
 
+  reportDialog: boolean = false;
+  currentReceipt: any = null;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private messageService: MessageService,
+    private billMasterService: BillMasterService,
   ) {
     this.studentForm = this.fb.group({
       studentId: [null, Validators.required],
@@ -88,6 +93,12 @@ export class StudentListComponent implements OnInit {
           label: 'Edit',
           icon: 'pi pi-pencil',
           callback: (row: any) => this.openEdit(row),
+          visible: () => true,
+        },
+        {
+          label: 'Print Bill',
+          icon: 'pi pi-print',
+          callback: (row: any) => this.viewReport(row),
           visible: () => true,
         },
       ],
@@ -150,5 +161,45 @@ export class StudentListComponent implements OnInit {
         });
       },
     });
+  }
+
+  viewReport(student: any) {
+    this.billMasterService.getStudentPaidBillReport(student.studentId).subscribe({
+      next: (res) => {
+        if (res.isSuccess && res.data) {
+          this.currentReceipt = res.data;
+          this.reportDialog = true;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No paid bills found for this student',
+          });
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load receipt',
+        });
+      },
+    });
+  }
+
+  hideReportDialog() {
+    this.reportDialog = false;
+    this.currentReceipt = null;
+  }
+
+  printReport() {
+    const printContent = document.getElementById('print-section');
+    if (printContent) {
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }
   }
 }
