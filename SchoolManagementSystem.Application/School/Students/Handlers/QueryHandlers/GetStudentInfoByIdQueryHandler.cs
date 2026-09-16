@@ -37,6 +37,10 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                     .Include(x => x.Shift)
                     .Include(x=>x.Teacher)
                     .FirstOrDefaultAsync(x => x.StudentId == request.Id);
+                if(admission == null)
+                {
+                    return Result.Fail<StudentInfoResponse>(StatusCodes.Status404NotFound, "Not yet admission");
+                }
 
                 var response = new StudentInfoResponse
                 {

@@ -22,10 +22,20 @@ public class UserLoginCommandHandler : IHttpRequestHandler<UserLoginCommand>
                 .Where(u => u.Email == request.LoginUser.Email)
                 .FirstOrDefaultAsync(cancellationToken);
 
+
             if (user == null)
                 return Result.Fail<LoginUserResponse>(StatusCodes.Status400BadRequest, "Wrong Email or Password.");
             else
             {
+                if (string.IsNullOrWhiteSpace(user.Password) ||
+           !BCrypt.Net.BCrypt.Verify(request.LoginUser.Password, user.Password))
+                {
+                    return Result.Fail<UserResponse>(
+                        StatusCodes.Status401Unauthorized,
+                        "Invalid email or password."
+                    );
+                }
+
                 if (!user.IsActive)
                 {
                     return Result.Fail<LoginUserResponse>(StatusCodes.Status400BadRequest, "User not active contact with authorize person.");

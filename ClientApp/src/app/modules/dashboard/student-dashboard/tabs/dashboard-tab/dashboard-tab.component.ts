@@ -112,7 +112,6 @@ export class DashboardTabComponent implements OnInit {
     if (!this.studentId) return;
     this.studentService.getStudentById(this.studentId).subscribe({
       next: (res) => {
-        debugger;
         if (res.isSuccess && res.data) {
           this.studentData = res.data;
           this.student.name = this.studentData.fullName || this.student.name;
@@ -120,7 +119,6 @@ export class DashboardTabComponent implements OnInit {
 
           this.studentForm.patchValue(this.studentData);
           this.updateProfileFields(this.studentData);
-          debugger;
           this.classTeacher.name = res.data.teacherName;
           this.classTeacher.phone = res.data.teacherContact;
         }
@@ -231,7 +229,6 @@ export class DashboardTabComponent implements OnInit {
   }
 
   saveProfile(): void {
-    debugger;
     if (this.studentForm.invalid) return;
 
     const payload = this.studentForm.value;
