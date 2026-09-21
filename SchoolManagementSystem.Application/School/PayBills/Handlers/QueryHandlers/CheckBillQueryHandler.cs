@@ -59,7 +59,7 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
                 return Result.Fail(new CheckBillResponse
                 {
                     ErrorCode = "404",
-                    ErrorMsg = "Data not found or already paid"
+                    ErrorMsg = "Data not found"
                 });
             }
 
@@ -128,7 +128,7 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
                 ErrorMsg = "Successful",
                 ConsumerName = consumerName,
                 BillMonth = req.BillMonth,
-                BillAmount = bill.Sum(x => x.TotalAmount).ToString("0.##"),
+                BillAmount = (bill.Sum(x => x.TotalAmount) - (bill.Sum(x=>x.CollectionAmount))).ToString("0.##"),
                 //BillDueDate = dueDateStr,
                 //QueryTime = queryTimeStr,
                 //AmountBreakdown = breakdownStr
