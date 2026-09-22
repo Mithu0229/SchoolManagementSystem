@@ -17,6 +17,8 @@ public class BkashTransactionResponse
     //
     public string? ConsumerName { get; set; }
     public string? TotalAmount { get; set; }
+    public string? PaidAmount { get; set; }
+    public string? DueAmount { get; set; }
     public string? TrxId { get; set; }
     //public string? MiddlewarePayTime { get; set; }
     //public string? RefNumber { get; set; }

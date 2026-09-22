@@ -3,63 +3,85 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
-            <p class="text-sm text-gray-500 mt-1">Welcome back! Here's an overview of your institution.</p>
+            <p class="text-sm text-gray-500 mt-1">Welcome back! Here's an overview of your institution's live data.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 transition flex items-center gap-2">
-                <i class="pi pi-calendar"></i>
-                <span class="text-sm font-medium">This Month</span>
+            <button (click)="loadDashboardStats()" [disabled]="isLoading()"
+                class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-xl shadow-sm hover:bg-gray-50 transition flex items-center gap-2 cursor-pointer">
+                <i class="pi" [ngClass]="isLoading() ? 'pi-spin pi-spinner' : 'pi-refresh'"></i>
+                <span class="text-sm font-medium">{{ isLoading() ? 'Refreshing...' : 'Refresh Data' }}</span>
             </button>
-            <button class="bg-[#046492] text-white px-4 py-2 rounded-xl shadow-sm hover:bg-[#034d70] transition flex items-center gap-2">
-                <i class="pi pi-download"></i>
-                <span class="text-sm font-medium">Generate Report</span>
-            </button>
+            <a routerLink="/application/admission"
+                class="bg-[#046492] text-white px-4 py-2 rounded-xl shadow-sm hover:bg-[#034d70] transition flex items-center gap-2 text-decoration-none">
+                <i class="pi pi-user-plus"></i>
+                <span class="text-sm font-medium">New Admission</span>
+            </a>
         </div>
     </div>
 
     <!-- Stat Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Card 1 -->
+        <!-- Card 1: Total Students -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
             <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
                 <i class="pi pi-users"></i>
             </div>
-            <div>
+            <div class="flex-1">
                 <p class="text-sm text-gray-500 font-medium">Total Students</p>
-                <h3 class="text-2xl font-bold text-gray-800 mt-1">2,450</h3>
+                <div *ngIf="isLoading()">
+                    <p-skeleton width="60%" height="2rem" styleClass="mt-1"></p-skeleton>
+                </div>
+                <h3 *ngIf="!isLoading()" class="text-2xl font-bold text-gray-800 mt-1">
+                    {{ (stats()?.totalStudents ?? 0) | number }}
+                </h3>
             </div>
         </div>
         
-        <!-- Card 2 -->
+        <!-- Card 2: Revenue Collected -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
             <div class="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0">
                 <i class="pi pi-dollar"></i>
             </div>
-            <div>
+            <div class="flex-1">
                 <p class="text-sm text-gray-500 font-medium">Revenue Collected</p>
-                <h3 class="text-2xl font-bold text-gray-800 mt-1">$45,200</h3>
+                <div *ngIf="isLoading()">
+                    <p-skeleton width="70%" height="2rem" styleClass="mt-1"></p-skeleton>
+                </div>
+                <h3 *ngIf="!isLoading()" class="text-2xl font-bold text-gray-800 mt-1">
+                    ${{ (stats()?.totalRevenue ?? 0) | number:'1.2-2' }}
+                </h3>
             </div>
         </div>
         
-        <!-- Card 3 -->
+        <!-- Card 3: Total Admissions -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
             <div class="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0">
-                <i class="pi pi-user-plus"></i>
+                <i class="pi pi-id-card"></i>
             </div>
-            <div>
-                <p class="text-sm text-gray-500 font-medium">New Admissions</p>
-                <h3 class="text-2xl font-bold text-gray-800 mt-1">124</h3>
+            <div class="flex-1">
+                <p class="text-sm text-gray-500 font-medium">Total Admissions</p>
+                <div *ngIf="isLoading()">
+                    <p-skeleton width="50%" height="2rem" styleClass="mt-1"></p-skeleton>
+                </div>
+                <h3 *ngIf="!isLoading()" class="text-2xl font-bold text-gray-800 mt-1">
+                    {{ (stats()?.totalAdmissions ?? 0) | number }}
+                </h3>
             </div>
         </div>
         
-        <!-- Card 4 -->
+        <!-- Card 4: Total Staff -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center gap-4 hover:shadow-md transition">
             <div class="w-12 h-12 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0">
                 <i class="pi pi-briefcase"></i>
             </div>
-            <div>
-                <p class="text-sm text-gray-500 font-medium">Total Staff</p>
-                <h3 class="text-2xl font-bold text-gray-800 mt-1">112</h3>
+            <div class="flex-1">
+                <p class="text-sm text-gray-500 font-medium">Total Teachers / Staff</p>
+                <div *ngIf="isLoading()">
+                    <p-skeleton width="50%" height="2rem" styleClass="mt-1"></p-skeleton>
+                </div>
+                <h3 *ngIf="!isLoading()" class="text-2xl font-bold text-gray-800 mt-1">
+                    {{ (stats()?.totalTeachers ?? 0) | number }}
+                </h3>
             </div>
         </div>
     </div>
@@ -69,81 +91,80 @@
         <!-- Bar Chart Section (Spans 2 columns) -->
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-semibold text-gray-800">Revenue & Expenses Overview</h3>
-                <button class="text-gray-400 hover:text-gray-600 transition"><i class="pi pi-ellipsis-h"></i></button>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Revenue & Dues Overview</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Monthly fee collections and pending amounts</p>
+                </div>
+                <button (click)="loadDashboardStats()" class="text-gray-400 hover:text-gray-600 transition" title="Refresh">
+                    <i class="pi pi-sync"></i>
+                </button>
             </div>
             <div class="flex-1 min-h-[300px] w-full relative">
-                <p-chart type="bar" [data]="barData" [options]="barOptions" height="300px"></p-chart>
+                <p-chart *ngIf="barData" type="bar" [data]="barData" [options]="barOptions" height="300px"></p-chart>
             </div>
         </div>
 
         <!-- Pie Chart Section (Spans 1 column) -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-semibold text-gray-800">Student Demographics</h3>
-                <button class="text-gray-400 hover:text-gray-600 transition"><i class="pi pi-ellipsis-h"></i></button>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-800">Class Demographics</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Admissions distributed by class</p>
+                </div>
+                <span class="text-xs font-semibold text-[#046492] bg-blue-50 px-2 py-1 rounded-md">Live</span>
             </div>
             <div class="flex-1 min-h-[300px] w-full relative">
-                <p-chart type="pie" [data]="pieData" [options]="pieOptions" height="300px"></p-chart>
+                <p-chart *ngIf="pieData" type="pie" [data]="pieData" [options]="pieOptions" height="300px"></p-chart>
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity Section (Full Width) -->
+    <!-- Recent Admissions Section (Full Width) -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
-            <button class="text-sm text-[#046492] font-medium hover:underline transition">View All</button>
+            <div>
+                <h3 class="text-lg font-semibold text-gray-800">Recent Admissions</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Latest students admitted to the institution</p>
+            </div>
+            <a routerLink="/application/admission" class="text-sm text-[#046492] font-medium hover:underline transition">View All Admissions</a>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Activity Item -->
-            <div class="flex gap-4 p-4 rounded-xl border border-gray-50 bg-gray-50/50">
+        <div *ngIf="isLoading()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div *ngFor="let i of [1, 2, 3]" class="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
+                <p-skeleton width="80%" height="1.25rem"></p-skeleton>
+                <p-skeleton width="60%" height="0.875rem" styleClass="mt-2"></p-skeleton>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading() && (stats()?.recentAdmissions?.length ?? 0) > 0"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Activity Items -->
+            <div *ngFor="let item of stats()?.recentAdmissions"
+                class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition">
                 <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                    <i class="pi pi-user-plus text-sm"></i>
+                    <i class="pi pi-user text-sm"></i>
                 </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">New student enrolled</p>
-                    <p class="text-xs text-gray-500 mt-1">Sarah Jenkins joined Grade 10-A</p>
-                    <p class="text-xs text-gray-400 mt-1">2 hours ago</p>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-sm font-semibold text-gray-800 truncate">{{ item.studentName }}</p>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                            [ngClass]="item.status === 'Passed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'">
+                            {{ item.status }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Class: <span class="font-medium text-gray-700">{{ item.className }}</span> | Roll: <span class="font-medium text-gray-700">{{ item.rollNo }}</span></p>
+                    <p class="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                        <i class="pi pi-calendar text-[10px]"></i>
+                        {{ item.admissionDate | date:'mediumDate' }}
+                    </p>
                 </div>
             </div>
+        </div>
 
-            <!-- Activity Item -->
-            <div class="flex gap-4 p-4 rounded-xl border border-gray-50 bg-gray-50/50">
-                <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center shrink-0">
-                    <i class="pi pi-check-circle text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Fee payment received</p>
-                    <p class="text-xs text-gray-500 mt-1">$500 paid by Michael Smith</p>
-                    <p class="text-xs text-gray-400 mt-1">5 hours ago</p>
-                </div>
-            </div>
-
-            <!-- Activity Item -->
-            <div class="flex gap-4 p-4 rounded-xl border border-gray-50 bg-gray-50/50">
-                <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
-                    <i class="pi pi-calendar text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Event created</p>
-                    <p class="text-xs text-gray-500 mt-1">Annual Sports Day scheduled</p>
-                    <p class="text-xs text-gray-400 mt-1">Yesterday</p>
-                </div>
-            </div>
-            
-            <!-- Activity Item -->
-            <div class="flex gap-4 p-4 rounded-xl border border-gray-50 bg-gray-50/50">
-                <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-                    <i class="pi pi-bell text-sm"></i>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-800">System Notification</p>
-                    <p class="text-xs text-gray-500 mt-1">Weekly backup completed successfully</p>
-                    <p class="text-xs text-gray-400 mt-1">Yesterday</p>
-                </div>
-            </div>
+        <div *ngIf="!isLoading() && (!stats()?.recentAdmissions || stats()?.recentAdmissions?.length === 0)"
+            class="py-12 text-center text-gray-400">
+            <i class="pi pi-inbox text-3xl mb-2"></i>
+            <p class="text-sm">No recent admission records found.</p>
         </div>
     </div>
 </div>

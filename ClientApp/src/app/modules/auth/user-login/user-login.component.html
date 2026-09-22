@@ -1,40 +1,73 @@
-<p-fluid *ngIf="!showTwoFactor()">
-    <div class="flex mt-8 max-w-[468px] mx-auto">
-        <div class="card flex flex-col gap-6 w-full !p-12 !rounded-[48px]">
-            <!-- <app-form-header [formHeaderInfo]="formHeaderInfo"></app-form-header> -->
-            <p-message severity="error" *ngIf="errorMessage()" icon="pi pi-exclamation-circle" styleClass="mb-2"
-                [closable]="true">{{ errorMessage() }}</p-message>
-            <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" novalidate>
-                <div class="flex flex-col gap-3">
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="email">E-mail</label>
-                        <input id="email" type="text" pInputText formControlName="email" placeholder="Enter e-mail"
-                            [ngClass]="{ 'p-invalid': isInvalid('email') }" />
-                        <app-error-message *ngIf="isInvalid('email')"
-                            message="Please enter a valid email address"></app-error-message>
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full">
-                        <label for="password">Password</label>
-                        <input id="password" type="password" pInputText formControlName="password"
-                            placeholder="Enter password" [ngClass]="{ 'p-invalid': isInvalid('password') }" />
-                        <app-error-message *ngIf="isInvalid('password')"
-                            message="Please enter your password"></app-error-message>
-                    </div>
-                    <div class="flex items-center justify-end w-full mt-2">
-                        <!-- <a [routerLink]="['/user-register']"
-                            class="font-medium text-[#B70F76] underline ml-1">Register?</a> -->
-                        <a [routerLink]="['/register-student']"
-                            class="font-medium text-[#B70F76] underline ml-1">Register?</a>
-                    </div>
-                    <button pButton type="submit" [disabled]="loginForm.invalid || isSigningIn()"
-                        class="primary-button">
-                        <i class="pi pi-spinner pi-spin" *ngIf="isSigningIn()"></i>
-                        <span>{{ isSigningIn() ? 'Signing in...' : 'Sign in' }}</span>
-                    </button>
+<div class="login-page-container" *ngIf="!showTwoFactor()">
+    <div class="login-card-wrapper" [@fadeIn]>
+        <div class="login-card">
+            <!-- Brand Logo & Header -->
+            <div class="login-brand-header">
+                <div class="login-logo-container">
+                    <img src="assets/Edugates_Logo1.png" alt="Edugates School Management System" class="login-logo" />
                 </div>
+                <!-- <h1 class="login-title">Edugates</h1>
+                <p class="login-subtitle">School Management System</p>
+                <div class="login-badge">
+                    <span>Sign in to your account</span>
+                </div> -->
+            </div>
+
+            <!-- Error Banner -->
+            <p-message severity="error" *ngIf="errorMessage()" icon="pi pi-exclamation-circle" styleClass="w-full mb-3"
+                [closable]="true">{{ errorMessage() }}</p-message>
+
+            <!-- Login Form -->
+            <form [formGroup]="loginForm" (ngSubmit)="handleSubmit()" novalidate class="login-form">
+                <div class="form-group">
+                    <label for="email" class="form-label">
+                        <i class="pi pi-envelope form-label-icon"></i> Email Address
+                    </label>
+                    <div class="input-wrapper">
+                        <input id="email" type="email" pInputText formControlName="email" placeholder="Enter your email"
+                            [ngClass]="{ 'p-invalid': isInvalid('email') }" class="w-full custom-input"
+                            autocomplete="email" />
+                    </div>
+                    <app-error-message *ngIf="isInvalid('email')"
+                        message="Please enter a valid email address"></app-error-message>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="pi pi-lock form-label-icon"></i> Password
+                    </label>
+                    <div class="input-wrapper">
+                        <input id="password" type="password" pInputText formControlName="password"
+                            placeholder="Enter your password" [ngClass]="{ 'p-invalid': isInvalid('password') }"
+                            class="w-full custom-input" autocomplete="current-password" />
+                    </div>
+                    <app-error-message *ngIf="isInvalid('password')"
+                        message="Please enter your password"></app-error-message>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <p-checkbox [binary]="true" formControlName="rememberMe" inputId="rememberMe"></p-checkbox>
+                        <label for="rememberMe" class="remember-label">Remember me</label>
+                    </div>
+                    <a [routerLink]="['/register-student']" class="register-link">
+                        <span>New student?</span> <span class="register-highlight">Register</span>
+                    </a>
+                </div>
+
+                <button pButton type="submit" [disabled]="loginForm.invalid || isSigningIn()"
+                    class="login-submit-btn primary-button w-full">
+                    <i class="pi pi-spinner pi-spin mr-2" *ngIf="isSigningIn()"></i>
+                    <i class="pi pi-sign-in mr-2" *ngIf="!isSigningIn()"></i>
+                    <span>{{ isSigningIn() ? 'Signing in...' : 'Sign In' }}</span>
+                </button>
             </form>
+
+            <div class="login-footer">
+                <p>© 2026 Edugates. All rights reserved.</p>
+            </div>
         </div>
     </div>
-</p-fluid>
+</div>
 
 <!-- <app-verify-code *ngIf="showTwoFactor()" [email]="loginForm.get('email')?.value ?? ''" (verified)="handleTwoFactorVerified()" (resendOtpEvent)="resendOtp()"></app-verify-code> -->

@@ -17,7 +17,22 @@
     &-logo {
         display: flex;
         align-items: center;
+        gap: 0.75rem;
         height: 100%;
+        text-decoration: none;
+        cursor: pointer;
+
+        .topbar-brand-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-color, #1e293b);
+            letter-spacing: -0.02em;
+            display: none;
+
+            @media (min-width: 640px) {
+                display: inline-block;
+            }
+        }
     }
 
     &-actions {
@@ -29,6 +44,29 @@
     &-menu {
         display: flex;
         align-items: center;
+    }
+}
+
+.topbar-home-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--text-color, #4b5563);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    i {
+        font-size: 1.2rem;
+    }
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--primary-color, #202152);
+        transform: scale(1.05);
     }
 }
 

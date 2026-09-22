@@ -155,9 +155,9 @@ export class AppLayout {
       });
     // Set home breadcrumb
     this.home = {
-      // icon: 'pi pi-home',
+      icon: 'pi pi-home',
       label: 'Home',
-      routerLink: '/',
+      routerLink: '/admin',
     };
   }
 

@@ -18,7 +18,7 @@ import { NgIf } from '@angular/common';
 
       <ng-template #defaultLogo>
         <img
-          src="assets/Edugates_Logo.png"
+          src="assets/Edugates_Logo1.png"
           alt="Edugates Logo"
           class="tenant-logo"
           [height]="56"

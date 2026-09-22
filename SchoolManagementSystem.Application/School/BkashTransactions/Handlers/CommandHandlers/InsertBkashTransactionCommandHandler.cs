@@ -46,10 +46,23 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
             //}
 
             // 3. Parse BillMonth (MMYYYY)
+
             if (!TryParseBillMonth(req.BillMonth, out int month, out int year))
             {
                 return Result.Fail<BkashTransactionResponse>(435, "Data Mismatch");
 
+            }
+            var currentDate = DateTime.Now;
+
+            var billDate = new DateTime(year, month, 1);
+            var currentMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+
+            if (billDate > currentMonth)
+            {
+                return Result.Fail<BkashTransactionResponse>(
+                    435,
+                    "Data Mismatch."
+                );
             }
             var billMaster = await _unitOfWork.BillMasterRepository
                         .GetAllNoneDeleted(false, true)
@@ -114,7 +127,9 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
             var response = new BkashTransactionResponse
             {
                 TrxId = collectionResponse.TrxId,
-                TotalAmount = collectionResponse.PaidAmount.ToString(),
+                TotalAmount = collectionResponse.TotalAmount.ToString(),
+                PaidAmount = collectionResponse.PaidAmount.ToString(),
+                DueAmount = collectionResponse.DueAmount.ToString(),
                 ErrorMsg = collectionResponse.Message!,
                 ErrorCode = "200",
                 ConsumerName = collectionResponse.StCID

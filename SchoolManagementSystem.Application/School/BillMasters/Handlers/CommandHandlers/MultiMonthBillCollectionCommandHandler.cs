@@ -35,6 +35,12 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                 .ToListAsync(cancellationToken);
             if (bills.Count > 0)
             {
+                if ((bills.Sum(x => x.TotalAmount)- bills.Sum(x => x.CollectionAmount)) < req.CollectionAmount)
+                {
+                    var t = bills.Sum(x => x.TotalAmount);
+                    var s = bills.Sum(x => x.CollectionAmount);
+                    return Result.Fail<MultiMonthBillCollectionResponse>(439, "Pay amount and biller amount not match");
+                }
                 string stdCID = bills.First().Admission.Student.StdCID;
 
                 if (!bills.Any())
@@ -230,8 +236,8 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                     VoucherNo = voucherNo,
                     PaidBillsCount = paidBillsCount,
                     TotalAmount = Returnbills.Sum(x => x.TotalAmount),
-                    PaidAmount = Returnbills.Sum(x => x.CollectionAmount),
-                    DueAmount = Returnbills.Sum(x => x.DueAmount),
+                    PaidAmount = req.CollectionAmount,
+                    DueAmount = Returnbills.Sum(x => x.TotalAmount)-Returnbills.Sum(x => x.CollectionAmount),
                     StCID = Returnbills.FirstOrDefault()!.Admission.Student.StdCID,
                     Message = "Successfully paid bills",
                     TrxId = req.TrxId

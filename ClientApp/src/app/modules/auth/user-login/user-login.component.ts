@@ -1,5 +1,4 @@
 import { Component, signal } from '@angular/core';
-import { Fluid } from 'primeng/fluid';
 import {
   FormControl,
   FormGroup,
@@ -21,7 +20,6 @@ import { AuthService } from '../../../core/services/auth.service';
   selector: 'app-user-login',
   imports: [
     CheckboxModule,
-    Fluid,
     ButtonModule,
     ErrorMessageComponent,
     ReactiveFormsModule,
@@ -64,7 +62,7 @@ export class UserLoginComponent {
     private readonly route: ActivatedRoute,
     private readonly authService: AuthService,
   ) {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
   }
 
   handleSubmit() {
@@ -92,7 +90,7 @@ export class UserLoginComponent {
                 queryParams: { studentId: res.data?.studentId },
               });
             } else {
-              this.router.navigateByUrl('');
+              this.router.navigateByUrl('/admin');
             }
             //   console.log(res);
 
