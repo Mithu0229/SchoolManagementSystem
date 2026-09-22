@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
+using SchoolManagementSystem.Application.School.BkashTransactions.Models;
 using SchoolManagementSystem.Application.School.PayBills.Models;
 
 namespace SchoolManagementSystem.Application.School.PayBills.Handlers.QueryHandlers;
@@ -25,19 +26,25 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
         }
 
         // 2. Authentication Check (Code 403)
-        //if (await ValidateCredentials(req.UserName, req.Password) == false)
-        //{
-        //    return Result.Fail<CheckBillResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-        //}
+
+        var student = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.StdCID == req.RefID);
+        if (student == null)
+        {
+            return Result.Fail<CheckBillResponse>(StatusCodes.Status403Forbidden, "Authentication Failed");
+        }
 
         // 3. Parse BillMonth (MMYYYY)
         if (!TryParseBillMonth(req.BillMonth, out int month, out int year))
         {
-            return Result.Fail(new CheckBillResponse
-            {
-                ErrorCode = "435",
-                ErrorMsg = "Data Mismatch"
-            });
+            return Result.Fail<CheckBillResponse>(435, "Data Mismatch");
+        }
+
+        var billDate = new DateTime(year, month, 1);
+        var currentMonth = new DateTime(year, month, 1);
+
+        if (billDate > currentMonth)
+        {
+            return Result.Fail<BkashTransactionResponse>(437, "Due date over");
         }
 
         try
@@ -56,60 +63,22 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
 
             if (bill.Count == 0)
             {
-                return Result.Fail(new CheckBillResponse
+                var Paidbill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
+                .Include(x => x.Admission)
+                    .ThenInclude(a => a.Student)
+                .Include(x => x.Details)
+                    .ThenInclude(d => d.FeeHead)
+                .Where(x => (x.BillYear < year ||
+                            (x.BillYear == year && x.BillMonth <= month))
+                            && x.IsPaid && x.IsActive &&
+                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StdCID!.ToLower() == req.RefID)))
+                .ToListAsync(cancellationToken);
+                if (Paidbill.Count > 0)
                 {
-                    ErrorCode = "404",
-                    ErrorMsg = "Data not found"
-                });
+                    return Result.Fail<CheckBillResponse>(436, "Already paid");
+                }
+                return Result.Fail<CheckBillResponse>(404, "Data not found");
             }
-
-            // 5. Already Paid Check (Code 436)
-            if (bill.Any(x => x.IsActive))
-            {
-                return Result.Success(new CheckBillResponse
-                {
-                    ErrorCode = "436",
-                    ErrorMsg = "Already paid"
-                });
-            }
-
-            // 6. Amount Check (if provided)
-            //if (!string.IsNullOrWhiteSpace(req.Amount))
-            //{
-            //    if (decimal.TryParse(req.Amount, out var requestedAmount))
-            //    {
-            //        if (requestedAmount < bill.TotalAmount)
-            //        {
-            //            return Result.Fail(new CheckBillResponse
-            //            {
-            //                ErrorCode = "438",
-            //                ErrorMsg = "Minimum amount not paid"
-            //            });
-            //        }
-
-            //        if (requestedAmount != bill.TotalAmount)
-            //        {
-            //            return Result.Fail(new CheckBillResponse
-            //            {
-            //                ErrorCode = "439",
-            //                ErrorMsg = "Pay amount and biller amount not match"
-            //            });
-            //        }
-            //    }
-            //}
-
-            // Build Amount Breakdown
-            //string? breakdownStr = null;
-            //if (bill.Details != null && bill.Details.Any())
-            //{
-            //    var breakdownDict = bill.Details
-            //        .Where(d => d.FeeHead != null)
-            //        .ToDictionary(
-            //            d => d.FeeHead?.FeeHeadName ?? "Fee",
-            //            d => (int)d.Amount
-            //        );
-            //    breakdownStr = JsonSerializer.Serialize(breakdownDict);
-            //}
 
             // Bill Due Date (last day of the bill month)
             var lastDayOfMonth = DateTime.DaysInMonth(year, month);
@@ -121,38 +90,22 @@ public class CheckBillQueryHandler : IHttpRequestHandler<CheckBillCommand>
             {
                 consumerName = bill.FirstOrDefault()!.Admission?.Student?.StdCID;
             }
-
             return Result.Success(new CheckBillResponse
             {
-                ErrorCode = "200",
-                ErrorMsg = "Successful",
                 ConsumerName = consumerName,
                 BillMonth = req.BillMonth,
-                BillAmount = (bill.Sum(x => x.TotalAmount) - (bill.Sum(x=>x.CollectionAmount))).ToString("0.##"),
-                //BillDueDate = dueDateStr,
-                //QueryTime = queryTimeStr,
-                //AmountBreakdown = breakdownStr
-            });
+                BillAmount = (bill.Sum(x => x.TotalAmount) - (bill.Sum(x => x.CollectionAmount))).ToString("0.##"),
+
+            }, "Success", 200);
+
         }
         catch (Exception ex)
         {
-            return Result.Fail(new CheckBillResponse
-            {
-                ErrorCode = "435",
-                ErrorMsg = $"Data Mismatch: {ex.Message}"
-            });
+            return Result.Fail<CheckBillResponse>(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
-
-    private async Task<bool> ValidateCredentials(string userName, string password)
-    {
-        var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.Email == userName);
-        if (user == null)
-            return false;
-
-        return BCrypt.Net.BCrypt.Verify(password, user.Password);
-    }
-
+    
+    
     private bool TryParseBillMonth(string billMonth, out int month, out int year)
     {
         month = 0;

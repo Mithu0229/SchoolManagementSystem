@@ -44,7 +44,7 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                 string stdCID = bills.First().Admission.Student.StdCID;
 
                 if (!bills.Any())
-                    return Result.Fail<MultiMonthBillCollectionResponse>(StatusCodes.Status404NotFound, "No unpaid bills found");
+                    return Result.Fail<MultiMonthBillCollectionResponse>(StatusCodes.Status404NotFound, "Data not found");
                 // 2. Process Additional Details (ad-hoc charges, fines, etc.) onto the first bill
                 if (req.AdditionalDetails != null && req.AdditionalDetails.Any())
                 {

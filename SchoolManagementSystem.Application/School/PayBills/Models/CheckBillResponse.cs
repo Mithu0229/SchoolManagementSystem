@@ -2,8 +2,8 @@ namespace SchoolManagementSystem.Application.School.PayBills.Models;
 
 public class CheckBillResponse
 {
-    public string ErrorCode { get; set; } = string.Empty;
-    public string ErrorMsg { get; set; } = string.Empty;
+    //public string ErrorCode { get; set; } = string.Empty;
+    //public string ErrorMsg { get; set; } = string.Empty;
     public string? ConsumerName { get; set; }
     public string? BillMonth { get; set; }
     public string? BillAmount { get; set; }

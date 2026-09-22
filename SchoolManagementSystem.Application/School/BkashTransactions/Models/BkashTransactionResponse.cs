@@ -4,8 +4,8 @@ namespace SchoolManagementSystem.Application.School.BkashTransactions.Models;
 
 public class BkashTransactionResponse
 {
-    public string ErrorCode { get; set; } = string.Empty;
-    public string ErrorMsg { get; set; } = string.Empty;
+    //public string ErrorCode { get; set; } = string.Empty;
+    //public string ErrorMsg { get; set; } = string.Empty;
     //public Guid Id { get; set; }
     //public DateTime? Date { get; set; }
     //public string TransactionType { get; set; } = string.Empty;

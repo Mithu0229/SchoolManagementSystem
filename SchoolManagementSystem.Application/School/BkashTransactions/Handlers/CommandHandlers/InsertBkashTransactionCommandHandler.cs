@@ -5,6 +5,7 @@ using SchoolManagementSystem.Application.School.BillMasters.Commands;
 using SchoolManagementSystem.Application.School.BillMasters.Models;
 using SchoolManagementSystem.Application.School.BkashTransactions.Commands;
 using SchoolManagementSystem.Application.School.BkashTransactions.Models;
+using SchoolManagementSystem.Application.School.PayBills.Models;
 using SchoolManagementSystem.Domain.Enums;
 
 namespace SchoolManagementSystem.Application.School.BkashTransactions.Handlers.CommandHandlers;
@@ -40,10 +41,12 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
             }
 
             // 2. Authentication Check (Code 403)
-            //if (await ValidateCredentials(req.UserName, req.Password) == false)
-            //{
-            //    return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-            //}
+
+            var student = await _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.StdCID == req.RefId);
+            if (student == null)
+            {
+                return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication Failed");
+            }
 
             // 3. Parse BillMonth (MMYYYY)
 
@@ -59,23 +62,51 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
 
             if (billDate > currentMonth)
             {
-                return Result.Fail<BkashTransactionResponse>(
-                    435,
-                    "Data Mismatch."
-                );
+                return Result.Fail<BkashTransactionResponse>(437, "Due date over");
             }
-            var billMaster = await _unitOfWork.BillMasterRepository
-                        .GetAllNoneDeleted(false, true)
-                        .Include(x => x.Admission)
-                            .ThenInclude(x => x.Student)
-                        .Include(x => x.Details)
-                        .Where(x =>
-                            (x.BillYear < year ||
+
+            //var billMaster = await _unitOfWork.BillMasterRepository
+            //            .GetAllNoneDeleted(false, true)
+            //            .Include(x => x.Admission)
+            //                .ThenInclude(x => x.Student)
+            //            .Include(x => x.Details)
+            //            .Where(x =>
+            //                (x.BillYear < year ||
+            //                (x.BillYear == year && x.BillMonth <= month))
+            //                && !x.IsPaid)
+            //            .OrderBy(x => x.BillYear)
+            //            .ThenBy(x => x.BillMonth)
+            //            .ToListAsync(cancellationToken);
+
+            var billMaster = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
+                .Include(x => x.Admission)
+                    .ThenInclude(a => a.Student)
+                .Include(x => x.Details)
+                    .ThenInclude(d => d.FeeHead)
+                .Where(x => (x.BillYear < year ||
                             (x.BillYear == year && x.BillMonth <= month))
-                            && !x.IsPaid)
-                        .OrderBy(x => x.BillYear)
-                        .ThenBy(x => x.BillMonth)
-                        .ToListAsync(cancellationToken);
+                            && !x.IsPaid && !x.IsActive &&
+                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StdCID!.ToLower() == req.RefId)))
+                .ToListAsync(cancellationToken);
+            if (billMaster.Count == 0)
+            {
+                var Paidbill = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
+                .Include(x => x.Admission)
+                    .ThenInclude(a => a.Student)
+                .Include(x => x.Details)
+                    .ThenInclude(d => d.FeeHead)
+                .Where(x => (x.BillYear < year ||
+                            (x.BillYear == year && x.BillMonth <= month))
+                            && x.IsPaid && x.IsActive &&
+                            ((x.Admission != null && x.Admission.Student != null && x.Admission.Student.StdCID!.ToLower() == req.RefId)))
+                .ToListAsync(cancellationToken);
+                if (Paidbill.Count > 0)
+                {
+                    return Result.Fail<BkashTransactionResponse>(436, "Already paid");
+                }
+                return Result.Fail<BkashTransactionResponse>(404, "Data not found");
+
+            }
 
             var unpaidBillMasterIds = billMaster
                 .Where(x => x.Admission.Student.StdCID == req.RefId)
@@ -130,15 +161,14 @@ public class InsertBkashTransactionCommandHandler : IHttpRequestHandler<InsertBk
                 TotalAmount = collectionResponse.TotalAmount.ToString(),
                 PaidAmount = collectionResponse.PaidAmount.ToString(),
                 DueAmount = collectionResponse.DueAmount.ToString(),
-                ErrorMsg = collectionResponse.Message!,
-                ErrorCode = "200",
+                //ErrorMsg = collectionResponse.Message!,
                 ConsumerName = collectionResponse.StCID
 
             };
 
             return Result.Success(
                 response,
-                "BkashTransaction " + AlertMessage.SaveMessage);
+                collectionResponse.Message!,200);
         }
         catch (Exception ex)
         {
