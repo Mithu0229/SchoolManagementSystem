@@ -25,12 +25,6 @@ public class TSQQueryHandler : IHttpRequestHandler<TSQQueryCommand>
             return Result.Fail<TSQResponse>(StatusCodes.Status406NotAcceptable, "Mandatory Field missing");
         }
 
-        // 2. Authentication Check (Code 403)
-        //if (await ValidateCredentials(req.UserName, req.Password) == false)
-        //{
-        //    return Result.Fail<BkashTransactionResponse>(StatusCodes.Status403Forbidden, "Authentication failed");
-        //}
-
         try
         {
             var trxId = req.TrxId.Trim();
@@ -42,38 +36,28 @@ public class TSQQueryHandler : IHttpRequestHandler<TSQQueryCommand>
                         .ThenInclude(d => d.FeeHead)
                 .Where(x => x.TransactionNo == trxId || x.VoucherNo == trxId && x.Debit == 0)
                 .ToListAsync(cancellationToken);
-
-            if (bankBook != null)
+            if (bankBook.Count == 0)
             {
-               
-                var entity = new TSQResponse
-                {
-                    ErrorCode = "200",
-                    ErrorMsg = "Successful",
-                    TotalAmount = bankBook.Sum(x=>x.Credit).ToString("0.##"),
-                    TrxId = trxId,
-                    RefNumber = bankBook.FirstOrDefault()!.AccountNo.ToString(),
-                    CustomMessage = "{Status: Success}",
-                    MiddlewarePayTime =bankBook.FirstOrDefault()!.TransactionDate.TimeOfDay.ToString()
-                };
-
-                return Result.Success(entity, "Successful " + AlertMessage.SaveMessage);
+                return Result.Fail(404, "Data not found");
             }
 
-            // If not found
-            return Result.Fail(new TSQResponse
+            var entity = new TSQResponse
             {
-                ErrorCode = "404",
-                ErrorMsg = "Data not found"
-            });
+                //ErrorCode = "200",
+                //ErrorMsg = "Successful",
+                TotalAmount = bankBook.Sum(x=>x.Credit).ToString("0.##"),
+                TrxId = trxId,
+                RefNumber = bankBook.FirstOrDefault()!.AccountNo.ToString(),
+                //CustomMessage = "{Status: Success}",
+                MiddlewarePayTime =bankBook.FirstOrDefault()!.TransactionDate.TimeOfDay.ToString()
+            };
+
+            return Result.Success(entity, "Successful ",200);
+
         }
         catch (Exception ex)
         {
-            return Result.Fail(new TSQResponse
-            {
-                ErrorCode = "435",
-                ErrorMsg = $"Data Mismatch: {ex.Message}"
-            });
+            return Result.Fail(500, ex.Message);
         }
     }
 
