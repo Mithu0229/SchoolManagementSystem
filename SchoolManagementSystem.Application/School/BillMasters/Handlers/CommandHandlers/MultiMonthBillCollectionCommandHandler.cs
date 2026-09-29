@@ -37,11 +37,12 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
             {
                 if ((bills.Sum(x => x.TotalAmount)- bills.Sum(x => x.CollectionAmount)) < req.CollectionAmount)
                 {
-                    var t = bills.Sum(x => x.TotalAmount);
-                    var s = bills.Sum(x => x.CollectionAmount);
+                    //var t = bills.Sum(x => x.TotalAmount);
+                    //var s = bills.Sum(x => x.CollectionAmount);
                     return Result.Fail<MultiMonthBillCollectionResponse>(439, "Pay amount and biller amount not match");
                 }
                 string stdCID = bills.First().Admission.Student.StdCID;
+                var stdID = bills.First().Admission.StudentId;
 
                 if (!bills.Any())
                     return Result.Fail<MultiMonthBillCollectionResponse>(StatusCodes.Status404NotFound, "Data not found");
@@ -117,7 +118,9 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             Balance = 0,
                             AccountNo = "Cash",
                             VoucherNo = voucherNo,
-                            Particulars = req.Particulars ?? ""
+                            Particulars = req.Particulars ?? "",
+                            IsActive = true,
+                            StudentId = stdID
                         };
                         await _unitOfWork.CashBookRepository.AddAsync(cashBookDebit);
 
@@ -130,7 +133,10 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             Balance = 0,
                             AccountNo = stdCID,
                             VoucherNo = voucherNo,
-                            Particulars = "Bill Collection - " + (req.Particulars ?? "")
+                            Particulars = "Bill Collection - " + (req.Particulars ?? ""),
+                            IsActive = true,
+                            StudentId = stdID
+
                         };
                         await _unitOfWork.CashBookRepository.AddAsync(cashBookCredit);
                     }
@@ -148,7 +154,9 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             TransactionNo = req.TransactionNo ?? "",
                             TransactionType = req.TransactionType,
                             VoucherNo = req.TrxId!,
-                            Particulars = req.Particulars ?? ""
+                            Particulars = req.Particulars ?? "",
+                            IsActive = true,
+                            StudentId = stdID
                         };
                         await _unitOfWork.BankBookRepository.AddAsync(bankBookDebit);
 
@@ -164,7 +172,9 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             TransactionNo = req.TransactionNo ?? "",
                             TransactionType = req.TransactionType,
                             VoucherNo = req.TrxId!,
-                            Particulars = "Bill Collection - " + (req.Particulars ?? "")
+                            Particulars = "Bill Collection - " + (req.Particulars ?? ""),
+                            IsActive = true,
+                            StudentId = stdID
                         };
                         await _unitOfWork.BankBookRepository.AddAsync(bankBookCredit);
                     }

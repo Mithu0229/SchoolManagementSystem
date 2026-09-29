@@ -24,6 +24,12 @@ public class CashBookConfiguration : AuditableEntityConfiguration<CashBook>
             .HasForeignKey(x => x.BillMasterId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        entityTypeBuilder.HasOne(x => x.StudentInfo)
+            .WithMany()
+            .HasForeignKey(x => x.StudentId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.Restrict);
+
         entityTypeBuilder.ToTable("tb_sch_CashBooks");
     }
 }

@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Domain.Entities.Students;
 using SchoolManagementSystem.Domain.Enums;
 
 namespace SchoolManagementSystem.Domain.Entities;
@@ -21,4 +22,6 @@ public class CashBook : AuditableEntity
     public string Particulars { get; set; }
 
     public BillMaster BillMaster { get; set; }
+    public Guid? StudentId { get; set; }
+    public StudentInfo? StudentInfo { get; set; }
 }
