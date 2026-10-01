@@ -101,6 +101,12 @@ export class StudentListComponent implements OnInit {
           callback: (row: any) => this.viewReport(row),
           visible: () => true,
         },
+        {
+          label: 'Summary Report',
+          icon: 'pi pi-file',
+          callback: (row: any) => this.viewSummaryReport(row),
+          visible: () => true,
+        },
       ],
     } as any);
   }
@@ -190,6 +196,75 @@ export class StudentListComponent implements OnInit {
   hideReportDialog() {
     this.reportDialog = false;
     this.currentReceipt = null;
+  }
+
+  summaryReportDialog: boolean = false;
+  currentSummary: any = null;
+
+  viewSummaryReport(student: any) {
+    const payload = {
+      search: student.stdCID,
+      filters: [],
+      page: 1,
+      pageSize: 100
+    };
+
+    // First get the list to find the last transaction date
+    this.billMasterService.getStudentBillHistoryList(payload).subscribe({
+      next: (listRes) => {
+        let lastTxDate = 'N/A';
+        if (listRes.isSuccess && listRes.data && listRes.data.items && listRes.data.items.length > 0) {
+           const items = listRes.data.items;
+           const withDates = items.filter((i: any) => i.transactionDate);
+           if (withDates.length > 0) {
+             withDates.sort((a: any, b: any) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime());
+             lastTxDate = withDates[0].formattedTransactionDate || withDates[0].transactionDate;
+           }
+        }
+
+        // Now get the summary
+        this.billMasterService.getStudentBillHistorySummary(payload).subscribe({
+          next: (summaryRes) => {
+            if (summaryRes.isSuccess && summaryRes.data) {
+               this.currentSummary = {
+                 studentName: student.fullName,
+                 stdCID: student.stdCID,
+                 phone: student.studentPhone || 'N/A',
+                 className: 'N/A',
+                 date: new Date().toLocaleDateString(),
+                 totalAmount: summaryRes.data.overallTotalAmount,
+                 totalPaid: summaryRes.data.overallTotalPaidAmount,
+                 totalDue: summaryRes.data.overallTotalDueAmount,
+                 totalPaidCash: summaryRes.data.overallTotalPaidCashAmount,
+                 totalPaidBkash: summaryRes.data.overallTotalPaidBkashAmount,
+                 lastTransactionDate: lastTxDate
+               };
+               this.summaryReportDialog = true;
+            } else {
+               this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load summary.'});
+            }
+          },
+          error: () => this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load summary.'})
+        });
+      },
+      error: () => this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load bill history.'})
+    });
+  }
+
+  hideSummaryReportDialog() {
+    this.summaryReportDialog = false;
+    this.currentSummary = null;
+  }
+
+  printSummaryReport() {
+    const printContent = document.getElementById('print-summary-section');
+    if (printContent) {
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }
   }
 
   printReport() {

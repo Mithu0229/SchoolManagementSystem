@@ -76,6 +76,37 @@ export interface PaidBillResponse {
   createdDate: string;
 }
 
+export interface StudentBillHistoryResponse {
+  id: string;
+  admissionId: string;
+  studentId?: string;
+  studentName: string;
+  stdCID: string;
+  billMonth: number;
+  monthName: string;
+  billYear: number;
+  voucherNo?: string;
+  totalAmount: number;
+  totalPaidAmount: number;
+  totalDueAmount: number;
+  totalPaidBkashAmount: number;
+  totalPaidCashAmount: number;
+  totalPaidBankAmount: number;
+  transactionDate?: string;
+  formattedTransactionDate?: string;
+  paymentStatus: string;
+  createdDate: string;
+}
+
+export interface StudentBillHistorySummaryResponse {
+  totalBillsCount: number;
+  overallTotalAmount: number;
+  overallTotalPaidAmount: number;
+  overallTotalDueAmount: number;
+  overallTotalPaidCashAmount: number;
+  overallTotalPaidBkashAmount: number;
+}
+
 export interface MultiMonthBillCollectionRequest {
   studentId: string;
   billMasterIds: string[];
@@ -186,6 +217,22 @@ export class BillMasterService {
   ): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(
       `${this.apiUrl}/get-student-paid-bill-report/${studentId}`,
+    );
+  }
+
+  getStudentBillHistoryList(request?: any): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/get-student-bill-history-list`,
+      request || {},
+    );
+  }
+
+  getStudentBillHistorySummary(
+    request?: any,
+  ): Observable<ApiResponse<StudentBillHistorySummaryResponse>> {
+    return this.http.post<ApiResponse<StudentBillHistorySummaryResponse>>(
+      `${this.apiUrl}/get-student-bill-history-summary`,
+      request || {},
     );
   }
 }

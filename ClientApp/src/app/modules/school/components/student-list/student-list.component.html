@@ -299,4 +299,233 @@
       </div>
     </ng-template>
   </p-dialog>
+
+  <!-- Summary Report Dialog -->
+  <p-dialog [(visible)]="summaryReportDialog" [style]="{width: '900px'}" header="Summary Report" [modal]="true"
+    styleClass="p-fluid rounded-xl shadow-2xl">
+    <ng-template pTemplate="content">
+      <div id="print-summary-section" class="bg-white text-black p-4 sm:p-8" *ngIf="currentSummary">
+
+        <!-- STUDENT COPY -->
+        <div class="receipt-part mb-8">
+          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
+                EIS
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
+                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
+              </div>
+            </div>
+            <div class="text-right text-sm">
+              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
+              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
+              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-end mb-4">
+            <div class="w-1/3"></div>
+            <div class="text-center w-1/3">
+              <span class="border-2 border-black rounded-lg px-4 py-1 text-lg font-bold">Summary Report</span>
+            </div>
+            <div class="text-right w-1/3 text-sm">
+              <div class="font-bold text-lg">Student Copy</div>
+              <div>Print Time : {{ currentSummary.date }}</div>
+            </div>
+          </div>
+
+          <div class="flex justify-between text-sm mb-4">
+            <div>
+              <table class="text-left border-separate border-spacing-x-2">
+                <tr>
+                  <td class="font-semibold w-28">Student Name</td>
+                  <td>: <b>{{ currentSummary.studentName }}</b></td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Student ID</td>
+                  <td>: {{ currentSummary.stdCID }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Phone</td>
+                  <td>: {{ currentSummary.phone }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Class</td>
+                  <td>: {{ currentSummary.className }}</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <table class="text-left border-separate border-spacing-x-2">
+                <tr>
+                  <td class="font-semibold w-24">Date</td>
+                  <td>: {{ currentSummary.date }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Last Trans.</td>
+                  <td>: {{ currentSummary.lastTransactionDate }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <table class="w-full text-sm border-collapse mb-2 mt-4">
+            <thead>
+              <tr class="bg-gray-200 border-y-2 border-gray-400">
+                <th class="py-2 px-4 text-left">Description</th>
+                <th class="py-2 px-4 text-right">Amount (Tk.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left font-semibold">Total Amount</td>
+                <td class="py-2 px-4 text-right">{{ currentSummary.totalAmount | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left font-semibold">Total Paid Amount</td>
+                <td class="py-2 px-4 text-right">{{ currentSummary.totalPaid | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left pl-8 text-gray-600">- Paid via Cashbook</td>
+                <td class="py-2 px-4 text-right text-gray-600">{{ currentSummary.totalPaidCash | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left pl-8 text-gray-600">- Paid via Bankbook</td>
+                <td class="py-2 px-4 text-right text-gray-600">{{ currentSummary.totalPaidBkash | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-gray-400">
+                <td class="py-2 px-4 text-left font-bold text-red-600">Total Due Amount</td>
+                <td class="py-2 px-4 text-right font-bold text-red-600">{{ currentSummary.totalDue | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="flex justify-between text-xs text-center border-t border-gray-400 pt-8 mt-16 mx-4 px-4">
+            <div class="border-t border-black w-32 -mt-8 pt-1">Accountant</div>
+            <div class="border-t border-black w-32 -mt-8 pt-1">Checked by</div>
+            <div class="border-t border-black w-32 -mt-8 pt-1">Authorized Signature</div>
+          </div>
+        </div>
+
+        <!-- DASHED SEPARATOR -->
+        <div class="border-t-2 border-dashed border-gray-500 my-8"></div>
+
+        <!-- OFFICE COPY -->
+        <div class="receipt-part">
+          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
+                EIS
+              </div>
+              <div>
+                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
+                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
+              </div>
+            </div>
+            <div class="text-right text-sm">
+              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
+              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
+              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-end mb-4">
+            <div class="w-1/3"></div>
+            <div class="text-center w-1/3">
+              <span class="border-2 border-black rounded-lg px-4 py-1 text-lg font-bold">Summary Report</span>
+            </div>
+            <div class="text-right w-1/3 text-sm">
+              <div class="font-bold text-lg">Office Copy</div>
+              <div>Print Time : {{ currentSummary.date }}</div>
+            </div>
+          </div>
+
+          <div class="flex justify-between text-sm mb-4">
+            <div>
+              <table class="text-left border-separate border-spacing-x-2">
+                <tr>
+                  <td class="font-semibold w-28">Student Name</td>
+                  <td>: <b>{{ currentSummary.studentName }}</b></td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Student ID</td>
+                  <td>: {{ currentSummary.stdCID }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Phone</td>
+                  <td>: {{ currentSummary.phone }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Class</td>
+                  <td>: {{ currentSummary.className }}</td>
+                </tr>
+              </table>
+            </div>
+            <div>
+              <table class="text-left border-separate border-spacing-x-2">
+                <tr>
+                  <td class="font-semibold w-24">Date</td>
+                  <td>: {{ currentSummary.date }}</td>
+                </tr>
+                <tr>
+                  <td class="font-semibold">Last Trans.</td>
+                  <td>: {{ currentSummary.lastTransactionDate }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <table class="w-full text-sm border-collapse mb-2 mt-4">
+            <thead>
+              <tr class="bg-gray-200 border-y-2 border-gray-400">
+                <th class="py-2 px-4 text-left">Description</th>
+                <th class="py-2 px-4 text-right">Amount (Tk.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left font-semibold">Total Amount</td>
+                <td class="py-2 px-4 text-right">{{ currentSummary.totalAmount | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left font-semibold">Total Paid Amount</td>
+                <td class="py-2 px-4 text-right">{{ currentSummary.totalPaid | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left pl-8 text-gray-600">- Paid via Cashbook</td>
+                <td class="py-2 px-4 text-right text-gray-600">{{ currentSummary.totalPaidCash | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-dashed border-gray-300">
+                <td class="py-2 px-4 text-left pl-8 text-gray-600">- Paid via Bankbook</td>
+                <td class="py-2 px-4 text-right text-gray-600">{{ currentSummary.totalPaidBkash | number:'1.2-2' }}</td>
+              </tr>
+              <tr class="border-b border-gray-400">
+                <td class="py-2 px-4 text-left font-bold text-red-600">Total Due Amount</td>
+                <td class="py-2 px-4 text-right font-bold text-red-600">{{ currentSummary.totalDue | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="flex justify-between text-xs text-center border-t border-gray-400 pt-8 mt-16 mx-4 px-4">
+            <div class="border-t border-black w-32 -mt-8 pt-1">Accountant</div>
+            <div class="border-t border-black w-32 -mt-8 pt-1">Checked by</div>
+            <div class="border-t border-black w-32 -mt-8 pt-1">Authorized Signature</div>
+          </div>
+        </div>
+
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
+        <p-button label="Close" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
+          (click)="hideSummaryReportDialog()"></p-button>
+        <p-button label="Print / Download" icon="pi pi-download" styleClass="p-button-primary"
+          (click)="printSummaryReport()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
 </div>

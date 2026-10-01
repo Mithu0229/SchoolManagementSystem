@@ -1,0 +1,111 @@
+.student-bill-history-container {
+  .header-icon-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #bfdbfe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.08);
+  }
+
+  .kpi-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .kpi-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .kpi-content {
+      display: flex;
+      flex-direction: column;
+
+      .kpi-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #64748b;
+        margin-bottom: 0.2rem;
+      }
+
+      .kpi-value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      .kpi-sub {
+        font-size: 0.72rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+      }
+    }
+
+    &.kpi-card-indigo {
+      border-left: 4px solid #6366f1;
+    }
+
+    &.kpi-card-emerald {
+      border-left: 4px solid #10b981;
+    }
+
+    &.kpi-card-rose {
+      border-left: 4px solid #f43f5e;
+    }
+
+    &.kpi-card-amber {
+      border-left: 4px solid #f59e0b;
+    }
+
+    &.kpi-card-pink {
+      border-left: 4px solid #ec4899;
+    }
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #history-print-section,
+  #history-print-section * {
+    visibility: visible;
+  }
+
+  #history-print-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

@@ -117,7 +117,7 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             Credit = 0,
                             Balance = 0,
                             AccountNo = "Cash",
-                            VoucherNo = voucherNo,
+                            VoucherNo = $"V-{now:yyyyMMddHHmmss}",
                             Particulars = req.Particulars ?? "",
                             IsActive = true,
                             StudentId = stdID
@@ -132,7 +132,7 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             Credit = amountToPay,
                             Balance = 0,
                             AccountNo = stdCID,
-                            VoucherNo = voucherNo,
+                            VoucherNo = $"V-{now:yyyyMMddHHmmss}",
                             Particulars = "Bill Collection - " + (req.Particulars ?? ""),
                             IsActive = true,
                             StudentId = stdID
