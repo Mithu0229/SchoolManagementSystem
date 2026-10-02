@@ -36,6 +36,7 @@ public class GetStudentBillHistorySummaryQueryHandler : IHttpRequestHandler<GetS
                 StudentId = b.Admission != null ? (Guid?)b.Admission.StudentId : null,
                 StudentName = b.Admission != null && b.Admission.Student != null ? (b.Admission.Student.FullName ?? "") : "",
                 StdCID = b.Admission != null && b.Admission.Student != null ? (b.Admission.Student.StdCID ?? "") : "",
+                ClassName = b.Admission != null && b.Admission.Class != null ? (b.Admission.Class.ClassName ?? "") : "",
                 b.BillMonth,
                 b.BillYear,
                 b.VoucherNo,

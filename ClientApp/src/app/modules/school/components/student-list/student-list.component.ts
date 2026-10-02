@@ -170,27 +170,29 @@ export class StudentListComponent implements OnInit {
   }
 
   viewReport(student: any) {
-    this.billMasterService.getStudentPaidBillReport(student.studentId).subscribe({
-      next: (res) => {
-        if (res.isSuccess && res.data) {
-          this.currentReceipt = res.data;
-          this.reportDialog = true;
-        } else {
+    this.billMasterService
+      .getStudentPaidBillReport(student.studentId)
+      .subscribe({
+        next: (res) => {
+          if (res.isSuccess && res.data) {
+            this.currentReceipt = res.data;
+            this.reportDialog = true;
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No paid bills found for this student',
+            });
+          }
+        },
+        error: () => {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'No paid bills found for this student',
+            detail: 'Failed to load receipt',
           });
-        }
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load receipt',
-        });
-      },
-    });
+        },
+      });
   }
 
   hideReportDialog() {
@@ -206,48 +208,73 @@ export class StudentListComponent implements OnInit {
       search: student.stdCID,
       filters: [],
       page: 1,
-      pageSize: 100
+      pageSize: 100,
     };
 
     // First get the list to find the last transaction date
     this.billMasterService.getStudentBillHistoryList(payload).subscribe({
       next: (listRes) => {
         let lastTxDate = 'N/A';
-        if (listRes.isSuccess && listRes.data && listRes.data.items && listRes.data.items.length > 0) {
-           const items = listRes.data.items;
-           const withDates = items.filter((i: any) => i.transactionDate);
-           if (withDates.length > 0) {
-             withDates.sort((a: any, b: any) => new Date(b.transactionDate).getTime() - new Date(a.transactionDate).getTime());
-             lastTxDate = withDates[0].formattedTransactionDate || withDates[0].transactionDate;
-           }
+        if (
+          listRes.isSuccess &&
+          listRes.data &&
+          listRes.data.items &&
+          listRes.data.items.length > 0
+        ) {
+          const items = listRes.data.items;
+          const withDates = items.filter((i: any) => i.transactionDate);
+          if (withDates.length > 0) {
+            withDates.sort(
+              (a: any, b: any) =>
+                new Date(b.transactionDate).getTime() -
+                new Date(a.transactionDate).getTime(),
+            );
+            lastTxDate =
+              withDates[0].formattedTransactionDate ||
+              withDates[0].transactionDate;
+          }
         }
 
         // Now get the summary
         this.billMasterService.getStudentBillHistorySummary(payload).subscribe({
           next: (summaryRes) => {
             if (summaryRes.isSuccess && summaryRes.data) {
-               this.currentSummary = {
-                 studentName: student.fullName,
-                 stdCID: student.stdCID,
-                 phone: student.studentPhone || 'N/A',
-                 className: 'N/A',
-                 date: new Date().toLocaleDateString(),
-                 totalAmount: summaryRes.data.overallTotalAmount,
-                 totalPaid: summaryRes.data.overallTotalPaidAmount,
-                 totalDue: summaryRes.data.overallTotalDueAmount,
-                 totalPaidCash: summaryRes.data.overallTotalPaidCashAmount,
-                 totalPaidBkash: summaryRes.data.overallTotalPaidBkashAmount,
-                 lastTransactionDate: lastTxDate
-               };
-               this.summaryReportDialog = true;
+              this.currentSummary = {
+                studentName: student.fullName,
+                stdCID: student.stdCID,
+                phone: student.studentPhone || 'N/A',
+                className: student.className || 'N/A',
+                date: new Date().toLocaleDateString(),
+                totalAmount: summaryRes.data.overallTotalAmount,
+                totalPaid: summaryRes.data.overallTotalPaidAmount,
+                totalDue: summaryRes.data.overallTotalDueAmount,
+                totalPaidCash: summaryRes.data.overallTotalPaidCashAmount,
+                totalPaidBkash: summaryRes.data.overallTotalPaidBkashAmount,
+                lastTransactionDate: lastTxDate,
+              };
+              this.summaryReportDialog = true;
             } else {
-               this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load summary.'});
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Could not load summary.',
+              });
             }
           },
-          error: () => this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load summary.'})
+          error: () =>
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Could not load summary.',
+            }),
         });
       },
-      error: () => this.messageService.add({severity: 'error', summary: 'Error', detail: 'Could not load bill history.'})
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not load bill history.',
+        }),
     });
   }
 
