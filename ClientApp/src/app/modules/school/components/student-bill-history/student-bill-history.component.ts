@@ -182,19 +182,19 @@ export class StudentBillHistoryComponent implements OnInit {
         header: 'Status',
         sortable: false,
       },
-      {
-        isActionColumn: true,
-        field: 'Actions',
-        header: 'Receipt',
-        actions: [
-          {
-            label: 'Receipt',
-            icon: 'pi pi-file-pdf',
-            callback: (row: StudentBillHistoryResponse) => this.viewReceipt(row),
-            visible: (row: StudentBillHistoryResponse) => row.totalPaidAmount > 0,
-          },
-        ],
-      },
+      // {
+      //   isActionColumn: true,
+      //   field: 'Actions',
+      //   header: 'Receipt',
+      //   actions: [
+      //     {
+      //       label: 'Receipt',
+      //       icon: 'pi pi-file-pdf',
+      //       callback: (row: StudentBillHistoryResponse) => this.viewReceipt(row),
+      //       visible: (row: StudentBillHistoryResponse) => row.totalPaidAmount > 0,
+      //     },
+      //   ],
+      // },
     ];
   }
 

@@ -117,12 +117,12 @@ export class BillCollectionComponent implements OnInit {
           callback: (row) => this.editBill(row),
           visible: () => true,
         },
-        {
-          label: 'View Report',
-          icon: 'pi pi-print',
-          callback: (row) => this.viewReport(row),
-          visible: () => true,
-        },
+        // {
+        //   label: 'View Report',
+        //   icon: 'pi pi-print',
+        //   callback: (row) => this.viewReport(row),
+        //   visible: () => true,
+        // },
       ],
     });
   }

@@ -135,5 +135,34 @@ namespace SchoolManagementSystem.API.Controllers
 
         [HttpGet("get-student-dropdown")]
         public async Task<IResult> GetStudentDropdown() => await Mediator.Send(new GetStudentDropdownQuery());
+
+        /// <summary>
+        /// Downloads the sample Excel containing exactly the fields required by save-student.
+        /// </summary>
+        [HttpGet("download-student-sample-excel")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
+        public async Task<IActionResult> DownloadStudentSampleExcel()
+        {
+            var result = await Mediator.Send(new GetStudentSampleExcelQuery());
+            if (result.IsSuccess && result is IResult<StudentExcelFileResponse> fileResult && fileResult.Data != null)
+            {
+                return File(fileResult.Data.Content, fileResult.Data.ContentType, fileResult.Data.FileName);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, result);
+        }
+
+        /// <summary>
+        /// Uploads a student Excel. Every row is validated first; if all rows are valid each one is
+        /// saved through the same InsertStudentInfoCommand used by save-student.
+        /// </summary>
+        [HttpPost("upload-student-excel")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentExcelImportResponse))]
+        public async Task<IResult> UploadStudentExcel([FromForm] StudentExcelUploadRequest request)
+        {
+            return await Mediator.Send(new ImportStudentExcelCommand { File = request.File });
+        }
     }
 }
+

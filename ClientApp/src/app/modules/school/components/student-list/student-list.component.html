@@ -2,8 +2,17 @@
   <p-toast></p-toast>
   <!-- <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog> -->
 
-  <div class="form-header">Student List Management</div>
-  <div class="bg-white mx-auto">
+  <div class="form-header flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+    <span>Student List Management</span>
+    <div class="flex gap-2">
+      <p-button label="Download Sample" icon="pi pi-download" styleClass="p-button-outlined p-button-sm bg-white"
+        (click)="downloadSampleExcel()"></p-button>
+      <p-button label="Upload Excel" icon="pi pi-upload" styleClass="p-button-sm" (click)="triggerFileUpload()"
+        [loading]="excelUploading"></p-button>
+      <input type="file" #fileUpload (change)="onFileSelected($event)" accept=".xlsx, .xls" class="hidden" />
+    </div>
+  </div>
+  <div class="bg-white mx-auto mt-2">
     <app-table apiUrl="/StudentInfo/get-student-user-list" [columns]="columns" [config]="tableConfig"
       (editClicked)="openEdit($event)"></app-table>
   </div>
@@ -65,22 +74,9 @@
 
         <!-- STUDENT COPY -->
         <div class="receipt-part mb-8">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
-                EIS
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
-              </div>
-            </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
-            </div>
+          <div class="border-b border-gray-300 pb-2 mb-4 text-center">
+            <img src="assets/Edugates_Pad_Header.jpg" alt="Edugates Header"
+              class="w-full h-auto max-h-32 object-contain mx-auto" />
           </div>
 
           <div class="flex justify-between items-end mb-4">
@@ -179,22 +175,9 @@
 
         <!-- OFFICE COPY -->
         <div class="receipt-part">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
-                EIS
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
-              </div>
-            </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info2edugateserp.com</div>
-            </div>
+          <div class="border-b border-gray-300 pb-2 mb-4 text-center">
+            <img src="assets/Edugates_Pad_Header.jpg" alt="Edugates Header"
+              class="w-full h-auto max-h-32 object-contain mx-auto" />
           </div>
 
           <div class="flex justify-between items-end mb-4">
@@ -308,22 +291,9 @@
 
         <!-- STUDENT COPY -->
         <div class="receipt-part mb-8">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
-                EIS
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
-              </div>
-            </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
-            </div>
+          <div class="pb-2 mb-4 text-center">
+            <img src="assets/Edugates_Pad_Header.jpg" alt="Edugates Header"
+              class="w-full h-auto max-h-32 object-contain mx-auto" />
           </div>
 
           <div class="flex justify-between items-end mb-4">
@@ -416,22 +386,9 @@
 
         <!-- OFFICE COPY -->
         <div class="receipt-part">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
-            <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
-                EIS
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
-              </div>
-            </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
-            </div>
+          <div class="pb-2 mb-4 text-center">
+            <img src="assets/Edugates_Pad_Header.jpg" alt="Edugates Header"
+              class="w-full h-auto max-h-32 object-contain mx-auto" />
           </div>
 
           <div class="flex justify-between items-end mb-4">
@@ -527,6 +484,58 @@
           (click)="hideSummaryReportDialog()"></p-button>
         <p-button label="Print / Download" icon="pi pi-download" styleClass="p-button-primary"
           (click)="printSummaryReport()"></p-button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Excel Upload Error Dialog -->
+  <p-dialog [(visible)]="excelErrorDialog" [style]="{width: '750px'}" header="Excel Upload Results" [modal]="true"
+    styleClass="p-fluid rounded-xl shadow-2xl">
+    <ng-template pTemplate="content">
+      <div *ngIf="excelUploadResult">
+        <div class="mb-4 text-sm flex gap-6 border-b pb-3">
+          <span class="font-bold text-green-600">Successfully Imported: {{ excelUploadResult.importedCount }}</span>
+          <span class="font-bold text-red-600">Failed: {{ excelUploadResult.failedCount }}</span>
+        </div>
+        <div *ngIf="excelUploadResult.validationFailed"
+          class="mb-4 p-3 bg-red-50 text-red-700 border border-red-200 rounded text-sm font-semibold">
+          <i class="pi pi-exclamation-triangle mr-2"></i> File validation failed. No records were saved. Please fix the
+          following errors and upload again.
+        </div>
+        <div *ngIf="!excelUploadResult.validationFailed && excelUploadResult.failedCount > 0"
+          class="mb-4 p-3 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded text-sm font-semibold">
+          <i class="pi pi-info-circle mr-2"></i> Some rows failed to save. The successful ones were imported.
+        </div>
+
+        <div class="max-h-[400px] overflow-y-auto border border-gray-200 rounded shadow-sm"
+          *ngIf="excelErrors && excelErrors.length > 0">
+          <table class="w-full text-sm text-left border-collapse">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 shadow-sm z-10">
+              <tr>
+                <th class="px-4 py-3 border-b w-16">Row</th>
+                <th class="px-4 py-3 border-b w-48">Name</th>
+                <th class="px-4 py-3 border-b">Errors</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let err of excelErrors" class="border-b bg-white hover:bg-gray-50">
+                <td class="px-4 py-2 align-top font-medium">{{ err.rowNumber }}</td>
+                <td class="px-4 py-2 align-top">{{ err.fullName || 'N/A' }}</td>
+                <td class="px-4 py-2 align-top">
+                  <ul class="list-disc pl-4 text-red-600 m-0 py-1 space-y-1">
+                    <li *ngFor="let msg of err.messages">{{ msg }}</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end pt-3">
+        <p-button label="Close" icon="pi pi-times" styleClass="p-button-text"
+          (click)="closeExcelErrorDialog()"></p-button>
       </div>
     </ng-template>
   </p-dialog>

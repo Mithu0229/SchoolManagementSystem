@@ -20,6 +20,8 @@ public class GetStudentUserListQueryHandler : IHttpRequestHandler<GetStudentUser
         try
         {
             var query = from s in _unitOfWork.StudentInfoRepository.GetAllNoneDeleted(false,true)
+                        join c in _unitOfWork.AcademicClassRepository.GetAllNoneDeleted(false, true) on s.ApplicationForClass equals c.Id.ToString() into sc
+                        from c in sc.DefaultIfEmpty()
                         join u in _unitOfWork.UserRepository.GetAllNoneDeleted(false, true) on s.Id equals u.StudentId into su
                         from u in su.DefaultIfEmpty()
                         select new StudentUserResponse
@@ -30,7 +32,8 @@ public class GetStudentUserListQueryHandler : IHttpRequestHandler<GetStudentUser
                             StudentPhone = s.StudentPhone,
                             StudentEmail = s.StudentEmail,
                             IsActive = u != null ? u.IsActive : false,
-                            UserId = u != null ? u.Id : Guid.Empty
+                            UserId = u != null ? u.Id : Guid.Empty,
+                            ClassName = c != null ? c.ClassName : s.ApplicationForClass
                         };
 
             if (!string.IsNullOrEmpty(request.PagedRequest.Search))
@@ -50,7 +53,7 @@ public class GetStudentUserListQueryHandler : IHttpRequestHandler<GetStudentUser
 
             var totalRecord = await query.CountAsync(cancellationToken);
             if (request.PagedRequest.Page > 0 && request.PagedRequest.PageSize > 0) query = query.Skip((request.PagedRequest.Page - 1) * request.PagedRequest.PageSize).Take(request.PagedRequest.PageSize);
-            var items = await query.Select(x => new StudentUserResponse { StudentId = x.StudentId, StdCID = x.StdCID,StudentPhone =x.StudentPhone,FullName=x.FullName,StudentEmail=x.StudentEmail ,IsActive = x.IsActive }).ToListAsync(cancellationToken);
+            var items = await query.ToListAsync(cancellationToken);
             //return Result.Success(new PagedResult<StudentUserResponse> { Items = items, TotalRecord = totalRecord, Page = pagedRequest.Page, PageSize = pagedRequest.PageSize });
             return Result.Success(new PagedResult<StudentUserResponse> { Items = items, TotalRecord = totalCount, Page = request.PagedRequest.Page, PageSize = request.PagedRequest.PageSize });
         }

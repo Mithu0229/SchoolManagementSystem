@@ -7,6 +7,7 @@ public class StudentUserResponse
     public string FullName { get; set; }
     public string StudentPhone { get; set; }
     public string StudentEmail { get; set; }
+    public string ClassName { get; set; }
     public Guid UserId { get; set; }
     public bool IsActive { get; set; }
 }

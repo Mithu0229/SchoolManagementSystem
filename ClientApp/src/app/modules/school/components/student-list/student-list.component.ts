@@ -1,6 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, TitleCasePipe, DecimalPipe } from '@angular/common';
 import { BillMasterService } from '../../services/bill-master.service';
+import {
+  StudentExcelService,
+  StudentExcelImportResponse,
+  StudentExcelRowError,
+} from '../../services/student-excel.service';
 import {
   FormBuilder,
   FormGroup,
@@ -65,11 +70,18 @@ export class StudentListComponent implements OnInit {
   reportDialog: boolean = false;
   currentReceipt: any = null;
 
+  @ViewChild('fileUpload') fileUpload!: ElementRef<HTMLInputElement>;
+  excelUploading: boolean = false;
+  excelErrorDialog: boolean = false;
+  excelErrors: StudentExcelRowError[] = [];
+  excelUploadResult: StudentExcelImportResponse | null = null;
+
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private messageService: MessageService,
     private billMasterService: BillMasterService,
+    private excelService: StudentExcelService,
   ) {
     this.studentForm = this.fb.group({
       studentId: [null, Validators.required],
@@ -95,12 +107,12 @@ export class StudentListComponent implements OnInit {
           callback: (row: any) => this.openEdit(row),
           visible: () => true,
         },
-        {
-          label: 'Print Bill',
-          icon: 'pi pi-print',
-          callback: (row: any) => this.viewReport(row),
-          visible: () => true,
-        },
+        // {
+        //   label: 'Print Bill',
+        //   icon: 'pi pi-print',
+        //   callback: (row: any) => this.viewReport(row),
+        //   visible: () => true,
+        // },
         {
           label: 'Summary Report',
           icon: 'pi pi-file',
@@ -239,6 +251,7 @@ export class StudentListComponent implements OnInit {
         this.billMasterService.getStudentBillHistorySummary(payload).subscribe({
           next: (summaryRes) => {
             if (summaryRes.isSuccess && summaryRes.data) {
+              debugger;
               this.currentSummary = {
                 studentName: student.fullName,
                 stdCID: student.stdCID,
@@ -303,5 +316,100 @@ export class StudentListComponent implements OnInit {
       document.body.innerHTML = originalContents;
       window.location.reload();
     }
+  }
+
+  downloadSampleExcel() {
+    this.excelService.downloadSample().subscribe({
+      next: (response) => {
+        let fileName = 'Student_Sample.xlsx';
+        const contentDisposition = response.headers.get('content-disposition');
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename="?([^"]+)"?/);
+          if (match && match[1]) {
+            fileName = match[1];
+          }
+        }
+
+        const blob = response.body;
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          a.remove();
+        }
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to download sample file',
+        });
+      },
+    });
+  }
+
+  triggerFileUpload() {
+    if (this.fileUpload) {
+      this.fileUpload.nativeElement.click();
+    }
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    this.excelUploading = true;
+    this.excelService.uploadStudents(file).subscribe({
+      next: (res: any) => {
+        this.excelUploading = false;
+        if (this.fileUpload) this.fileUpload.nativeElement.value = '';
+
+        if (res.isSuccess && res.data) {
+          this.excelUploadResult = res.data;
+          if (res.data.validationFailed || res.data.failedCount > 0) {
+            this.excelErrors = res.data.errors || [];
+            this.excelErrorDialog = true;
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Upload Completed with Errors',
+              detail: `Imported: ${res.data.importedCount}, Failed: ${res.data.failedCount}`,
+            });
+          } else {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: `Successfully imported ${res.data.importedCount} students.`,
+            });
+          }
+          if (res.data.importedCount > 0 && this.tableComponent) {
+            this.tableComponent.loadData();
+          }
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: res.message || 'Upload failed',
+          });
+        }
+      },
+      error: (err) => {
+        this.excelUploading = false;
+        if (this.fileUpload) this.fileUpload.nativeElement.value = '';
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'An error occurred during upload',
+        });
+      },
+    });
+  }
+
+  closeExcelErrorDialog() {
+    this.excelErrorDialog = false;
+    this.excelErrors = [];
   }
 }

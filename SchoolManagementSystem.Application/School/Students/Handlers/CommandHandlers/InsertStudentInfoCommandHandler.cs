@@ -1,4 +1,5 @@
 using SchoolManagementSystem.Application.School.Students.Commands;
+using SchoolManagementSystem.Application.School.Students.Helpers;
 using SchoolManagementSystem.Application.School.Students.Models;
 using SchoolManagementSystem.Domain.Entities.Students;
 
@@ -31,7 +32,7 @@ public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudent
                     Id = Guid.NewGuid(),
                     FirstName = request.StudentInfo.FullName!,
                     LastName = request.StudentInfo.FullName!,
-                    Email = request.StudentInfo.FullName!.Replace(" ", "") + "@gmail.com",
+                    Email = StudentUserHelper.BuildLoginEmail(request.StudentInfo.FullName!),
                     Password = request.StudentInfo.FullName,
                     UserType = Domain.Enums.UserTypes.Student,
                     PhoneNumber = request.StudentInfo.StudentPhone!,
@@ -61,8 +62,9 @@ public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudent
             //    }
             //}
             studentInfo.StdCID = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var existingStudentId = await _unitOfWork.StudentInfoRepository.GetSingleAsync(x => x.StdCID == studentInfo.StdCID);
-            if (existingStudentId != null)
+            // Keep incrementing until the code is unique (several students can be saved within
+            // the same second, e.g. during Excel bulk import).
+            while (await _unitOfWork.StudentInfoRepository.GetSingleAsync(x => x.StdCID == studentInfo.StdCID) != null)
             {
                 studentInfo.StdCID = (Convert.ToInt64(studentInfo.StdCID) + 1).ToString();
             }
