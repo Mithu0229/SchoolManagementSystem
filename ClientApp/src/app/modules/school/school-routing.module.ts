@@ -23,6 +23,7 @@ import { PaidBillListComponent } from './components/paid-bill-list/paid-bill-lis
 import { MultiMonthBillCollectionComponent } from './components/multi-month-bill-collection/multi-month-bill-collection.component';
 import { StudentPaidBillsComponent } from './components/student-paid-bills/student-paid-bills.component';
 import { StudentBillHistoryComponent } from './components/student-bill-history/student-bill-history.component';
+import { TrialBalanceComponent } from './components/trial-balance/trial-balance.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 import { authGuard } from '../../core/guards/auth.guard';
@@ -137,6 +138,11 @@ const routes: Routes = [
       {
         path: 'student-bill-history',
         component: StudentBillHistoryComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'trial-balance',
+        component: TrialBalanceComponent,
         canActivate: [authGuard],
       },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },

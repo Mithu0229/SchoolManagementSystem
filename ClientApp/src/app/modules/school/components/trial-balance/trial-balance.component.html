@@ -1,0 +1,80 @@
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">Trail Balances :: Ledger Analysis</h5>
+    </div>
+    
+    <div class="card-body">
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active bg-info text-white" href="javascript:void(0)">Trial Balance</a>
+            </li>
+        </ul>
+
+        <div class="bg-danger text-white p-2 mb-3">
+            Trial Balance :: Level-3
+        </div>
+
+        <div class="row mb-3 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">From Date</span>
+                    <input type="date" class="form-control" [(ngModel)]="fromDate">
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">To Date</span>
+                    <input type="date" class="form-control" [(ngModel)]="toDate">
+                </div>
+            </div>
+            <div class="col-md-2 text-end">
+                <button class="btn btn-success me-2" (click)="onSearch()" [disabled]="isLoading">
+                    <i class="fa fa-search"></i> SEARCH
+                </button>
+                <button class="btn btn-warning me-2 text-white">SHOW ALL COLUMNS</button>
+                <button class="btn btn-danger" (click)="downloadExcel()">
+                    <i class="fa fa-file-excel-o"></i> DOWNLOAD EXCEL
+                </button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped text-center">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Particulars</th>
+                        <th><input type="checkbox"> Opening Balance</th>
+                        <th><input type="checkbox"> Debit Trans.</th>
+                        <th><input type="checkbox"> Credit Trans.</th>
+                        <th><input type="checkbox"> Net Trans.</th>
+                        <th>Dr.</th>
+                        <th>Cr.</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="isLoading">
+                        <td colspan="8">Loading data...</td>
+                    </tr>
+                    <tr *ngIf="!isLoading && items.length === 0">
+                        <td colspan="8">No records found</td>
+                    </tr>
+                    <tr *ngFor="let item of items">
+                        <td class="text-start">{{ item.particulars }}</td>
+                        <td class="text-end">{{ item.openingBalance | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ item.debitTrans | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ item.creditTrans | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ item.netTrans | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ item.dr | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ item.cr | number:'1.2-2' }}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm">
+                                <i class="fa fa-eye"></i> PREVIEW
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

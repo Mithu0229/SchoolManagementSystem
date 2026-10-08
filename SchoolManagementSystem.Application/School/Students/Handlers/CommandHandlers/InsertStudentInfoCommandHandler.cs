@@ -1,3 +1,4 @@
+using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Helpers;
 using SchoolManagementSystem.Application.School.Students.Models;
@@ -9,11 +10,13 @@ public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudent
 {
     private IUnitOfWork _unitOfWork;
     private readonly ICurrentUserService _currentUserService;
+    private readonly IEmailService _emailService;
 
-    public InsertStudentInfoCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService)
+    public InsertStudentInfoCommandHandler(IUnitOfWork unitOfWork, ICurrentUserService currentUserService, IEmailService emailService)
     {
         _unitOfWork = unitOfWork;
         _currentUserService = currentUserService;
+        _emailService = emailService;
     }
 
     public async Task<IResult> Handle(InsertStudentInfoCommand request, CancellationToken cancellationToken)
@@ -72,6 +75,38 @@ public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudent
             await _unitOfWork.StudentInfoRepository.AddAsync(studentInfo);
             await _unitOfWork.CommitAsync();
             var response = studentInfo.Adapt<StudentInfoResponse>();
+
+            // Generate PDF and send email
+            try
+            {
+                var classFor =await _unitOfWork.AcademicClassRepository.GetSingleAsync(x => x.Id == Guid.Parse(studentInfo.ApplicationForClass));
+                if(classFor != null) { studentInfo.ApplicationForClass = classFor.ClassName; }
+
+                var pdfBytes = StudentApplicationPdfBuilder.GeneratePdf(studentInfo);
+                
+                string targetEmail = !string.IsNullOrEmpty(request.StudentInfo.StudentEmail) 
+                    ? request.StudentInfo.StudentEmail 
+                    : (!string.IsNullOrEmpty(request.StudentInfo.GuardianInfo?.FatherEmail) 
+                        ? request.StudentInfo.GuardianInfo.FatherEmail 
+                        : null);
+
+                if (!string.IsNullOrEmpty(targetEmail))
+                {
+                    await _emailService.SendEmailWithAttachmentAsync(
+                        targetEmail,
+                        "Admission Application - Edugates Integrated School",
+                        "<h1>Welcome to Edugates Integrated School!</h1><p>Please find your admission application attached.</p>",
+                        pdfBytes,
+                        "AdmissionApplication.pdf"
+                    );
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log exception if needed, but don't fail the request since student was created
+                Console.WriteLine($"Failed to send email: {ex.Message}");
+            }
+
             return Result.Success(response, StatusCodes.Status201Created);
         }
         catch (Exception)

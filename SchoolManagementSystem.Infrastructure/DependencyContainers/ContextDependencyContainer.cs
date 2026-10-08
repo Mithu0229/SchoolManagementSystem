@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Infrastructure.Common;
 using System;
@@ -15,5 +15,6 @@ public class ContextDependencyContainer
         //services.AddScoped<IQmsDbContext, QmsDbContext>();
         //services.AddScoped<QmsDbContext, QmsDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddTransient<IEmailService, EmailService>();
     }
 }

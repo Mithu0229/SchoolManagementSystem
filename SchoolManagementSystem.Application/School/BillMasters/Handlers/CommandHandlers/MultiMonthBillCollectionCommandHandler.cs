@@ -153,7 +153,7 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             AccountNo = req.AccountNo ?? "",
                             TransactionNo = req.TransactionNo ?? "",
                             TransactionType = req.TransactionType,
-                            VoucherNo = req.TrxId!,
+                            VoucherNo = req.TrxId!?? $"V-{now:yyyyMMddHHmmss}",
                             Particulars = req.Particulars ?? "",
                             IsActive = true,
                             StudentId = stdID
@@ -171,7 +171,7 @@ public class MultiMonthBillCollectionCommandHandler : IHttpRequestHandler<MultiM
                             AccountNo = stdCID,
                             TransactionNo = req.TransactionNo ?? "",
                             TransactionType = req.TransactionType,
-                            VoucherNo = req.TrxId!,
+                            VoucherNo = req.TrxId?? $"V-{now:yyyyMMddHHmmss}" ,
                             Particulars = "Bill Collection - " + (req.Particulars ?? ""),
                             IsActive = true,
                             StudentId = stdID
