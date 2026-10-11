@@ -1,0 +1,63 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Income Statement (Profit & Loss)</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">From Date</label>
+                <input type="date" class="form-control" [(ngModel)]="fromDate">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">To Date</label>
+                <input type="date" class="form-control" [(ngModel)]="toDate">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" (click)="onSearch()" [disabled]="isLoading">
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="data && !isLoading" class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 70%;">Particulars</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Revenues Section -->
+                    <tr><td colspan="2" class="fw-bold bg-light">Revenues</td></tr>
+                    <tr *ngFor="let rev of data.revenues">
+                        <td class="ps-4">{{ rev.particulars }}</td>
+                        <td class="text-end">{{ rev.amount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr class="fw-bold text-success">
+                        <td class="text-end">Total Revenue</td>
+                        <td class="text-end border-top-2 border-dark">{{ data.totalRevenue | number:'1.2-2' }}</td>
+                    </tr>
+                    
+                    <!-- Expenses Section -->
+                    <tr><td colspan="2" class="fw-bold bg-light mt-3">Expenses</td></tr>
+                    <tr *ngFor="let exp of data.expenses">
+                        <td class="ps-4">{{ exp.particulars }}</td>
+                        <td class="text-end">{{ exp.amount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr class="fw-bold text-danger">
+                        <td class="text-end">Total Expenses</td>
+                        <td class="text-end border-top-2 border-dark">{{ data.totalExpense | number:'1.2-2' }}</td>
+                    </tr>
+                    
+                    <!-- Net Income -->
+                    <tr class="table-dark fs-5 mt-4">
+                        <td class="text-end fw-bold">Net Income</td>
+                        <td class="text-end fw-bold">{{ data.netIncome | number:'1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

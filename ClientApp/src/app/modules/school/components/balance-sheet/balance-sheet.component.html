@@ -1,0 +1,61 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Balance Sheet</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">As of Date</label>
+                <input type="date" class="form-control" [(ngModel)]="asOfDate">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" (click)="onSearch()" [disabled]="isLoading">
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div *ngIf="data && !isLoading" class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 70%;">Particulars</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Assets Section -->
+                    <tr><td colspan="2" class="fw-bold bg-light">Assets</td></tr>
+                    <tr *ngFor="let item of data.assets">
+                        <td class="ps-4">{{ item.particulars }}</td>
+                        <td class="text-end">{{ item.amount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr class="fw-bold text-success">
+                        <td class="text-end">Total Assets</td>
+                        <td class="text-end border-top-2 border-dark">{{ data.totalAssets | number:'1.2-2' }}</td>
+                    </tr>
+                    
+                    <!-- Liabilities and Equity Section -->
+                    <tr><td colspan="2" class="fw-bold bg-light mt-3">Liabilities & Equity</td></tr>
+                    <tr *ngFor="let item of data.liabilitiesAndEquity">
+                        <td class="ps-4">{{ item.particulars }}</td>
+                        <td class="text-end">{{ item.amount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr class="fw-bold text-danger">
+                        <td class="text-end">Total Liabilities & Equity</td>
+                        <td class="text-end border-top-2 border-dark">{{ data.totalLiabilitiesAndEquity | number:'1.2-2' }}</td>
+                    </tr>
+                    
+                    <!-- Accounting Equation Check -->
+                    <tr class="mt-4" [ngClass]="{'table-success': data.totalAssets === data.totalLiabilitiesAndEquity, 'table-danger': data.totalAssets !== data.totalLiabilitiesAndEquity}">
+                        <td class="text-end fw-bold">Balance Match Check</td>
+                        <td class="text-end fw-bold">
+                            {{ data.totalAssets === data.totalLiabilitiesAndEquity ? 'BALANCED' : 'UNBALANCED' }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

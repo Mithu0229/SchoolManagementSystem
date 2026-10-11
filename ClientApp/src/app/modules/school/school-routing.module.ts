@@ -24,6 +24,10 @@ import { MultiMonthBillCollectionComponent } from './components/multi-month-bill
 import { StudentPaidBillsComponent } from './components/student-paid-bills/student-paid-bills.component';
 import { StudentBillHistoryComponent } from './components/student-bill-history/student-bill-history.component';
 import { TrialBalanceComponent } from './components/trial-balance/trial-balance.component';
+import { CashbookComponent } from './components/cashbook/cashbook.component';
+import { BankbookComponent } from './components/bankbook/bankbook.component';
+import { IncomeStatementComponent } from './components/income-statement/income-statement.component';
+import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 import { authGuard } from '../../core/guards/auth.guard';
@@ -143,6 +147,26 @@ const routes: Routes = [
       {
         path: 'trial-balance',
         component: TrialBalanceComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'cashbook',
+        component: CashbookComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'bankbook',
+        component: BankbookComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'income-statement',
+        component: IncomeStatementComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'balance-sheet',
+        component: BalanceSheetComponent,
         canActivate: [authGuard],
       },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },
