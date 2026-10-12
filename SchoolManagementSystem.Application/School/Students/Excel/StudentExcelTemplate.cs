@@ -43,6 +43,7 @@ public static class StudentExcelTemplate
     public const string GroupLocalGuardian = "Local Guardian";
 
     // ---- Keys -------------------------------------------------------------------------
+    public const string StdCID = nameof(StdCID);
     public const string FullName = nameof(FullName);
     public const string Gender = nameof(Gender);
     public const string DateOfBirth = nameof(DateOfBirth);

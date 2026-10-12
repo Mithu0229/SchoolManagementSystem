@@ -146,6 +146,51 @@ export interface MultiMonthMoneyReceiptResponse {
   transactionType: string;
 }
 
+export interface MoneyReceiptDetail {
+  sn: number;
+  accountHead: string;
+  month: string;
+  transID: string;
+  amount: number;
+}
+
+export interface MoneyReceiptPaymentRow {
+  sn: number;
+  source: string;
+  paymentMethod: string;
+  accountOrBank: string;
+  trxNoOrVoucher: string;
+  transactionDate: string;
+  particulars: string;
+  amount: number;
+}
+
+export interface MoneyReceiptResponse {
+  billMasterId: string;
+  studentName: string;
+  studentID: string;
+  phone: string;
+  className: string;
+  date: string;
+  manualMR: number;
+  invID: string;
+  totalAmount: number;
+  totalBilledAmount: number;
+  cashAmount: number;
+  bankAmount: number;
+  bkashAmount: number;
+  totalPaidAmount: number;
+  totalDueAmount: number;
+  billMonth: number;
+  billYear: number;
+  monthName: string;
+  voucherNo: string;
+  paymentStatus: string;
+  inword: string;
+  details: MoneyReceiptDetail[];
+  paymentRows: MoneyReceiptPaymentRow[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -189,8 +234,8 @@ export class BillMasterService {
     );
   }
 
-  getMoneyReceipt(id: string): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(
+  getMoneyReceipt(id: string): Observable<ApiResponse<MoneyReceiptResponse>> {
+    return this.http.get<ApiResponse<MoneyReceiptResponse>>(
       `${this.apiUrl}/get-money-receipt/${id}`,
     );
   }

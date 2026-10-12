@@ -13,7 +13,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { MessageService } from 'primeng/api';
+import { MessageService, MenuItem } from 'primeng/api';
 import { environment } from '../../../../../environments/environment';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import { ButtonModule } from 'primeng/button';
@@ -21,6 +21,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
+import { MenuModule } from 'primeng/menu';
 //import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import {
   TableColumn,
@@ -39,6 +40,7 @@ import {
     InputTextModule,
     CheckboxModule,
     ToastModule,
+    MenuModule,
     // ConfirmDialogModule,
   ],
   providers: [MessageService],
@@ -52,6 +54,7 @@ export class StudentListComponent implements OnInit {
     editForm: true,
     deleteForm: false,
     exportButton: true,
+    showExportButton: true,
     pdfButton: true,
   };
 
@@ -75,6 +78,8 @@ export class StudentListComponent implements OnInit {
   excelErrorDialog: boolean = false;
   excelErrors: StudentExcelRowError[] = [];
   excelUploadResult: StudentExcelImportResponse | null = null;
+  exportingExcel: boolean = false;
+  exportMenuItems: MenuItem[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -94,6 +99,19 @@ export class StudentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.exportMenuItems = [
+      {
+        label: 'Download Filtered Students',
+        icon: 'pi pi-filter',
+        command: () => this.downloadStudentsExcel(false),
+      },
+      {
+        label: 'Download All Students',
+        icon: 'pi pi-users',
+        command: () => this.downloadStudentsExcel(true),
+      },
+    ];
+
     // We add the action columns manually so the app-table handles edit events correctly
     this.columns.push({
       // @ts-ignore
@@ -347,6 +365,70 @@ export class StudentListComponent implements OnInit {
           severity: 'error',
           summary: 'Error',
           detail: 'Failed to download sample file',
+        });
+      },
+    });
+  }
+
+  downloadStudentsExcel(exportAll: boolean = false) {
+    this.exportingExcel = true;
+
+    let search = '';
+    let selectedIds: string[] = [];
+
+    if (!exportAll && this.tableComponent) {
+      search = this.tableComponent.currentState?.searchQuery || '';
+      if (this.tableComponent.currentState?.selectedRows?.length) {
+        selectedIds = this.tableComponent.currentState.selectedRows
+          .map((r: any) => r.studentId || r.id)
+          .filter(Boolean);
+      }
+    }
+
+    const payload = {
+      search: exportAll ? '' : search,
+      studentIds: exportAll ? [] : selectedIds,
+      exportAll: exportAll,
+    };
+
+    this.excelService.downloadStudentList(payload).subscribe({
+      next: (response) => {
+        this.exportingExcel = false;
+        let fileName = exportAll ? 'All_Students.xlsx' : 'Students_Export.xlsx';
+        const contentDisposition = response.headers.get('content-disposition');
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename="?([^"]+)"?/);
+          if (match && match[1]) {
+            fileName = match[1];
+          }
+        }
+
+        const blob = response.body;
+        if (blob) {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          a.remove();
+        }
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: exportAll
+            ? 'All students Excel downloaded successfully'
+            : 'Filtered students Excel downloaded successfully',
+        });
+      },
+      error: () => {
+        this.exportingExcel = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to download student list Excel file',
         });
       },
     });

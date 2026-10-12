@@ -4,9 +4,13 @@
 
   <div class="form-header flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
     <span>Student List Management</span>
-    <div class="flex gap-2">
+    <div class="flex gap-2 items-center flex-wrap">
+      <p-button label="D.List" icon="pi pi-file-excel" styleClass="p-button-outlined p-button-sm bg-white"
+        (click)="exportMenu.toggle($event)" [loading]="exportingExcel"></p-button>
       <p-button label="Download Sample" icon="pi pi-download" styleClass="p-button-outlined p-button-sm bg-white"
         (click)="downloadSampleExcel()"></p-button>
+
+      <p-menu #exportMenu [popup]="true" [model]="exportMenuItems" [appendTo]="'body'"></p-menu>
       <p-button label="Upload Excel" icon="pi pi-upload" styleClass="p-button-sm" (click)="triggerFileUpload()"
         [loading]="excelUploading"></p-button>
       <input type="file" #fileUpload (change)="onFileSelected($event)" accept=".xlsx, .xls" class="hidden" />
@@ -14,7 +18,7 @@
   </div>
   <div class="bg-white mx-auto mt-2">
     <app-table apiUrl="/StudentInfo/get-student-user-list" [columns]="columns" [config]="tableConfig"
-      (editClicked)="openEdit($event)"></app-table>
+      (editClicked)="openEdit($event)" (exportCSVHandler)="downloadStudentsExcel(false)"></app-table>
   </div>
 
   <!-- Dialog Section -->

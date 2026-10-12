@@ -5,6 +5,7 @@ import {
   BillMasterService,
   StudentBillHistoryResponse,
   StudentBillHistorySummaryResponse,
+  MoneyReceiptResponse,
 } from '../../services/bill-master.service';
 import { TableComponent } from '../../../../shared/components/table/table.component';
 import {
@@ -89,7 +90,7 @@ export class StudentBillHistoryComponent implements OnInit {
 
   // Receipt Dialog
   reportDialog = false;
-  currentReceipt: any = null;
+  currentReceipt: MoneyReceiptResponse | null = null;
 
   private fb = inject(FormBuilder);
   private billMasterService = inject(BillMasterService);
@@ -182,19 +183,19 @@ export class StudentBillHistoryComponent implements OnInit {
         header: 'Status',
         sortable: false,
       },
-      // {
-      //   isActionColumn: true,
-      //   field: 'Actions',
-      //   header: 'Receipt',
-      //   actions: [
-      //     {
-      //       label: 'Receipt',
-      //       icon: 'pi pi-file-pdf',
-      //       callback: (row: StudentBillHistoryResponse) => this.viewReceipt(row),
-      //       visible: (row: StudentBillHistoryResponse) => row.totalPaidAmount > 0,
-      //     },
-      //   ],
-      // },
+      {
+        isActionColumn: true,
+        field: 'Actions',
+        header: 'Receipt',
+        actions: [
+          {
+            label: 'Receipt',
+            icon: 'pi pi-file-pdf',
+            callback: (row: StudentBillHistoryResponse) => this.viewReceipt(row),
+            visible: (row: StudentBillHistoryResponse) => row.totalPaidAmount > 0,
+          },
+        ],
+      },
     ];
   }
 
@@ -311,12 +312,75 @@ export class StudentBillHistoryComponent implements OnInit {
 
   printReceipt() {
     const printContent = document.getElementById('history-print-section');
-    if (printContent) {
-      const originalContents = document.body.innerHTML;
-      document.body.innerHTML = printContent.innerHTML;
-      window.print();
-      document.body.innerHTML = originalContents;
-      window.location.reload();
-    }
+    if (!printContent) return;
+
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) return;
+
+    // Collect all stylesheets from head
+    let stylesHtml = '';
+    const styleSheets = document.querySelectorAll('link[rel="stylesheet"], style');
+    styleSheets.forEach((s) => {
+      stylesHtml += s.outerHTML;
+    });
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Money Receipt - ${this.currentReceipt?.studentName || 'Student'}</title>
+          ${stylesHtml}
+          <style>
+            @page {
+              size: A4 portrait;
+              margin: 8mm 10mm;
+            }
+            body {
+              background: #ffffff !important;
+              color: #0f172a !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+            }
+            #history-print-section {
+              width: 100% !important;
+              padding: 0 !important;
+              margin: 0 !important;
+              background: #ffffff !important;
+            }
+            .receipt-part {
+              page-break-inside: avoid;
+            }
+            .receipt-divider {
+              page-break-after: avoid;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="history-print-section">
+            ${printContent.innerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+    }, 300);
   }
 }

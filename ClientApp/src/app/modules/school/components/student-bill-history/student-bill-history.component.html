@@ -17,8 +17,9 @@
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <button pButton label="Refresh Summary" icon="pi pi-refresh" class="p-button-outlined p-button-sm p-button-secondary"
-        (click)="loadSummary()" [loading]="isLoadingSummary"></button>
+      <button pButton label="Refresh Summary" icon="pi pi-refresh"
+        class="p-button-outlined p-button-sm p-button-secondary" (click)="loadSummary()"
+        [loading]="isLoadingSummary"></button>
     </div>
   </div>
 
@@ -138,239 +139,523 @@
         <i class="pi pi-list text-slate-500"></i>
         <h2 class="text-base font-bold text-slate-800 m-0">Bill & Collection History Records</h2>
       </div>
-      <span class="text-xs font-medium text-slate-400">Amounts sourced directly from CashBook, BankBook & BillMaster</span>
+      <span class="text-xs font-medium text-slate-400">Amounts sourced directly from CashBook, BankBook &
+        BillMaster</span>
     </div>
-    
+
     <app-table [apiUrl]="apiUrl" [columns]="columns" [config]="tableConfig">
     </app-table>
   </div>
 
   <!-- Receipt / Money Receipt Modal -->
-  <p-dialog [(visible)]="reportDialog" [style]="{width: '900px'}" header="Money Receipt Details" [modal]="true"
-    styleClass="p-fluid rounded-xl shadow-2xl">
+  <p-dialog [(visible)]="reportDialog" [style]="{width: '980px', maxWidth: '96vw'}" header="Money Receipt Details"
+    [modal]="true" styleClass="p-fluid rounded-xl shadow-2xl">
     <ng-template pTemplate="content">
-      <div id="history-print-section" class="bg-white text-black p-4 sm:p-8" *ngIf="currentReceipt">
-        
-        <!-- STUDENT COPY -->
-        <div class="receipt-part mb-8">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
+      <div id="history-print-section" class="p-3 sm:p-6" *ngIf="currentReceipt">
+
+        <!-- ==================== STUDENT COPY ==================== -->
+        <div class="receipt-part receipt-copy mb-6">
+          <!-- Top Header -->
+          <div class="flex justify-between items-center border-b-2 border-slate-300 pb-3 mb-3">
             <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
+              <div class="receipt-header-logo">
                 EIS
               </div>
               <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
+                <h1 class="text-2xl font-black text-blue-950 tracking-tight m-0">Edugates</h1>
+                <h2 class="text-base font-bold text-blue-900 m-0">Integrated School</h2>
+                <div class="text-xs text-slate-500 font-medium">Mirpur-2, Dhaka · Phone: +88 01841838391</div>
               </div>
             </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info1.com</div>
+            <div class="text-center">
+              <div class="receipt-title-pill">Money Receipt</div>
+              <div class="mt-1">
+                <span class="receipt-copy-badge student-badge">Student Copy</span>
+              </div>
+            </div>
+            <div class="text-right text-xs">
+              <div class="font-bold text-slate-700 text-sm">Receipt #: {{ currentReceipt.invID ||
+                currentReceipt.voucherNo }}</div>
+              <div class="text-slate-500 mt-0.5">Date: {{ currentReceipt.date }}</div>
+              <div class="mt-1">
+                <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold" [ngClass]="{
+                    'bg-emerald-100 text-emerald-800 border border-emerald-300': currentReceipt.paymentStatus === 'Paid',
+                    'bg-amber-100 text-amber-800 border border-amber-300': currentReceipt.paymentStatus === 'Partial',
+                    'bg-rose-100 text-rose-800 border border-rose-300': currentReceipt.paymentStatus === 'Unpaid'
+                  }">
+                  Status: {{ currentReceipt.paymentStatus }}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div class="flex justify-between items-end mb-4">
-            <div class="w-1/3"></div>
-            <div class="text-center w-1/3">
-              <span class="border-2 border-black rounded-lg px-4 py-1 text-lg font-bold">Money Receipt</span>
-            </div>
-            <div class="text-right w-1/3 text-sm">
-              <div class="font-bold text-lg">Student Copy</div>
-              <div>Print Time : {{ currentReceipt.date }}</div>
-            </div>
-          </div>
-
-          <div class="flex justify-between text-sm mb-4">
-            <div>
-              <table class="text-left border-separate border-spacing-x-2">
-                <tr>
-                  <td class="font-semibold w-28">Student Name</td>
-                  <td>: <b>{{ currentReceipt.studentName }}</b></td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Student ID</td>
-                  <td>: {{ currentReceipt.studentID }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Phone</td>
-                  <td>: {{ currentReceipt.phone }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Class</td>
-                  <td>: {{ currentReceipt.className }}</td>
-                </tr>
-              </table>
-            </div>
-            <div>
-              <table class="text-left border-separate border-spacing-x-2">
-                <tr>
-                  <td class="font-semibold w-24">Date</td>
-                  <td>: {{ currentReceipt.date }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Manual MR</td>
-                  <td>: {{ currentReceipt.manualMR }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Inv.ID</td>
-                  <td>: {{ currentReceipt.invID }}</td>
-                </tr>
-              </table>
+          <!-- Student & Bill Information Grid -->
+          <div class="receipt-meta-box mb-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div>
+                <span class="text-slate-500 block">Student Name:</span>
+                <strong class="text-slate-900 text-sm">{{ currentReceipt.studentName }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Student ID (StdCID):</span>
+                <span class="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">{{
+                  currentReceipt.studentID }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Class:</span>
+                <strong class="text-slate-800">{{ currentReceipt.className }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Phone / Mobile:</span>
+                <strong class="text-slate-800">{{ currentReceipt.phone }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Billing Period:</span>
+                <strong class="text-indigo-900 font-bold">{{ currentReceipt.monthName }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Voucher / Invoice No:</span>
+                <span class="font-mono text-slate-800">{{ currentReceipt.invID || currentReceipt.voucherNo }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Total Billed:</span>
+                <strong class="text-slate-900">৳{{ (currentReceipt.totalBilledAmount || currentReceipt.totalAmount) |
+                  number:'1.2-2' }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Total Paid:</span>
+                <strong class="text-emerald-700 font-bold">৳{{ currentReceipt.totalPaidAmount | number:'1.2-2'
+                  }}</strong>
+              </div>
             </div>
           </div>
 
-          <table class="w-full text-sm border-collapse mb-2">
-            <thead>
-              <tr class="bg-gray-200 border-y-2 border-gray-400">
-                <th class="py-1 px-2 text-center w-12">S.N.</th>
-                <th class="py-1 px-2 text-left">Account Head</th>
-                <th class="py-1 px-2 text-center">Month</th>
-                <th class="py-1 px-2 text-center">TransID</th>
-                <th class="py-1 px-2 text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let detail of currentReceipt.details" class="border-b border-dashed border-gray-300">
-                <td class="py-1 px-2 text-center">{{ detail.sn }}</td>
-                <td class="py-1 px-2 text-left uppercase">{{ detail.accountHead }}</td>
-                <td class="py-1 px-2 text-center">{{ detail.month }}</td>
-                <td class="py-1 px-2 text-center">{{ detail.transID }}</td>
-                <td class="py-1 px-2 text-right">{{ detail.amount | number:'1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- Section 1: Fee Head Assessment Breakdown -->
+          <div class="mb-3" *ngIf="currentReceipt.details && currentReceipt.details.length > 0">
+            <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="pi pi-list text-slate-500 text-xs"></i> Billed Fee Heads
+            </div>
+            <table class="receipt-table mb-2">
+              <thead>
+                <tr>
+                  <th class="text-center w-10">SL</th>
+                  <th class="text-left">Fee Head / Particulars</th>
+                  <th class="text-center w-28">Billing Period</th>
+                  <th class="text-center w-28">Ref / Inv No</th>
+                  <th class="text-right w-28">Billed Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of currentReceipt.details">
+                  <td class="text-center font-semibold text-slate-500">{{ detail.sn }}</td>
+                  <td class="text-left font-medium uppercase text-slate-800">{{ detail.accountHead }}</td>
+                  <td class="text-center text-slate-600">{{ detail.month }}</td>
+                  <td class="text-center font-mono text-xs text-slate-500">{{ detail.transID }}</td>
+                  <td class="text-right font-semibold text-slate-900">৳{{ detail.amount | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="flex justify-end text-sm mb-4">
-            <div class="flex gap-4 font-bold">
-              <span>Total (Tk.) = </span>
-              <span class="border-b-2 border-double border-black w-24 text-right">{{ currentReceipt.totalAmount | number:'1.2-2' }}</span>
+          <!-- Section 2: Payment Collection Records (From CashBook & BankBook) -->
+          <div class="mb-3">
+            <div
+              class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1">
+                <i class="pi pi-credit-card text-emerald-600 text-xs"></i>
+                Payment Records (CashBook & BankBook)
+              </span>
+              <span class="text-[11px] font-normal text-slate-500 lowercase">
+                entries synced directly from accounts ledgers
+              </span>
+            </div>
+
+            <table class="receipt-table mb-2"
+              *ngIf="currentReceipt.paymentRows && currentReceipt.paymentRows.length > 0; else noPaymentsTpl">
+              <thead>
+                <tr>
+                  <th class="text-center w-10">SL</th>
+                  <th class="text-center w-24">Ledger Source</th>
+                  <th class="text-center w-20">Method</th>
+                  <th class="text-left">Account / Bank / Counter</th>
+                  <th class="text-center w-28">Trx / Voucher No</th>
+                  <th class="text-center w-36">Transaction Date</th>
+                  <th class="text-right w-28">Paid Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of currentReceipt.paymentRows">
+                  <td class="text-center font-semibold text-slate-500">{{ payment.sn }}</td>
+                  <td class="text-center">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                      [ngClass]="payment.source === 'CashBook' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-blue-100 text-blue-900 border border-blue-300'">
+                      {{ payment.source }}
+                    </span>
+                  </td>
+                  <td class="text-center font-bold text-xs" [ngClass]="{
+                      'text-amber-800': payment.paymentMethod === 'Cash',
+                      'text-pink-700': payment.paymentMethod === 'bKash',
+                      'text-blue-800': payment.paymentMethod === 'Bank'
+                    }">
+                    {{ payment.paymentMethod }}
+                  </td>
+                  <td class="text-left text-slate-700 text-xs font-medium">{{ payment.accountOrBank }}</td>
+                  <td class="text-center font-mono text-xs text-slate-600">{{ payment.trxNoOrVoucher }}</td>
+                  <td class="text-center text-xs text-slate-500">{{ payment.transactionDate }}</td>
+                  <td class="text-right font-bold text-emerald-800">৳{{ payment.amount | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <ng-template #noPaymentsTpl>
+              <div class="p-3 text-center text-xs text-slate-500 bg-slate-50 rounded border border-slate-200 mb-2">
+                No payment transactions recorded in CashBook or BankBook for this bill yet.
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Section 3: Financial Summary Box (SHOWING DIFFERENT ROWS FOR CASH, BANK, TOTAL PAID) -->
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+            <!-- Left: In words -->
+            <div class="w-full sm:w-1/2 text-xs">
+              <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                <span class="font-bold text-slate-700 block mb-1">In Words (in Taka):</span>
+                <span class="italic text-slate-900 font-semibold">{{ currentReceipt.inword | titlecase }} Only</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-2">
+                * Computer generated receipt. Sourced from CashBook, BankBook & BillMaster ledgers.
+              </div>
+            </div>
+
+            <!-- Right: Distinct Financial Rows Card -->
+            <div class="w-full sm:w-1/2 flex justify-end">
+              <div class="summary-card">
+                <!-- Row 1: Total Billed Amount -->
+                <div class="summary-row">
+                  <span class="text-slate-600 font-medium">Total Billed Amount:</span>
+                  <span class="font-bold text-slate-800">৳{{ (currentReceipt.totalBilledAmount ||
+                    currentReceipt.totalAmount) | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 2: Cash Amount from CashBook -->
+                <div class="summary-row summary-row-cash" *ngIf="currentReceipt.cashAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-money-bill text-amber-700 text-xs"></i>
+                    Cash Amount (CashBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.cashAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 3: Bank Amount from BankBook -->
+                <div class="summary-row summary-row-bank" *ngIf="currentReceipt.bankAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-building text-green-700 text-xs"></i>
+                    Bank Amount (BankBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.bankAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 4: bKash Amount from BankBook -->
+                <div class="summary-row summary-row-bkash" *ngIf="currentReceipt.bkashAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-mobile text-pink-700 text-xs"></i>
+                    bKash Amount (BankBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.bkashAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 5: Total Paid Amount (Prominent row) -->
+                <div class="summary-row summary-row-total-paid">
+                  <span class="flex items-center gap-1 font-black">
+                    <i class="pi pi-check-circle text-emerald-700 text-sm"></i>
+                    Total Paid Amount:
+                  </span>
+                  <span class="font-black text-emerald-950">৳{{ currentReceipt.totalPaidAmount | number:'1.2-2'
+                    }}</span>
+                </div>
+
+                <!-- Row 6: Outstanding Due Amount (if any) -->
+                <div class="summary-row summary-row-due" *ngIf="currentReceipt.totalDueAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-exclamation-circle text-rose-700 text-xs"></i>
+                    Outstanding Due:
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.totalDueAmount | number:'1.2-2' }}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="text-sm font-bold mb-12">
-            Inword (in Taka) : <i class="font-normal">{{ currentReceipt.inword | titlecase }} Only</i>
-          </div>
-
-          <div class="flex justify-between text-xs text-center border-t border-gray-400 pt-8 mt-12 mx-4 px-4">
-            <div class="border-t border-black w-32 -mt-8 pt-1">Received by</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Accountant</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Checked by</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Paid by</div>
+          <!-- Section 4: Authorized Signatures -->
+          <div class="signature-block">
+            <div class="sig-col">
+              <div class="sig-line">Received by</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Accountant</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Checked by</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Paid by / Depositor</div>
+            </div>
           </div>
         </div>
 
-        <!-- DASHED SEPARATOR -->
-        <div class="border-t-2 border-dashed border-gray-500 my-8"></div>
+        <!-- ==================== DASHED CUT SEPARATOR ==================== -->
+        <div class="receipt-divider">
+          <span class="divider-text">✂ - - - - - - - - - - - - - - Please Cut Here / Office Copy Below - - - - - - - - -
+            - - - - - ✂</span>
+        </div>
 
-        <!-- OFFICE COPY -->
-        <div class="receipt-part">
-          <div class="flex justify-between items-center border-b border-gray-300 pb-2 mb-4">
+        <!-- ==================== OFFICE COPY ==================== -->
+        <div class="receipt-part receipt-copy">
+          <!-- Top Header -->
+          <div class="flex justify-between items-center border-b-2 border-slate-300 pb-3 mb-3">
             <div class="flex items-center gap-3">
-              <div
-                class="w-16 h-16 rounded-full border-2 border-green-600 flex items-center justify-center text-green-600 font-bold text-xl">
+              <div class="receipt-header-logo">
                 EIS
               </div>
               <div>
-                <h1 class="text-3xl font-bold text-blue-900 tracking-tight m-0">Edugates</h1>
-                <h2 class="text-xl font-bold text-blue-800 m-0">Integrated School</h2>
+                <h1 class="text-2xl font-black text-blue-950 tracking-tight m-0">Edugates</h1>
+                <h2 class="text-base font-bold text-blue-900 m-0">Integrated School</h2>
+                <div class="text-xs text-slate-500 font-medium">Mirpur-2, Dhaka · Phone: +88 01841838391</div>
               </div>
             </div>
-            <div class="text-right text-sm">
-              <div class="text-gray-500 font-semibold text-lg mb-1">Faith. Wisdom. Revival. Impact</div>
-              <div class="text-gray-600">House: 34, Road: 8, Block: H, Section: 2, Mirpur, Dhaka.</div>
-              <div class="text-gray-600">Phone: +88 01841838391, Email: Info2edugateserp.com</div>
+            <div class="text-center">
+              <div class="receipt-title-pill">Money Receipt</div>
+              <div class="mt-1">
+                <span class="receipt-copy-badge office-badge">Office Copy</span>
+              </div>
+            </div>
+            <div class="text-right text-xs">
+              <div class="font-bold text-slate-700 text-sm">Receipt #: {{ currentReceipt.invID ||
+                currentReceipt.voucherNo }}</div>
+              <div class="text-slate-500 mt-0.5">Date: {{ currentReceipt.date }}</div>
+              <div class="mt-1">
+                <span class="inline-block px-2 py-0.5 rounded text-[11px] font-bold" [ngClass]="{
+                    'bg-emerald-100 text-emerald-800 border border-emerald-300': currentReceipt.paymentStatus === 'Paid',
+                    'bg-amber-100 text-amber-800 border border-amber-300': currentReceipt.paymentStatus === 'Partial',
+                    'bg-rose-100 text-rose-800 border border-rose-300': currentReceipt.paymentStatus === 'Unpaid'
+                  }">
+                  Status: {{ currentReceipt.paymentStatus }}
+                </span>
+              </div>
             </div>
           </div>
 
-          <div class="flex justify-between items-end mb-4">
-            <div class="w-1/3"></div>
-            <div class="text-center w-1/3">
-              <span class="border-2 border-black rounded-lg px-4 py-1 text-lg font-bold">Money Receipt</span>
-            </div>
-            <div class="text-right w-1/3 text-sm">
-              <div class="font-bold text-lg">Office Copy</div>
-              <div>Print Time : {{ currentReceipt.date }}</div>
-            </div>
-          </div>
-
-          <div class="flex justify-between text-sm mb-4">
-            <div>
-              <table class="text-left border-separate border-spacing-x-2">
-                <tr>
-                  <td class="font-semibold w-28">Student Name</td>
-                  <td>: <b>{{ currentReceipt.studentName }}</b></td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Student ID</td>
-                  <td>: {{ currentReceipt.studentID }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Phone</td>
-                  <td>: {{ currentReceipt.phone }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Class</td>
-                  <td>: {{ currentReceipt.className }}</td>
-                </tr>
-              </table>
-            </div>
-            <div>
-              <table class="text-left border-separate border-spacing-x-2">
-                <tr>
-                  <td class="font-semibold w-24">Date</td>
-                  <td>: {{ currentReceipt.date }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Manual MR</td>
-                  <td>: {{ currentReceipt.manualMR }}</td>
-                </tr>
-                <tr>
-                  <td class="font-semibold">Inv.ID</td>
-                  <td>: {{ currentReceipt.invID }}</td>
-                </tr>
-              </table>
+          <!-- Student & Bill Information Grid -->
+          <div class="receipt-meta-box mb-4">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div>
+                <span class="text-slate-500 block">Student Name:</span>
+                <strong class="text-slate-900 text-sm">{{ currentReceipt.studentName }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Student ID (StdCID):</span>
+                <span class="font-bold text-blue-900 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">{{
+                  currentReceipt.studentID }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Class:</span>
+                <strong class="text-slate-800">{{ currentReceipt.className }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Phone / Mobile:</span>
+                <strong class="text-slate-800">{{ currentReceipt.phone }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Billing Period:</span>
+                <strong class="text-indigo-900 font-bold">{{ currentReceipt.monthName }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Voucher / Invoice No:</span>
+                <span class="font-mono text-slate-800">{{ currentReceipt.invID || currentReceipt.voucherNo }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Total Billed:</span>
+                <strong class="text-slate-900">৳{{ (currentReceipt.totalBilledAmount || currentReceipt.totalAmount) |
+                  number:'1.2-2' }}</strong>
+              </div>
+              <div>
+                <span class="text-slate-500 block">Total Paid:</span>
+                <strong class="text-emerald-700 font-bold">৳{{ currentReceipt.totalPaidAmount | number:'1.2-2'
+                  }}</strong>
+              </div>
             </div>
           </div>
 
-          <table class="w-full text-sm border-collapse mb-2">
-            <thead>
-              <tr class="bg-gray-200 border-y-2 border-gray-400">
-                <th class="py-1 px-2 text-center w-12">S.N.</th>
-                <th class="py-1 px-2 text-left">Account Head</th>
-                <th class="py-1 px-2 text-center">Month</th>
-                <th class="py-1 px-2 text-center">TransID</th>
-                <th class="py-1 px-2 text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let detail of currentReceipt.details" class="border-b border-dashed border-gray-300">
-                <td class="py-1 px-2 text-center">{{ detail.sn }}</td>
-                <td class="py-1 px-2 text-left uppercase">{{ detail.accountHead }}</td>
-                <td class="py-1 px-2 text-center">{{ detail.month }}</td>
-                <td class="py-1 px-2 text-center">{{ detail.transID }}</td>
-                <td class="py-1 px-2 text-right">{{ detail.amount | number:'1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <!-- Section 1: Fee Head Assessment Breakdown -->
+          <div class="mb-3" *ngIf="currentReceipt.details && currentReceipt.details.length > 0">
+            <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="pi pi-list text-slate-500 text-xs"></i> Billed Fee Heads
+            </div>
+            <table class="receipt-table mb-2">
+              <thead>
+                <tr>
+                  <th class="text-center w-10">SL</th>
+                  <th class="text-left">Fee Head / Particulars</th>
+                  <th class="text-center w-28">Billing Period</th>
+                  <th class="text-center w-28">Ref / Inv No</th>
+                  <th class="text-right w-28">Billed Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detail of currentReceipt.details">
+                  <td class="text-center font-semibold text-slate-500">{{ detail.sn }}</td>
+                  <td class="text-left font-medium uppercase text-slate-800">{{ detail.accountHead }}</td>
+                  <td class="text-center text-slate-600">{{ detail.month }}</td>
+                  <td class="text-center font-mono text-xs text-slate-500">{{ detail.transID }}</td>
+                  <td class="text-right font-semibold text-slate-900">৳{{ detail.amount | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="flex justify-end text-sm mb-4">
-            <div class="flex gap-4 font-bold">
-              <span>Total (Tk.) = </span>
-              <span class="border-b-2 border-double border-black w-24 text-right">{{ currentReceipt.totalAmount | number:'1.2-2' }}</span>
+          <!-- Section 2: Payment Collection Records (From CashBook & BankBook) -->
+          <div class="mb-3">
+            <div
+              class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1 flex items-center justify-between">
+              <span class="flex items-center gap-1">
+                <i class="pi pi-credit-card text-emerald-600 text-xs"></i>
+                Payment Records (CashBook & BankBook)
+              </span>
+              <span class="text-[11px] font-normal text-slate-500 lowercase">
+                entries synced directly from accounts ledgers
+              </span>
+            </div>
+
+            <table class="receipt-table mb-2"
+              *ngIf="currentReceipt.paymentRows && currentReceipt.paymentRows.length > 0; else noPaymentsOfficeTpl">
+              <thead>
+                <tr>
+                  <th class="text-center w-10">SL</th>
+                  <th class="text-center w-24">Ledger Source</th>
+                  <th class="text-center w-20">Method</th>
+                  <th class="text-left">Account / Bank / Counter</th>
+                  <th class="text-center w-28">Trx / Voucher No</th>
+                  <th class="text-center w-36">Transaction Date</th>
+                  <th class="text-right w-28">Paid Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of currentReceipt.paymentRows">
+                  <td class="text-center font-semibold text-slate-500">{{ payment.sn }}</td>
+                  <td class="text-center">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider"
+                      [ngClass]="payment.source === 'CashBook' ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-blue-100 text-blue-900 border border-blue-300'">
+                      {{ payment.source }}
+                    </span>
+                  </td>
+                  <td class="text-center font-bold text-xs" [ngClass]="{
+                      'text-amber-800': payment.paymentMethod === 'Cash',
+                      'text-pink-700': payment.paymentMethod === 'bKash',
+                      'text-blue-800': payment.paymentMethod === 'Bank'
+                    }">
+                    {{ payment.paymentMethod }}
+                  </td>
+                  <td class="text-left text-slate-700 text-xs font-medium">{{ payment.accountOrBank }}</td>
+                  <td class="text-center font-mono text-xs text-slate-600">{{ payment.trxNoOrVoucher }}</td>
+                  <td class="text-center text-xs text-slate-500">{{ payment.transactionDate }}</td>
+                  <td class="text-right font-bold text-emerald-800">৳{{ payment.amount | number:'1.2-2' }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <ng-template #noPaymentsOfficeTpl>
+              <div class="p-3 text-center text-xs text-slate-500 bg-slate-50 rounded border border-slate-200 mb-2">
+                No payment transactions recorded in CashBook or BankBook for this bill yet.
+              </div>
+            </ng-template>
+          </div>
+
+          <!-- Section 3: Financial Summary Box (SHOWING DIFFERENT ROWS FOR CASH, BANK, TOTAL PAID) -->
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+            <!-- Left: In words -->
+            <div class="w-full sm:w-1/2 text-xs">
+              <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg">
+                <span class="font-bold text-slate-700 block mb-1">In Words (in Taka):</span>
+                <span class="italic text-slate-900 font-semibold">{{ currentReceipt.inword | titlecase }} Only</span>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-2">
+                * Official Accounting Copy. Stored in School Archives & Accounts Section.
+              </div>
+            </div>
+
+            <!-- Right: Distinct Financial Rows Card -->
+            <div class="w-full sm:w-1/2 flex justify-end">
+              <div class="summary-card">
+                <!-- Row 1: Total Billed Amount -->
+                <div class="summary-row">
+                  <span class="text-slate-600 font-medium">Total Billed Amount:</span>
+                  <span class="font-bold text-slate-800">৳{{ (currentReceipt.totalBilledAmount ||
+                    currentReceipt.totalAmount) | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 2: Cash Amount from CashBook -->
+                <div class="summary-row summary-row-cash" *ngIf="currentReceipt.cashAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-money-bill text-amber-700 text-xs"></i>
+                    Cash Amount (CashBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.cashAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 3: Bank Amount from BankBook -->
+                <div class="summary-row summary-row-bank" *ngIf="currentReceipt.bankAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-building text-green-700 text-xs"></i>
+                    Bank Amount (BankBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.bankAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 4: bKash Amount from BankBook -->
+                <div class="summary-row summary-row-bkash" *ngIf="currentReceipt.bkashAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-mobile text-pink-700 text-xs"></i>
+                    bKash Amount (BankBook):
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.bkashAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <!-- Row 5: Total Paid Amount (Prominent row) -->
+                <div class="summary-row summary-row-total-paid">
+                  <span class="flex items-center gap-1 font-black">
+                    <i class="pi pi-check-circle text-emerald-700 text-sm"></i>
+                    Total Paid Amount:
+                  </span>
+                  <span class="font-black text-emerald-950">৳{{ currentReceipt.totalPaidAmount | number:'1.2-2'
+                    }}</span>
+                </div>
+
+                <!-- Row 6: Outstanding Due Amount (if any) -->
+                <div class="summary-row summary-row-due" *ngIf="currentReceipt.totalDueAmount > 0">
+                  <span class="flex items-center gap-1">
+                    <i class="pi pi-exclamation-circle text-rose-700 text-xs"></i>
+                    Outstanding Due:
+                  </span>
+                  <span class="font-bold">৳{{ currentReceipt.totalDueAmount | number:'1.2-2' }}</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="text-sm font-bold mb-12">
-            Inword (in Taka) : <i class="font-normal">{{ currentReceipt.inword | titlecase }} Only</i>
-          </div>
-
-          <div class="flex justify-between text-xs text-center border-t border-gray-400 pt-8 mt-12 mx-4 px-4">
-            <div class="border-t border-black w-32 -mt-8 pt-1">Received by</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Accountant</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Checked by</div>
-            <div class="border-t border-black w-32 -mt-8 pt-1">Paid by</div>
+          <!-- Section 4: Authorized Signatures -->
+          <div class="signature-block">
+            <div class="sig-col">
+              <div class="sig-line">Received by</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Accountant</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Checked by</div>
+            </div>
+            <div class="sig-col">
+              <div class="sig-line">Paid by / Depositor</div>
+            </div>
           </div>
         </div>
 
@@ -380,7 +665,7 @@
       <div class="flex gap-2 justify-end border-t border-gray-100 pt-4">
         <p-button label="Close" icon="pi pi-times" styleClass="p-button-text p-button-secondary"
           (click)="hideReportDialog()"></p-button>
-        <p-button label="Print / Download" icon="pi pi-download" styleClass="p-button-primary"
+        <p-button label="Print / Download Receipt" icon="pi pi-print" styleClass="p-button-primary"
           (click)="printReceipt()"></p-button>
       </div>
     </ng-template>

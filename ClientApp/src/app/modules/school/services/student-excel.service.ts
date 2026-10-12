@@ -40,6 +40,23 @@ export class StudentExcelService {
     });
   }
 
+  /** Downloads the student list Excel populated with filtered or all students. */
+  downloadStudentList(filter?: {
+    search?: string;
+    studentIds?: string[];
+    classId?: string;
+    exportAll?: boolean;
+  }): Observable<HttpResponse<Blob>> {
+    return this.http.post(
+      `${this.apiUrl}/download-student-list-excel`,
+      filter || {},
+      {
+        responseType: 'blob',
+        observe: 'response',
+      }
+    );
+  }
+
   /** Uploads a filled student Excel; rows are saved through the standard save-student logic. */
   uploadStudents(
     file: File,
@@ -52,3 +69,4 @@ export class StudentExcelService {
     );
   }
 }
+

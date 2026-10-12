@@ -1,6 +1,11 @@
 <div class="card">
-    <div class="card-header">
-        <h5>Trial Balance Report</h5>
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Trial Balance Report</h5>
+        <!-- <button class="btn btn-sm btn-success" (click)="downloadExcel()" [disabled]="items.length === 0 || isDownloadingExcel">
+            <span *ngIf="isDownloadingExcel" class="spinner-border spinner-border-sm me-1"></span>
+            <i *ngIf="!isDownloadingExcel" class="pi pi-file-excel me-1"></i>
+            Export Excel
+        </button> -->
     </div>
     <div class="card-body">
         <div class="row mb-3 align-items-end">
@@ -18,6 +23,14 @@
                     Search
                 </button>
             </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-success w-100" (click)="downloadExcel()"
+                    [disabled]="items.length === 0 || isDownloadingExcel">
+                    <span *ngIf="isDownloadingExcel" class="spinner-border spinner-border-sm me-1"></span>
+                    <i *ngIf="!isDownloadingExcel" class="pi pi-file-excel me-1"></i>
+                    Export Excel
+                </button>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -28,9 +41,9 @@
                         <th class="text-end">Opening Balance</th>
                         <th class="text-end">Debit Trans.</th>
                         <th class="text-end">Credit Trans.</th>
-                        <th class="text-end">Net Trans.</th>
+                        <!-- <th class="text-end">Net Trans.</th>
                         <th class="text-end">Dr.</th>
-                        <th class="text-end">Cr.</th>
+                        <th class="text-end">Cr.</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -42,11 +55,19 @@
                         <td class="text-end">{{ item.openingBalance | number:'1.2-2' }}</td>
                         <td class="text-end">{{ item.debitTrans | number:'1.2-2' }}</td>
                         <td class="text-end">{{ item.creditTrans | number:'1.2-2' }}</td>
-                        <td class="text-end">{{ item.netTrans | number:'1.2-2' }}</td>
+                        <!-- <td class="text-end">{{ item.netTrans | number:'1.2-2' }}</td>
                         <td class="text-end text-success fw-bold">{{ item.dr | number:'1.2-2' }}</td>
-                        <td class="text-end text-danger fw-bold">{{ item.cr | number:'1.2-2' }}</td>
+                        <td class="text-end text-danger fw-bold">{{ item.cr | number:'1.2-2' }}</td> -->
                     </tr>
                 </tbody>
+                <tfoot *ngIf="items.length > 0" class="table-light border-top border-2 border-secondary">
+                    <tr class="fw-bold">
+                        <td>Total</td>
+                        <td class="text-end">{{ totalOpening | number:'1.2-2' }}</td>
+                        <td class="text-end text-primary">{{ totalDebit | number:'1.2-2' }}</td>
+                        <td class="text-end text-primary">{{ totalCredit | number:'1.2-2' }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

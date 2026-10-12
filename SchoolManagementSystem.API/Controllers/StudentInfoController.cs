@@ -152,6 +152,21 @@ namespace SchoolManagementSystem.API.Controllers
         }
 
         /// <summary>
+        /// Downloads the student list Excel populated with filtered or all students, formatted as the sample template.
+        /// </summary>
+        [HttpPost("download-student-list-excel")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
+        public async Task<IActionResult> DownloadStudentListExcel([FromBody] ExportStudentListExcelQuery query)
+        {
+            var result = await Mediator.Send(query ?? new ExportStudentListExcelQuery());
+            if (result.IsSuccess && result is IResult<StudentExcelFileResponse> fileResult && fileResult.Data != null)
+            {
+                return File(fileResult.Data.Content, fileResult.Data.ContentType, fileResult.Data.FileName);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, result);
+        }
+
+        /// <summary>
         /// Uploads a student Excel. Every row is validated first; if all rows are valid each one is
         /// saved through the same InsertStudentInfoCommand used by save-student.
         /// </summary>

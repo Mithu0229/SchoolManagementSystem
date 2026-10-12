@@ -15,6 +15,9 @@ public static class StudentExcelTemplateBuilder
         [StudentExcelTemplate.GroupLocalGuardian] = XLColor.FromHtml("#92400E"),
     };
 
+    public static readonly StudentExcelColumn StudentCodeColumn =
+        new(StudentExcelTemplate.StdCID, "Student Code", false, StudentExcelTemplate.GroupStudent, "System-generated student code.", "STD-0001", IsText: true);
+
     public static byte[] Build(IReadOnlyList<string> classNames)
     {
         using var workbook = new XLWorkbook();
@@ -24,7 +27,30 @@ public static class StudentExcelTemplateBuilder
         var lists = workbook.Worksheets.Add(StudentExcelTemplate.ListsSheetName);
 
         var listRanges = BuildListsSheet(lists, classNames);
-        BuildStudentsSheet(students, listRanges);
+        BuildStudentsSheet(students, listRanges, StudentExcelTemplate.Columns);
+        BuildInstructionsSheet(instructions, classNames);
+
+        lists.Hide();
+        students.SetTabActive();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public static byte[] BuildExport(IReadOnlyList<string> classNames, IReadOnlyList<Dictionary<string, object?>> rows)
+    {
+        var exportColumns = new List<StudentExcelColumn> { StudentCodeColumn };
+        exportColumns.AddRange(StudentExcelTemplate.Columns);
+
+        using var workbook = new XLWorkbook();
+
+        var students = workbook.Worksheets.Add(StudentExcelTemplate.StudentsSheetName);
+        var instructions = workbook.Worksheets.Add(StudentExcelTemplate.InstructionsSheetName);
+        var lists = workbook.Worksheets.Add(StudentExcelTemplate.ListsSheetName);
+
+        var listRanges = BuildListsSheet(lists, classNames);
+        BuildStudentsSheet(students, listRanges, exportColumns, rows);
         BuildInstructionsSheet(instructions, classNames);
 
         lists.Hide();
@@ -59,10 +85,14 @@ public static class StudentExcelTemplateBuilder
         };
     }
 
-    private static void BuildStudentsSheet(IXLWorksheet ws, Dictionary<string, IXLRange?> listRanges)
+    private static void BuildStudentsSheet(
+        IXLWorksheet ws,
+        Dictionary<string, IXLRange?> listRanges,
+        IReadOnlyList<StudentExcelColumn> columns,
+        IReadOnlyList<Dictionary<string, object?>>? rows = null)
     {
-        var lastDataRow = StudentExcelTemplate.MaxRows + 1;
-        var columns = StudentExcelTemplate.Columns;
+        var dataRowCount = rows?.Count ?? 0;
+        var lastDataRow = Math.Max(StudentExcelTemplate.MaxRows + 1, dataRowCount + 1);
 
         for (var i = 0; i < columns.Count; i++)
         {
@@ -73,7 +103,7 @@ public static class StudentExcelTemplateBuilder
             header.Value = StudentExcelTemplate.DisplayHeader(column);
             header.Style.Font.Bold = true;
             header.Style.Font.FontColor = XLColor.White;
-            header.Style.Fill.BackgroundColor = GroupColors[column.Group];
+            header.Style.Fill.BackgroundColor = GroupColors.TryGetValue(column.Group, out var color) ? color : XLColor.FromHtml("#1E3A8A");
             header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             header.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             header.Style.Alignment.WrapText = true;
@@ -110,6 +140,44 @@ public static class StudentExcelTemplateBuilder
             }
 
             ws.Column(colNo).Width = Math.Max(16, column.Header.Length + 6);
+        }
+
+        // Fill student data rows if available
+        if (rows != null && rows.Count > 0)
+        {
+            for (var r = 0; r < rows.Count; r++)
+            {
+                var rowData = rows[r];
+                var rowNumber = r + 2;
+                ws.Row(rowNumber).Height = 22;
+
+                for (var c = 0; c < columns.Count; c++)
+                {
+                    var column = columns[c];
+                    var cell = ws.Cell(rowNumber, c + 1);
+
+                    if (rowData.TryGetValue(column.Key, out var val) && val != null)
+                    {
+                        var strVal = val.ToString() ?? string.Empty;
+                        if (column.IsText)
+                        {
+                            cell.SetValue(strVal);
+                        }
+                        else if (column.Key == StudentExcelTemplate.DateOfBirth && DateTime.TryParse(strVal, out var dt))
+                        {
+                            cell.SetValue(dt.ToString("yyyy-MM-dd"));
+                        }
+                        else
+                        {
+                            cell.SetValue(strVal);
+                        }
+                    }
+
+                    cell.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    cell.Style.Border.OutsideBorderColor = XLColor.FromHtml("#CBD5E1");
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                }
+            }
         }
 
         ws.Row(1).Height = 32;
