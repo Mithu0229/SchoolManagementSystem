@@ -27,7 +27,7 @@ public class UpdateUserCommandHandler : IHttpRequestHandler<UpdateUserCommand>
                 return Result.Fail<UserResponse>(StatusCodes.Status406NotAcceptable);
             }
 
-            var user = await _unitOfWork.UserRepository.GetAllNoneDeleted()
+            var user = await _unitOfWork.UserRepository.GetAllNoneDeleted(false,true)
                 .FirstOrDefaultAsync(u => u.Id == request.User.Id);
 
             if (user == null)

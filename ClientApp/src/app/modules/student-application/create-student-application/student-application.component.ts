@@ -27,9 +27,7 @@ import { AcademicClassService } from '../../school/services/academic-class.servi
     CommonModule,
     ReactiveFormsModule,
     CheckboxModule,
-    CommonModule,
     ButtonModule,
-    ReactiveFormsModule,
     FormErrorComponent,
     InputTextModule,
     SelectModule,
@@ -120,6 +118,10 @@ export class StudentApplicationComponent extends FormBase implements OnInit {
   }
   get form(): FormGroup {
     return this.applicationForm;
+  }
+
+  goToLogin() {
+    this.router.navigateByUrl('/login');
   }
 
   loadApplicationForClassList() {
