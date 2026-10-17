@@ -1,26 +1,265 @@
-<article class="panel">
-    <header class="panel-header">
-        <h3>Admit Card</h3>
-    </header>
+<p-toast></p-toast>
 
-    <div class="panel-body">
-        <table class="table">
+<article class="panel">
+  <!-- Top Panel Header -->
+  <header class="panel-header">
+    <div class="header-content">
+      <div class="header-titles">
+        <h3>Admit Card Portal</h3>
+        <p class="subtitle">Download official examination admit cards for EdugAtes Integrated School</p>
+      </div>
+
+      <!-- Cutoff Filter Toggle -->
+      <div class="cutoff-toggle-group">
+        <span class="toggle-label">Check Due Cutoff:</span>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="cutoffType === 'exam_date'"
+          (click)="onCutoffChange('exam_date')"
+          title="Verify fees paid up to the scheduled exam month">
+          Until Exam Date
+        </button>
+        <button
+          type="button"
+          class="toggle-btn"
+          [class.active]="cutoffType === 'current_date'"
+          (click)="onCutoffChange('current_date')"
+          title="Verify fees paid up to current date">
+          Until Current Date
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="panel-body">
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Verifying fee payment status & loading admit cards...</p>
+    </div>
+
+    <ng-container *ngIf="!loading">
+      <!-- Student Summary Banner -->
+      <div class="student-summary-card" *ngIf="studentData">
+        <div class="student-meta">
+          <div class="student-avatar">
+            {{ studentData.studentName ? studentData.studentName.charAt(0).toUpperCase() : 'S' }}
+          </div>
+          <div class="student-info">
+            <h4>{{ studentData.studentName }}</h4>
+            <div class="meta-tags">
+              <span class="meta-tag"><strong>Class:</strong> {{ studentData.className || 'N/A' }}</span>
+              <span class="meta-tag"><strong>Section:</strong> {{ studentData.sectionName || 'N/A' }}</span>
+              <span class="meta-tag"><strong>Roll:</strong> {{ studentData.rollNo || 'N/A' }}</span>
+              <span class="meta-tag"><strong>Session:</strong> {{ studentData.academicYear || '2026' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="due-summary-badge" [class.cleared]="studentData.totalUnpaidDueOverall === 0" [class.has-due]="studentData.totalUnpaidDueOverall > 0">
+          <div class="due-label">Total Outstanding Due</div>
+          <div class="due-value">
+            ৳ {{ studentData.totalUnpaidDueOverall | number }}
+          </div>
+          <div class="due-status-pill">
+            <i class="pi" [ngClass]="studentData.totalUnpaidDueOverall === 0 ? 'pi-check-circle' : 'pi-exclamation-triangle'"></i>
+            {{ studentData.totalUnpaidDueOverall === 0 ? 'All Dues Cleared' : 'Payment Pending' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Instruction Note -->
+      <div class="notice-bar">
+        <i class="pi pi-info-circle notice-icon"></i>
+        <span>
+          <strong>Admit Card Policy:</strong> Students must have cleared all fee dues up to the exam date or current date to download the admit card. If any dues are pending, the download button is locked until payment is confirmed.
+        </span>
+      </div>
+
+      <!-- Admit Cards Grid (3 PDF Templates) -->
+      <div class="admit-cards-grid">
+        <div
+          *ngFor="let card of admitCards"
+          class="admit-card-item"
+          [attr.data-exam]="card.examType">
+          
+          <!-- Card Header Bar -->
+          <div class="card-top-strip" [style.background-color]="card.badgeColor"></div>
+
+          <div class="card-header-inner">
+            <div class="admit-badge" [style.background-color]="card.badgeColor">
+              ADMIT CARD
+            </div>
+            <div class="session-badge">
+              {{ card.session }}
+            </div>
+          </div>
+
+          <div class="card-main">
+            <h4 class="exam-title">{{ card.examName }}</h4>
+            
+            <div class="card-detail-rows">
+              <div class="detail-row">
+                <span class="row-label"><i class="pi pi-calendar"></i> Exam Date:</span>
+                <span class="row-value font-semibold">{{ card.examStartDate }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="row-label"><i class="pi pi-id-card"></i> Student:</span>
+                <span class="row-value">{{ studentData?.studentName }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="row-label"><i class="pi pi-bookmark"></i> Class & Roll:</span>
+                <span class="row-value">{{ studentData?.className }} • Roll #{{ studentData?.rollNo }}</span>
+              </div>
+            </div>
+
+            <!-- Due Verification Box -->
+            <div
+              class="due-check-box"
+              [class.eligible]="card.isEligible"
+              [class.locked]="!card.isEligible">
+              <div class="due-check-header">
+                <span class="check-title">
+                  <i class="pi" [ngClass]="card.isEligible ? 'pi-check-circle' : 'pi-lock'"></i>
+                  {{ card.isEligible ? 'Eligibility Verified' : 'Download Locked' }}
+                </span>
+                <span class="check-amount" [class.text-green-400]="card.isEligible" [class.text-rose-400]="!card.isEligible">
+                  {{ card.dueAmount > 0 ? ('Due: ৳ ' + (card.dueAmount | number)) : '৳ 0 Due' }}
+                </span>
+              </div>
+              <p class="due-check-desc">
+                {{ card.reason }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="card-actions">
+            <!-- Download Button (Disabled when due > 0) -->
+            <button
+              type="button"
+              class="btn-download"
+              [disabled]="!card.isEligible || downloadingMap[card.examType]"
+              [class.disabled-btn]="!card.isEligible"
+              (click)="downloadCard(card)"
+              [title]="card.isEligible ? 'Download official admit card PDF' : 'Clear due of ৳ ' + card.dueAmount + ' to enable download'">
+              <i class="pi" [ngClass]="downloadingMap[card.examType] ? 'pi-spin pi-spinner' : (card.isEligible ? 'pi-download' : 'pi-lock')"></i>
+              <span>
+                {{ downloadingMap[card.examType] ? 'Generating...' : (card.isEligible ? 'Download Admit Card' : 'Download Disabled (Due Pending)') }}
+              </span>
+            </button>
+
+            <!-- Preview Button -->
+            <button
+              type="button"
+              class="btn-preview"
+              (click)="previewCard(card)"
+              title="Preview Admit Card">
+              <i class="pi pi-eye"></i>
+              <span>Preview</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Table -->
+      <div class="table-section">
+        <h4 class="section-title">Admit Card Status Summary</h4>
+        <div class="table-responsive">
+          <table class="table">
             <thead>
-                <tr>
-                    <th>Exam</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
+              <tr>
+                <th>Exam Name</th>
+                <th>Session</th>
+                <th>Exam Date</th>
+                <th>Cutoff Verification</th>
+                <th>Unpaid Due</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let row of rows">
-                    <td>{{ row.exam }}</td>
-                    <td>{{ row.date }}</td>
-                    <td>{{ row.status }}</td>
-                    <td><button class="action-btn" type="button">Download</button></td>
-                </tr>
+              <tr *ngFor="let row of admitCards">
+                <td>
+                  <span class="exam-pill" [style.border-color]="row.badgeColor">
+                    {{ row.examName }}
+                  </span>
+                </td>
+                <td>{{ row.session }}</td>
+                <td>{{ row.examStartDate }}</td>
+                <td>
+                  <span class="cutoff-chip">
+                    {{ cutoffType === 'exam_date' ? 'Up to ' + row.examStartDate : 'Up to Current Date' }}
+                  </span>
+                </td>
+                <td>
+                  <span [class.text-emerald-400]="row.dueAmount === 0" [class.text-rose-400]="row.dueAmount > 0" class="font-bold">
+                    ৳ {{ row.dueAmount | number }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [class.paid]="row.isEligible"
+                    [class.due]="!row.isEligible">
+                    <i class="pi" [ngClass]="row.isEligible ? 'pi-check' : 'pi-times'"></i>
+                    {{ row.isEligible ? 'Eligible' : 'Fee Due' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-btn-group">
+                    <button
+                      class="action-btn download"
+                      [disabled]="!row.isEligible || downloadingMap[row.examType]"
+                      (click)="downloadCard(row)"
+                      [title]="row.isEligible ? 'Download PDF' : 'Dues pending'">
+                      <i class="pi" [ngClass]="row.isEligible ? 'pi-download' : 'pi-lock'"></i>
+                      {{ row.isEligible ? 'Download' : 'Disabled' }}
+                    </button>
+                    <button
+                      class="action-btn preview"
+                      (click)="previewCard(row)"
+                      title="Preview Admit Card">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
             </tbody>
-        </table>
-    </div>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
 </article>
+
+<!-- PDF Preview Modal -->
+<p-dialog
+  [(visible)]="previewVisible"
+  [modal]="true"
+  [header]="previewTitle"
+  [style]="{ width: '90vw', maxWidth: '1050px', height: '88vh' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="closePreview()"
+  styleClass="admit-preview-dialog">
+  <div class="preview-container" *ngIf="previewSafeUrl">
+    <iframe
+      [src]="previewSafeUrl"
+      class="preview-iframe"
+      title="Admit Card Preview">
+    </iframe>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="preview-footer">
+      <button
+        type="button"
+        class="action-btn secondary"
+        (click)="closePreview()">
+        <i class="pi pi-times"></i> Close
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

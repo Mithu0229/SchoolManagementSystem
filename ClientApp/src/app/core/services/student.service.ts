@@ -74,4 +74,10 @@ export class StudentService {
       `Student/get-sms-history/${studentId}`
     );
   }
+
+  getStudentAdmitCards(studentId: string, cutoffType: string = 'exam_date'): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `AdmitCard/get-student-admit-cards/${studentId}?cutoffType=${cutoffType}`
+    );
+  }
 }

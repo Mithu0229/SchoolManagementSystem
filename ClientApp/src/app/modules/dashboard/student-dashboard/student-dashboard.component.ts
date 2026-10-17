@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Type, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AcademicCalendarTabComponent } from './tabs/academic-calendar-tab/academic-calendar-tab.component';
 import { AdmitCardTabComponent } from './tabs/admit-card-tab/admit-card-tab.component';
 import { AttendanceSummaryTabComponent } from './tabs/attendance-summary-tab/attendance-summary-tab.component';
@@ -38,6 +38,7 @@ interface StudentTab {
 export class StudentDashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   studentName: string = '';
 
@@ -75,9 +76,14 @@ export class StudentDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     const currentUser = this.authService.getCurrentUser();
-    debugger
-    console.log(currentUser?.userLoginInfo?.userName);
-    this.studentName = currentUser?.userLoginInfo?.userName;
+    this.studentName = currentUser?.userLoginInfo?.userName || '';
+
+    this.route.queryParams.subscribe((params) => {
+      const tabParam = params['tab'];
+      if (tabParam === 'admitCard' || tabParam === 'admit-card') {
+        this.activeTab = 'admitCard';
+      }
+    });
   }
 
   logout(): void {
