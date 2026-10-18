@@ -29,6 +29,9 @@ using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
 using SchoolManagementSystem.Application.School.BkashTransactions.Repositories;
 using SchoolManagementSystem.Application.School.CashBooks.Repositories;
 using SchoolManagementSystem.Application.School.BankBooks.Repositories;
+using SchoolManagementSystem.Application.School.Subjects.Repositories;
+using SchoolManagementSystem.Application.School.GradingScales.Repositories;
+using SchoolManagementSystem.Application.School.ExamMarks.Repositories;
 
 namespace SchoolManagementSystem.Infrastructure.Common
 {
@@ -450,6 +453,71 @@ namespace SchoolManagementSystem.Infrastructure.Common
                     this._bankBookRepository = new BankBookRepository(_context, _currentUserService);
                 }
                 return _bankBookRepository;
+            }
+        }
+
+        public ISubjectRepository _subjectRepository;
+        public ISubjectRepository SubjectRepository
+        {
+            get
+            {
+                if (this._subjectRepository == null)
+                {
+                    this._subjectRepository = new SubjectRepository(_context, _currentUserService);
+                }
+                return _subjectRepository;
+            }
+        }
+
+        public IClassSubjectRepository _classSubjectRepository;
+        public IClassSubjectRepository ClassSubjectRepository
+        {
+            get
+            {
+                if (this._classSubjectRepository == null)
+                {
+                    this._classSubjectRepository = new ClassSubjectRepository(_context, _currentUserService);
+                }
+                return _classSubjectRepository;
+            }
+        }
+
+        public IGradingScaleRepository _gradingScaleRepository;
+        public IGradingScaleRepository GradingScaleRepository
+        {
+            get
+            {
+                if (this._gradingScaleRepository == null)
+                {
+                    this._gradingScaleRepository = new GradingScaleRepository(_context, _currentUserService);
+                }
+                return _gradingScaleRepository;
+            }
+        }
+
+        public IExamComponentRepository _examComponentRepository;
+        public IExamComponentRepository ExamComponentRepository
+        {
+            get
+            {
+                if (this._examComponentRepository == null)
+                {
+                    this._examComponentRepository = new ExamComponentRepository(_context, _currentUserService);
+                }
+                return _examComponentRepository;
+            }
+        }
+
+        public IStudentExamMarkRepository _studentExamMarkRepository;
+        public IStudentExamMarkRepository StudentExamMarkRepository
+        {
+            get
+            {
+                if (this._studentExamMarkRepository == null)
+                {
+                    this._studentExamMarkRepository = new StudentExamMarkRepository(_context, _currentUserService);
+                }
+                return _studentExamMarkRepository;
             }
         }
         #endregion

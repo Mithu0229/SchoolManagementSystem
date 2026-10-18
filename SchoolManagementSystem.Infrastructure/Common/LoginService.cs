@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -85,6 +85,32 @@ public class LoginService : ILoginService
                 UserEmail = user?.Email,
                 StudentId = user.StudentId
             };
+
+            if (user.StudentId != null && user.StudentId.Value != Guid.Empty)
+            {
+                var admission = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(true, true)
+                    .Where(x => !x.IsCancelled && (x.StudentId == user.StudentId.Value || x.Id == user.StudentId.Value))
+                    .OrderByDescending(x => x.AdmissionDate)
+                    .ThenByDescending(x => x.CreatedDate)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (admission == null)
+                {
+                    admission = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(true, true)
+                        .Where(x => x.StudentId == user.StudentId.Value || x.Id == user.StudentId.Value)
+                        .OrderByDescending(x => x.AdmissionDate)
+                        .ThenByDescending(x => x.CreatedDate)
+                        .FirstOrDefaultAsync(cancellationToken);
+                }
+
+                if (admission != null)
+                {
+                    userLoginInfo.AcademicSessionId = admission.AcademicSessionId;
+                    userLoginInfo.ClassId = admission.ClassId;
+                    userLoginInfo.SectionId = admission.SectionId;
+                    userLoginInfo.StudentId = admission.StudentId != Guid.Empty ? admission.StudentId : user.StudentId;
+                }
+            }
            
             return new
             {
@@ -95,7 +121,10 @@ public class LoginService : ILoginService
                 userLoginInfo,
                 roles = userRoles,
                 userType = user.UserType,
-                StudentId = user.StudentId
+                studentId = userLoginInfo.StudentId ?? user.StudentId,
+                academicSessionId = userLoginInfo.AcademicSessionId,
+                classId = userLoginInfo.ClassId,
+                sectionId = userLoginInfo.SectionId
             };
         }
         catch (Exception ex)

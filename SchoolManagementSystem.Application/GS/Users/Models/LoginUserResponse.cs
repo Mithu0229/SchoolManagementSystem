@@ -1,4 +1,4 @@
-﻿using SchoolManagementSystem.Domain.Enums;
+using SchoolManagementSystem.Domain.Enums;
 
 namespace SchoolManagementSystem.Application.GS.Users.Models;
 public class LoginUserResponse
@@ -26,5 +26,8 @@ public class LoginUserResponse
     public Guid? StudentId { get; set; }
     public Guid? TenantId { get; set; }
     public string? TenantName { get; set; }
+    public Guid? AcademicSessionId { get; set; }
+    public Guid? ClassId { get; set; }
+    public Guid? SectionId { get; set; }
 
 }

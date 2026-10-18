@@ -1,0 +1,151 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-gray-50 min-h-screen">
+  <p-toast></p-toast>
+  <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-6 border-b border-gray-200 mb-6 gap-4">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-800 tracking-tight">GPA / Grading Scale Management</h2>
+      <p class="text-sm text-gray-500 mt-1">Configure academic grading bands, letter grades, and GPA grade points</p>
+    </div>
+    <div class="flex gap-2">
+      <button pButton type="button" label="New Grading Scale" icon="pi pi-plus" class="p-button-primary" (click)="openNew()"></button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Column: List of Scales -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+      <h3 class="text-base font-semibold text-gray-700 mb-4 pb-2 border-b border-gray-100 flex items-center justify-between">
+        <span>Available Grading Scales</span>
+        <span class="text-xs font-normal px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800">{{ gradingScales.length }}</span>
+      </h3>
+
+      <div *ngIf="gradingScales.length === 0 && !loading" class="text-center py-8 text-gray-400">
+        <i class="pi pi-info-circle text-2xl mb-2 block"></i>
+        No grading scales found. Click "New Grading Scale" to add.
+      </div>
+
+      <div class="space-y-3">
+        <div *ngFor="let s of gradingScales"
+             (click)="selectScale(s)"
+             [ngClass]="{'border-blue-500 bg-blue-50/40 shadow-sm': selectedScale?.id === s.id, 'border-gray-200 hover:border-gray-300 bg-white': selectedScale?.id !== s.id}"
+             class="p-4 rounded-lg border cursor-pointer transition-all flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-gray-800">{{ s.scaleName }}</span>
+              <span *ngIf="s.isDefault" class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-green-100 text-green-700">Default</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">{{ s.description || 'No description' }}</p>
+            <span class="text-xs text-blue-600 font-medium mt-1 inline-block">{{ s.details.length }} grade intervals</span>
+          </div>
+          <div class="flex gap-1" (click)="$event.stopPropagation()">
+            <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm p-button-info" (click)="editScale(s)"></button>
+            <button pButton icon="pi pi-trash" class="p-button-text p-button-sm p-button-danger" (click)="confirmDelete(s)"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Visual Preview of Selected Scale matching Screenshot 2 -->
+    <div class="lg:col-span-2">
+      <div *ngIf="selectedScale" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-xl font-bold text-gray-800">{{ selectedScale.scaleName }}</h3>
+              <span *ngIf="selectedScale.isDefault" class="px-2 py-0.5 text-xs rounded bg-green-100 text-green-800 font-medium">Default Scale</span>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">{{ selectedScale.description }}</p>
+          </div>
+          <button pButton label="Edit Scale" icon="pi pi-pencil" class="p-button-outlined p-button-sm" (click)="editScale(selectedScale)"></button>
+        </div>
+
+        <!-- GPA / GRADING SCALE Table (Exact match to Screenshot 2) -->
+        <div class="max-w-xl mx-auto my-4 overflow-hidden rounded-lg border border-gray-400 shadow">
+          <div class="bg-[#e2edf8] text-center font-bold text-gray-800 py-2.5 text-base uppercase tracking-wider border-b border-gray-400">
+            GPA / GRADING SCALE
+          </div>
+          <table class="w-full text-center text-sm border-collapse">
+            <thead>
+              <tr class="bg-[#d2e3f4] text-gray-800 font-semibold border-b border-gray-400">
+                <th class="py-2.5 px-4 border-r border-gray-400">Marks Range</th>
+                <th class="py-2.5 px-4 border-r border-gray-400">Letter Grade</th>
+                <th class="py-2.5 px-4">GPA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of selectedScale.details; let even = even"
+                  [ngClass]="even ? 'bg-white' : 'bg-gray-50/70'"
+                  class="border-b border-gray-300 font-medium hover:bg-blue-50/30 transition-colors">
+                <td class="py-2 px-4 border-r border-gray-300 text-gray-700">{{ row.minMark | number:'1.0-0' }}–{{ row.maxMark | number:'1.0-0' }}</td>
+                <td class="py-2 px-4 border-r border-gray-300 font-bold"
+                    [ngClass]="{'text-green-600': row.letterGrade === 'A+', 'text-blue-600': row.letterGrade.startsWith('A') && row.letterGrade !== 'A+', 'text-red-500': row.letterGrade === 'F'}">
+                  {{ row.letterGrade }}
+                </td>
+                <td class="py-2 px-4 font-semibold text-gray-800">{{ row.gradePoint | number:'1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Scale Dialog -->
+  <p-dialog [(visible)]="dialogVisible" [style]="{width: '650px'}" [header]="isEditMode ? 'Edit Grading Scale' : 'Add New Grading Scale'" [modal]="true">
+    <form [formGroup]="scaleForm" (ngSubmit)="saveScale()" class="space-y-4 py-2">
+      <div class="field">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Scale Name <span class="text-red-500">*</span></label>
+        <input type="text" pInputText formControlName="scaleName" placeholder="e.g. Standard National Scale" class="w-full p-2.5 border rounded-lg" />
+      </div>
+
+      <div class="field">
+        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Description</label>
+        <input type="text" pInputText formControlName="description" placeholder="Optional details..." class="w-full p-2.5 border rounded-lg" />
+      </div>
+
+      <div class="field flex items-center gap-2">
+        <p-checkbox formControlName="isDefault" [binary]="true" inputId="isDefaultScale"></p-checkbox>
+        <label for="isDefaultScale" class="text-sm font-medium text-gray-700 cursor-pointer">Set as System Default Scale</label>
+      </div>
+
+      <!-- Detail rows -->
+      <div class="mt-4 border-t pt-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-bold text-gray-800">Grade Intervals</span>
+          <button type="button" pButton icon="pi pi-plus" label="Add Row" class="p-button-outlined p-button-sm" (click)="addDetailRow(0, 0, '', 0)"></button>
+        </div>
+
+        <div formArrayName="details" class="space-y-2 max-h-80 overflow-y-auto pr-1">
+          <div *ngFor="let d of detailsArray.controls; let i = index" [formGroupName]="i" class="flex items-center gap-2 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+            <div class="w-24">
+              <label class="text-[10px] text-gray-500 font-bold block">MIN MARK</label>
+              <input type="number" pInputText formControlName="minMark" class="w-full p-1.5 text-xs text-center border rounded" />
+            </div>
+            <div class="w-24">
+              <label class="text-[10px] text-gray-500 font-bold block">MAX MARK</label>
+              <input type="number" pInputText formControlName="maxMark" class="w-full p-1.5 text-xs text-center border rounded" />
+            </div>
+            <div class="w-20">
+              <label class="text-[10px] text-gray-500 font-bold block">GRADE</label>
+              <input type="text" pInputText formControlName="letterGrade" class="w-full p-1.5 text-xs text-center font-bold border rounded" />
+            </div>
+            <div class="w-24">
+              <label class="text-[10px] text-gray-500 font-bold block">GPA POINT</label>
+              <input type="number" step="0.01" pInputText formControlName="gradePoint" class="w-full p-1.5 text-xs text-center border rounded" />
+            </div>
+            <div class="pt-3">
+              <button type="button" pButton icon="pi pi-times" class="p-button-text p-button-danger p-button-sm" (click)="removeDetailRow(i)"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-4 border-t">
+        <button type="button" pButton label="Cancel" class="p-button-text p-button-secondary" (click)="dialogVisible = false"></button>
+        <button type="submit" pButton label="Save Grading Scale" icon="pi pi-check" class="p-button-primary"></button>
+      </div>
+    </form>
+  </p-dialog>
+</div>

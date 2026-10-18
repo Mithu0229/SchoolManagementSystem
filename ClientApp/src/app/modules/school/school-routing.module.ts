@@ -28,6 +28,9 @@ import { CashbookComponent } from './components/cashbook/cashbook.component';
 import { BankbookComponent } from './components/bankbook/bankbook.component';
 import { IncomeStatementComponent } from './components/income-statement/income-statement.component';
 import { BalanceSheetComponent } from './components/balance-sheet/balance-sheet.component';
+import { GradingScaleComponent } from './components/grading-scale/grading-scale.component';
+import { SubjectComponent } from './components/subject/subject.component';
+import { StudentMarkEntryComponent } from './components/student-mark-entry/student-mark-entry.component';
 
 import { AppLayout } from '../../shared/layout/dashboard-layout/component/app.layout';
 import { authGuard } from '../../core/guards/auth.guard';
@@ -167,6 +170,21 @@ const routes: Routes = [
       {
         path: 'balance-sheet',
         component: BalanceSheetComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'grading-scale',
+        component: GradingScaleComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'subject',
+        component: SubjectComponent,
+        canActivate: [authGuard],
+      },
+      {
+        path: 'exam-marks',
+        component: StudentMarkEntryComponent,
         canActivate: [authGuard],
       },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },

@@ -25,6 +25,9 @@ using SchoolManagementSystem.Application.School.SMSHistories.Repositories;
 using SchoolManagementSystem.Application.School.BkashTransactions.Repositories;
 using SchoolManagementSystem.Application.School.CashBooks.Repositories;
 using SchoolManagementSystem.Application.School.BankBooks.Repositories;
+using SchoolManagementSystem.Application.School.Subjects.Repositories;
+using SchoolManagementSystem.Application.School.GradingScales.Repositories;
+using SchoolManagementSystem.Application.School.ExamMarks.Repositories;
 
 namespace SchoolManagementSystem.Application.Common;
 
@@ -62,6 +65,12 @@ public interface IUnitOfWork : IDisposable
     public IBkashTransactionRepository BkashTransactionRepository { get; }
     public ICashBookRepository CashBookRepository { get; }
     public IBankBookRepository BankBookRepository { get; }
+
+    public ISubjectRepository SubjectRepository { get; }
+    public IClassSubjectRepository ClassSubjectRepository { get; }
+    public IGradingScaleRepository GradingScaleRepository { get; }
+    public IExamComponentRepository ExamComponentRepository { get; }
+    public IStudentExamMarkRepository StudentExamMarkRepository { get; }
     #endregion
 
     #region Students

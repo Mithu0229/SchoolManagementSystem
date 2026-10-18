@@ -17,6 +17,9 @@ using SchoolManagementSystem.Application.School.Shifts.Repositories;
 using SchoolManagementSystem.Application.School.StudentFeeLedgers.Repositories;
 using SchoolManagementSystem.Application.School.StudentGroups.Repositories;
 using SchoolManagementSystem.Application.School.AttendanceDevices.Repositories;
+using SchoolManagementSystem.Application.School.Subjects.Repositories;
+using SchoolManagementSystem.Application.School.GradingScales.Repositories;
+using SchoolManagementSystem.Application.School.ExamMarks.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories;
 using SchoolManagementSystem.Infrastructure.Repositories.Schools;
 
@@ -44,6 +47,10 @@ public class RepositoryDependencyContainer
         services.AddScoped<IFeeCollectionRepository, FeeCollectionRepository>();
         services.AddScoped<IBillMasterRepository, BillMasterRepository>();
         services.AddScoped<IAttendanceDeviceRepository, AttendanceDeviceRepository>();
-
+        services.AddScoped<ISubjectRepository, SubjectRepository>();
+        services.AddScoped<IClassSubjectRepository, ClassSubjectRepository>();
+        services.AddScoped<IGradingScaleRepository, GradingScaleRepository>();
+        services.AddScoped<IExamComponentRepository, ExamComponentRepository>();
+        services.AddScoped<IStudentExamMarkRepository, StudentExamMarkRepository>();
     }
 }

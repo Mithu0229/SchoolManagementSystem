@@ -43,6 +43,12 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         public DbSet<BkashTransaction> BkashTransactions { get; set; }
         public DbSet<CashBook> CashBooks { get; set; }
         public DbSet<BankBook> BankBooks { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<ClassSubject> ClassSubjects { get; set; }
+        public DbSet<GradingScale> GradingScales { get; set; }
+        public DbSet<GradingScaleDetail> GradingScaleDetails { get; set; }
+        public DbSet<ExamComponent> ExamComponents { get; set; }
+        public DbSet<StudentExamMark> StudentExamMarks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

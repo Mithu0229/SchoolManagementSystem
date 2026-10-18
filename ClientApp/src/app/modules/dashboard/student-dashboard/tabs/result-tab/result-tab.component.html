@@ -1,26 +1,149 @@
 <article class="panel">
-    <header class="panel-header">
-        <h3>Result</h3>
-    </header>
-
-    <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Subject</th>
-                    <th>Marks</th>
-                    <th>Grade</th>
-                    <th>Point</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of rows">
-                    <td>{{ row.subject }}</td>
-                    <td>{{ row.marks }}</td>
-                    <td>{{ row.grade }}</td>
-                    <td>{{ row.point }}</td>
-                </tr>
-            </tbody>
-        </table>
+  <header class="panel-header flex justify-between items-center">
+    <div>
+      <h3>Academic Result & Marksheet</h3>
+      <p class="subtitle text-xs text-gray-500">Official student examination marks and grading report</p>
     </div>
+    <button *ngIf="marksheetData" pButton label="Print Marksheet" icon="pi pi-print"
+      class="p-button-outlined p-button-sm" (click)="printReport()"></button>
+  </header>
+
+  <div class="panel-body">
+    <div *ngIf="loading" class="text-center py-10 text-gray-400">
+      <i class="pi pi-spin pi-spinner text-2xl mb-2 text-blue-600 block"></i>
+      Loading student examination report...
+    </div>
+
+    <div *ngIf="!loading && !marksheetData" class="text-center py-8 text-gray-400">
+      No published exam results found for this student.
+    </div>
+
+    <div *ngIf="!loading && marksheetData" class="marksheet-preview">
+      <!-- Session Header -->
+      <div class="text-center mb-4">
+        <h4 class="font-bold text-gray-800 tracking-wide font-serif text-base">
+          Academic Session: {{ marksheetData.academicSession }}
+        </h4>
+      </div>
+
+      <!-- Student details table -->
+      <div class="border border-blue-900 rounded mb-4 overflow-hidden text-xs">
+        <div class="grid grid-cols-2 border-b border-blue-900">
+          <div class="flex border-r border-blue-900">
+            <span class="w-28 py-1.5 px-3 bg-blue-50/50 font-bold text-blue-950 border-r border-blue-900">Student
+              Name</span>
+            <span class="py-1.5 px-3 font-semibold text-gray-800 flex-1">{{ marksheetData.studentName }}</span>
+          </div>
+          <div class="flex">
+            <span class="w-32 py-1.5 px-3 bg-blue-50/50 font-bold text-blue-950 border-r border-blue-900">Student ID /
+              Roll</span>
+            <span class="py-1.5 px-3 font-mono font-semibold text-gray-800 flex-1">{{ marksheetData.studentRoll
+              }}</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="flex border-r border-blue-900">
+            <span class="w-28 py-1.5 px-3 bg-blue-50/50 font-bold text-blue-950 border-r border-blue-900">Class</span>
+            <span class="py-1.5 px-3 font-semibold text-gray-800 flex-1">{{ marksheetData.className }}</span>
+          </div>
+          <div class="flex">
+            <span class="w-32 py-1.5 px-3 bg-blue-50/50 font-bold text-blue-950 border-r border-blue-900">Section</span>
+            <span class="py-1.5 px-3 font-semibold text-gray-800 flex-1">{{ marksheetData.sectionName || '-' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Marksheet Table (Identical to Screenshot 1) -->
+      <div class="overflow-x-auto mb-3 border border-blue-900 rounded">
+        <table class="w-full text-center text-xs border-collapse">
+          <thead>
+            <tr class="bg-[#1b4369] text-white font-semibold">
+              <th class="py-2 px-3 border border-blue-900 text-left">Subject</th>
+              <th class="py-2 px-2 border border-blue-900">CT-1 (15)</th>
+              <th class="py-2 px-2 border border-blue-900">CT-2 (15)</th>
+              <th class="py-2 px-2 border border-blue-900">Half-Yearly (70)</th>
+              <th class="py-2 px-2 border border-blue-900 bg-[#143452]">Term-1 Total (100)</th>
+              <th class="py-2 px-2 border border-blue-900">CT-3 (15)</th>
+              <th class="py-2 px-2 border border-blue-900">CT-4 (15)</th>
+              <th class="py-2 px-2 border border-blue-900">Yearly Exam (70)</th>
+              <th class="py-2 px-2 border border-blue-900 bg-[#143452]">Term-2 Total (100)</th>
+              <th class="py-2 px-2 border border-blue-900">Overall Average</th>
+              <th class="py-2 px-2 border border-blue-900">Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of marksheetData.subjects; let even = even"
+              [ngClass]="even ? 'bg-white' : 'bg-blue-50/20'">
+              <td class="py-1.5 px-3 border border-gray-300 text-left font-bold text-gray-800">{{ row.subjectName }}
+              </td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.ct1 ?? (row.ct1) }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.ct2 ?? (row.ct2 ?? '-') }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.halfYearly ?? '-' }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-bold bg-blue-50/40 text-gray-900">{{ row.term1Total }}
+              </td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.ct3 ?? (row.ct3 ?? '-') }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.ct4 ?? (row.ct4 ?? '-') }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-medium">{{ row.yearlyExam ?? '-' }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-bold bg-blue-50/40 text-gray-900">{{ row.term2Total }}
+              </td>
+              <td class="py-1.5 px-2 border border-gray-300 font-bold text-blue-900">{{ row.overallAverage |
+                number:'1.2-2' }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-extrabold"
+                [ngClass]="row.grade === 'A+' ? 'text-green-600' : (row.grade === 'F' ? 'text-red-500' : 'text-blue-800')">
+                {{ row.grade }}
+              </td>
+            </tr>
+            <!-- TOTAL / SUMMARY ROW -->
+            <tr class="bg-[#d2e3f4] font-bold text-blue-950 border-t-2 border-blue-900">
+              <td class="py-2 px-3 border border-gray-300 text-left uppercase font-bold">TOTAL / SUMMARY</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalCT1 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalCT2 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalHalfYearly }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 bg-blue-200/50 font-extrabold">{{ marksheetData.summary.totalTerm1 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalCT3 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalCT4 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300">{{ marksheetData.summary.totalYearlyExam }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 bg-blue-200/50 font-extrabold">{{
+                marksheetData.summary.totalTerm2 }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 font-extrabold">{{ marksheetData.summary.overallAverage |
+                number:'1.2-2' }}</td>
+              <td class="py-1.5 px-2 border border-gray-300 text-green-700 font-extrabold">{{
+                marksheetData.summary.finalGrade }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center text-[11px] font-semibold text-gray-600 mb-4 tracking-wide">
+        Term-1 = CT-1 + CT-2 + Half-Yearly (100) &nbsp;|&nbsp; Term-2 = CT-3 + CT-4 + Yearly Exam (100)
+      </div>
+
+      <!-- GPA Scale Table (Screenshot 2) -->
+      <div class="max-w-xs mx-auto border border-gray-400 rounded overflow-hidden text-xs">
+        <div
+          class="bg-[#d2e3f4] text-center font-bold text-gray-900 py-1 uppercase tracking-wider text-[11px] border-b border-gray-400">
+          GPA / GRADING SCALE
+        </div>
+        <table class="w-full text-center border-collapse">
+          <thead>
+            <tr class="bg-[#e2edf8] text-gray-800 font-semibold border-b border-gray-400">
+              <th class="py-1 px-2 border-r border-gray-400">Marks Range</th>
+              <th class="py-1 px-2 border-r border-gray-400">Letter Grade</th>
+              <th class="py-1 px-2">GPA</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let scale of marksheetData.gradingScaleLegend" class="border-b border-gray-300">
+              <td class="py-1 px-2 border-r border-gray-300 text-gray-700">{{ scale.marksRange }}</td>
+              <td class="py-1 px-2 border-r border-gray-300 font-bold"
+                [ngClass]="scale.letterGrade === 'A+' ? 'text-green-600' : (scale.letterGrade === 'F' ? 'text-red-500' : 'text-gray-800')">
+                {{ scale.letterGrade }}
+              </td>
+              <td class="py-1 px-2 font-semibold text-gray-800">{{ scale.gpa | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </article>
