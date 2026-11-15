@@ -13,3 +13,14 @@ public class SMSHistoryRepository : GenericRepository<SMSHistory>, ISMSHistoryRe
         _context = context;
     }
 }
+
+public class AttendanceLogRepository : GenericRepository<AttendanceLog>, IAttendanceLogRepository
+{
+    private readonly ApplicationDbContext _context;
+    public AttendanceLogRepository(ApplicationDbContext context, ICurrentUserService currentUserService) : base(context, currentUserService)
+    {
+        _context = context;
+    }
+}
+
+

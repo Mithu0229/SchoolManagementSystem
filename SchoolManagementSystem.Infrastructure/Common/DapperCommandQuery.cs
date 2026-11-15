@@ -1,6 +1,8 @@
-﻿using Dapper;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -342,12 +344,15 @@ public class AttendanceSmsBackgroundService : BackgroundService
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<AttendanceSmsBackgroundService> _logger;
 
+    private readonly IConfiguration _configuration;
+
     public AttendanceSmsBackgroundService(
         IServiceScopeFactory scopeFactory,
-        ILogger<AttendanceSmsBackgroundService> logger)
+        ILogger<AttendanceSmsBackgroundService> logger, IConfiguration configuration)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -358,66 +363,166 @@ public class AttendanceSmsBackgroundService : BackgroundService
         {
             try
             {
+                var punchDateConfig = _configuration["SmsSettings:punchDate"];
+                DateTime? defaultPunchDate = null;
+                if (DateTime.TryParse(punchDateConfig, out var parsedPunchDate))
+                {
+                    defaultPunchDate = parsedPunchDate.Date;
+                }
+
                 using var scope = _scopeFactory.CreateScope();
 
                 var appdb = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 var thddb = scope.ServiceProvider.GetRequiredService<AttendanceDbContext>();
-
                 var smsService = scope.ServiceProvider.GetRequiredService<ISmsService>();
 
-                var transactions = await thddb.IclockTransactions
+                var today = DateTime.Today;
+                var todayEnd = today.AddDays(1);
+
+                var query = thddb.IclockTransactions.AsQueryable();
+                if (defaultPunchDate.HasValue)
+                {
+                    var targetDate = defaultPunchDate.Value.Date;
+                    var targetEnd = targetDate.AddDays(1);
+
+                    //query = query.Where(x =>
+                    //    (x.PunchTime >= today && x.PunchTime < todayEnd) ||
+                    //    (x.PunchTime >= targetDate && x.PunchTime < targetEnd));
+
+                    query = query.Where(x =>
+                        x.PunchTime.Date == today ||
+                        x.PunchTime.Date == targetDate);
+                }
+                else
+                {
+                    query = query.Where(x => x.PunchTime >= today && x.PunchTime < todayEnd);
+                }
+
+                var transactions = await query
+                    .OrderBy(x => x.Id)
+                    .ToListAsync(stoppingToken);
+
+                // 1. Save transactions list data into AttendanceLogs table (default isSent = false)
+                // Duplicate check on emp_code (Student_code) and Punch_time
+                if (transactions.Count > 0)
+                {
+                    var attendanceLogQuery = appdb.AttendanceLogs.AsQueryable();
+                    if (defaultPunchDate.HasValue)
+                    {
+                        var targetDate = defaultPunchDate.Value.Date;
+                        var targetEnd = targetDate.AddDays(1);
+
+                        attendanceLogQuery = attendanceLogQuery.Where(x =>
+                            (x.Punch_time >= today && x.Punch_time < todayEnd) ||
+                            (x.Punch_time >= targetDate && x.Punch_time < targetEnd));
+                    }
+                    else
+                    {
+                        attendanceLogQuery = attendanceLogQuery.Where(x => x.Punch_time >= today && x.Punch_time < todayEnd);
+                    }
+
+                    var existingLogs = await attendanceLogQuery
+                        .Select(x => new { x.Student_code, x.Punch_time })
+                        .ToListAsync(stoppingToken);
+
+                    var existingLogKeys = existingLogs
+                        .Where(x => !string.IsNullOrWhiteSpace(x.Student_code))
+                        .Select(x => (StudentCode: x.Student_code!.Trim(), PunchTime: x.Punch_time))
+                        .ToHashSet();
+
+                    var newLogs = new List<AttendanceLog>();
+                    foreach (var tran in transactions)
+                    {
+                        if (string.IsNullOrWhiteSpace(tran.EmpCode))
+                            continue;
+
+                        var empCode = tran.EmpCode.Trim();
+                        var key = (StudentCode: empCode, PunchTime: tran.PunchTime);
+
+                        if (!existingLogKeys.Contains(key))
+                        {
+                            newLogs.Add(new AttendanceLog
+                            {
+                                Id = tran.Id,
+                                Student_code = empCode,
+                                Punch_time = tran.PunchTime,
+                                IsSent = false
+                            });
+                            existingLogKeys.Add(key);
+                        }
+                    }
+
+                    if (newLogs.Count > 0)
+                    {
+                        await appdb.AttendanceLogs.AddRangeAsync(newLogs, stoppingToken);
+                        await appdb.SaveChangesAsync(stoppingToken);
+                        _logger.LogInformation("Saved {Count} new attendance logs.", newLogs.Count);
+                    }
+                }
+
+                // 2. Send message based on AttendanceLogs list where isSent is false, then update isSent to true
+                var unsentLogs = await appdb.AttendanceLogs
                     .Where(x => !x.IsSent)
                     .OrderBy(x => x.Id)
                     .Take(100)
                     .ToListAsync(stoppingToken);
 
-
-                foreach (var tran in transactions)
+                foreach (var log in unsentLogs)
                 {
                     try
                     {
+                        if (string.IsNullOrWhiteSpace(log.Student_code))
+                            continue;
+
                         var student = await appdb.StudentInfo
-     .FirstOrDefaultAsync(x => x.StdCID == tran.EmpCode, stoppingToken);
+                            .FirstOrDefaultAsync(x => x.StdCID == log.Student_code, stoppingToken);
 
                         if (student == null)
+                        {
+                            _logger.LogWarning("Student with StdCID {StudentCode} not found for AttendanceLog ID {LogId}.", log.Student_code, log.Id);
                             continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(student.StudentPhone))
+                        {
+                            _logger.LogWarning("Student {StudentName} (StdCID: {StudentCode}) does not have a phone number.", student.FullName, log.Student_code);
+                            continue;
+                        }
 
                         var message =
                             $"Dear Parent,\n\n" +
                             $"{student.FullName} entered school successfully.\n" +
-                            $"Time : {tran.UploadTime:dd-MMM-yyyy hh:mm tt}";
+                            $"Time : {log.Punch_time:dd-MMM-yyyy hh:mm tt}";
 
                         bool sent = await smsService.SendSmsAsync(
-                        student.StudentPhone!,
-                           message);
+                            student.StudentPhone,
+                            message);
 
                         if (sent)
                         {
-                            tran.IsSent = true;
+                            log.IsSent = true;
 
                             var smsHistory = new SMSHistory
                             {
                                 Id = Guid.NewGuid(),
                                 SMSType = "Attendance",
                                 Message = message,
-                                Phone = student.StudentPhone!,
+                                Phone = student.StudentPhone,
                                 StudentId = student.Id,
                                 IsActive = true
-
                             };
+
                             await appdb.SMSHistories.AddAsync(smsHistory, stoppingToken);
                             await appdb.SaveChangesAsync(stoppingToken);
-                            //_logger.LogInformation(
-                            //    $"SMS sent to {student.StudentPhone}");
+
+                            _logger.LogInformation("Attendance SMS sent to {Phone} for student {StudentCode}.", student.StudentPhone, log.Student_code);
                         }
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "SMS Send Error");
+                        _logger.LogError(ex, "SMS Send Error for AttendanceLog ID {LogId}", log.Id);
                     }
                 }
-
-                await thddb.SaveChangesAsync(stoppingToken);
             }
             catch (Exception ex)
             {

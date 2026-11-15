@@ -114,7 +114,5 @@ public class IclockTransaction
     [Column("company_code")]
     [MaxLength(50)]
     public string? CompanyCode { get; set; }
-
-    [DefaultValue(false)]
-    public bool IsSent { get; set; }
+    
 }

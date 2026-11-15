@@ -6,3 +6,9 @@ namespace SchoolManagementSystem.Application.School.SMSHistories.Repositories;
 public interface ISMSHistoryRepository : IGenericRepository<SMSHistory>
 {
 }
+
+public interface IAttendanceLogRepository : IGenericRepository<AttendanceLog>
+{
+}
+
+

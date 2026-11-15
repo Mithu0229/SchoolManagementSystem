@@ -15,6 +15,7 @@ namespace SchoolManagementSystem.Infrastructure.Persistence
         }
 
         public DbSet<Division> Divisions { get; set; }
+        public DbSet<AttendanceLog> AttendanceLogs { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<StudentInfo> StudentInfo { get; set; }
         public DbSet<GuardianInfo> GuardianInfo { get; set; }

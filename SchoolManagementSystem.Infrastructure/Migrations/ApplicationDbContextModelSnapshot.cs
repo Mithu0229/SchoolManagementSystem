@@ -1510,6 +1510,26 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.ToTable("tb_gs_RoleMenus", (string)null);
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.Schools.AttendanceLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Punch_time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Student_code")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AttendanceLogs", (string)null);
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.Schools.BkashTransaction", b =>
                 {
                     b.Property<Guid>("Id")
