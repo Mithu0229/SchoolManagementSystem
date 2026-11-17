@@ -7,9 +7,11 @@ namespace SchoolManagementSystem.Application.School.Institutes.Handlers.CommandH
 public class InsertInstituteCommandHandler : IHttpRequestHandler<InsertInstituteCommand>
 {
     private IUnitOfWork _unitOfWork;
-    public InsertInstituteCommandHandler(IUnitOfWork unitOfWork)
+    private ICurrentUserService _currentUserService;
+    public InsertInstituteCommandHandler(IUnitOfWork unitOfWork,ICurrentUserService currentUserService)
     {
         _unitOfWork = unitOfWork;
+        _currentUserService = currentUserService;
     }
 
     public async Task<IResult> Handle(InsertInstituteCommand request, CancellationToken cancellationToken)
@@ -31,6 +33,7 @@ public class InsertInstituteCommandHandler : IHttpRequestHandler<InsertInstitute
             }
 
             var entity = request.Institute.Adapt<Institute>();
+            entity.TenantId = _currentUserService.TenantId;
             await _unitOfWork.InstituteRepository.AddAsync(entity);
             await _unitOfWork.CommitAsync(cancellationToken);
             var response = entity.Adapt<InstituteResponse>();

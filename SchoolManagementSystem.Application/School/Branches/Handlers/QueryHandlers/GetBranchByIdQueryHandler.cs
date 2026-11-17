@@ -31,7 +31,7 @@ public class GetBranchByIdQueryHandler : IHttpRequestHandler<GetBranchByIdQuery>
                     ContactPerson = x.ContactPerson,
                     ContactNumber = x.ContactNumber,
                     HomeThemeImagePath = x.HomeThemeImagePath,
-                    InstituteId = x.InstituteId!.Value,
+                    InstituteId = x.InstituteId,
                     InstituteName = x.Institute.InstituteName,
                     IsActive = x.IsActive
                 }).FirstOrDefaultAsync(cancellationToken);

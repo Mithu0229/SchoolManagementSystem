@@ -103,7 +103,7 @@ public class GetStudentBillHistorySummaryQueryHandler : IHttpRequestHandler<GetS
                 OverallTotalPaidAmount = totalPaid,
                 OverallTotalDueAmount = totalDue,
                 OverallTotalPaidCashAmount = totalCash,
-                OverallTotalPaidBkashAmount = totalBkash
+                OverallTotalPaidBkashAmount = totalBkash +totalBank
             };
 
             return Result.Success(summary);

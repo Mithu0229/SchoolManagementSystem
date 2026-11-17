@@ -9,6 +9,6 @@ public class BillDetail : AuditableEntity
     public decimal Amount { get; set; }
 
     public BillMaster BillMaster { get; set; }
-    public FeeTemplateDetail FeeTemplateDetail { get; set; }
-    public FeeHead FeeHead { get; set; }
+    public FeeTemplateDetail? FeeTemplateDetail { get; set; }
+    public FeeHead? FeeHead { get; set; }
 }

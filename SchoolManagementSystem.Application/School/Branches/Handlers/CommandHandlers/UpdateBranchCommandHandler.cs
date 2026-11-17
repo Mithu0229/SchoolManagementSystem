@@ -29,7 +29,7 @@ public class UpdateBranchCommandHandler : IHttpRequestHandler<UpdateBranchComman
             }
 
             var duplicate = await _unitOfWork.BranchRepository.GetAllNoneDeleted()
-                .Where(x => x.Id != request.Branch.Id && x.InstituteId == request.Branch.InstituteId && x.BranchName.ToLower() == request.Branch.BranchName.ToLower())
+                .Where(x => x.Id != request.Branch.Id && x.TenantId == request.Branch.InstituteId && x.BranchName.ToLower() == request.Branch.BranchName.ToLower())
                 .FirstOrDefaultAsync(cancellationToken);
             if (duplicate is not null)
             {

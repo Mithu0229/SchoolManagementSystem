@@ -57,9 +57,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -77,6 +74,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -116,9 +116,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -144,6 +141,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ToDate")
                         .HasColumnType("datetime2");
@@ -198,9 +198,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid?>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -240,6 +237,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TeacherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -312,9 +312,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<bool>("InOut")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -332,6 +329,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -386,9 +386,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -413,6 +410,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid?>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("TransactionDate")
@@ -478,9 +478,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("FeeTemplateDetailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -498,6 +495,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -551,9 +551,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<decimal>("DueAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -577,6 +574,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalAmount")
                         .HasColumnType("decimal(18,2)");
@@ -664,9 +664,14 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
 
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("InstituteId", "BranchName", "IsDeleted")
+                    b.HasIndex("InstituteId");
+
+                    b.HasIndex("TenantId", "BranchName", "IsDeleted")
                         .IsUnique()
                         .HasFilter("\"IsDeleted\" = 0");
 
@@ -716,9 +721,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -743,6 +745,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid?>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("TransactionDate")
@@ -833,9 +838,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("FinancialYearId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -873,6 +875,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("TotalAmount")
@@ -935,9 +940,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("FeeHeadId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -961,6 +963,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.Property<decimal>("PaidAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("YearNo")
                         .HasColumnType("int");
@@ -1005,9 +1010,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1028,6 +1030,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1070,9 +1075,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid?>("GroupId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1098,6 +1100,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1149,9 +1154,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("FeeTemplateId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1169,6 +1171,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1218,9 +1223,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("FromDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1245,6 +1247,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<string>("Remarks")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ToDate")
                         .HasColumnType("datetime2");
@@ -1300,9 +1305,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("InstituteName")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -1329,6 +1331,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1370,9 +1375,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -1467,9 +1469,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -1570,9 +1569,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1599,6 +1595,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TransactionType")
                         .IsRequired()
@@ -1650,9 +1649,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1677,6 +1673,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasDefaultValue(0);
 
                     b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -1722,9 +1721,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1751,6 +1747,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TermName")
                         .IsRequired()
@@ -1794,9 +1793,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -1824,6 +1820,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -1906,9 +1905,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("DeletedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -1934,6 +1930,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -1976,9 +1975,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("ExamComponentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsAbsent")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -2017,6 +2013,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("SubjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -2068,9 +2067,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2097,6 +2093,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2129,9 +2128,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2158,6 +2154,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2194,9 +2193,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2219,6 +2215,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2259,9 +2258,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -2308,6 +2304,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.Property<int>("SortingOrder")
                         .HasColumnType("int");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2376,9 +2375,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2426,6 +2422,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2486,9 +2485,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("FinancialYearId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2522,6 +2518,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TenantId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("VoucherCode")
@@ -2583,9 +2582,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2603,6 +2599,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("datetime2")
                         .HasColumnOrder(106);
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2645,7 +2644,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("FatherNationalIdNo")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -2680,7 +2678,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("MotherNationalIdNo")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -2733,16 +2730,13 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnOrder(100);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RelationToStudent")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
@@ -2813,9 +2807,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -2922,9 +2913,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -2947,6 +2935,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -2988,9 +2979,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<string>("Domain")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -3029,6 +3017,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid?>("TenantId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TenantName")
                         .IsRequired()
@@ -3081,9 +3072,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -3163,9 +3151,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnOrder(102);
 
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
                         .HasColumnOrder(90);
@@ -3234,9 +3219,6 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.Property<string>("IP")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<Guid?>("InstituteId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit")
@@ -3371,7 +3353,7 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                     b.HasOne("SchoolManagementSystem.Domain.Entities.FeeTemplateDetail", "FeeTemplateDetail")
                         .WithMany("BillDetails")
                         .HasForeignKey("FeeTemplateDetailId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("BillMaster");

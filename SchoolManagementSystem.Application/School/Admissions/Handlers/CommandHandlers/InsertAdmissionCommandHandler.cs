@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Application.School.Admissions.Commands;
 using SchoolManagementSystem.Application.School.Admissions.Models;
@@ -24,8 +25,8 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
             var entity = request.Admission.Adapt<Admission>();
             entity.Id = Guid.NewGuid(); 
             await _unitOfWork.AdmissionRepository.AddAsync(entity);
-
-            if(request.Admission.MonthlyFeeAmount > 0)
+            
+            if (request.Admission.MonthlyFeeAmount > 0)
             {
                 //entry bill for 12 month
 
@@ -40,7 +41,8 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
                         TotalAmount = request.Admission.MonthlyFeeAmount,
                         IsActive = false,
                         Details = new List<BillDetail>(),
-                        VoucherNo = i.ToString()
+                        VoucherNo = i.ToString(),
+                        CreatedDate = new DateTime(DateTime.Now.Year,i,1,DateTime.Now.Hour,DateTime.Now.Minute,DateTime.Now.Second)
                     };
 
 
@@ -52,7 +54,8 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
                         BillMasterId = bill.Id,
                         FeeTemplateDetailId = Guid.Empty,
                         FeeHeadId = Guid.Parse("28A6E032-647D-40DC-B31D-0754FDE086E8"),//monthly fee head
-                        Amount = request.Admission.MonthlyFeeAmount
+                        Amount = request.Admission.MonthlyFeeAmount,
+                        
                     };
                     bill.Details.Add(billDetail);
                     await _unitOfWork.BillMasterRepository.AddAsync(bill);

@@ -11,10 +11,10 @@ public class GuardianInfoConfiguration : CoreEntityConfiguration<GuardianInfo>
         base.Configure(entityTypeBuilder);
 
         entityTypeBuilder.Property(x => x.FatherName).HasMaxLength(200).IsRequired();
-        entityTypeBuilder.Property(x => x.FatherNationalIdNo).HasMaxLength(200).IsRequired();
+        entityTypeBuilder.Property(x => x.FatherNationalIdNo).HasMaxLength(200).IsRequired(false);
         entityTypeBuilder.Property(x => x.FatherMobile).IsRequired();
         entityTypeBuilder.Property(x => x.MotherName).HasMaxLength(200).IsRequired();
-        entityTypeBuilder.Property(x => x.MotherNationalIdNo).HasMaxLength(200).IsRequired();
+        entityTypeBuilder.Property(x => x.MotherNationalIdNo).HasMaxLength(200).IsRequired(false);
         entityTypeBuilder.Property(x => x.MotherMobile).IsRequired();
         entityTypeBuilder.ToTable("tb_sl_GuardianInfo");
         entityTypeBuilder.HasOne(x => x.StudentInfo).WithOne(a => a.GuardianInfo).OnDelete(DeleteBehavior.Restrict).HasForeignKey<GuardianInfo>(x => x.StudentInfoId).OnDelete(DeleteBehavior.Cascade);

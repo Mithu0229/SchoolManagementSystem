@@ -10,12 +10,13 @@ public class BranchConfiguration : AuditableEntityConfiguration<Branch>
         base.Configure(entityTypeBuilder);
 
         entityTypeBuilder.Property(x => x.BranchName).HasMaxLength(250).IsRequired();
+        entityTypeBuilder.Property(x => x.InstituteId).IsRequired();
         entityTypeBuilder.Property(x => x.BranchAddress).HasMaxLength(1000).IsRequired(false);
         entityTypeBuilder.Property(x => x.ContactPerson).HasMaxLength(200).IsRequired(false);
         entityTypeBuilder.Property(x => x.ContactNumber).HasMaxLength(50).IsRequired(false);
         entityTypeBuilder.Property(x => x.HomeThemeImagePath).HasMaxLength(500).IsRequired(false);
-        entityTypeBuilder.Property(x => x.InstituteId).IsRequired();
-        entityTypeBuilder.HasIndex(x => new { x.InstituteId, x.BranchName, x.IsDeleted }).IsUnique().HasFilter("\"IsDeleted\" = 0");
+        entityTypeBuilder.Property(x => x.TenantId).IsRequired();
+        entityTypeBuilder.HasIndex(x => new { x.TenantId, x.BranchName, x.IsDeleted }).IsUnique().HasFilter("\"IsDeleted\" = 0");
         entityTypeBuilder.HasOne(x => x.Institute).WithMany(x => x.Branches).OnDelete(DeleteBehavior.Restrict).HasForeignKey(x => x.InstituteId).OnDelete(DeleteBehavior.Restrict);
         entityTypeBuilder.ToTable("tb_sch_Branches");
     }

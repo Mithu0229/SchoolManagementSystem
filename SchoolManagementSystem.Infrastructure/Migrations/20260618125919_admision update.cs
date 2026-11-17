@@ -30,9 +30,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                 name: "FK_tb_sch_Admissions_tb_sch_Shifts_ShiftId",
                 table: "tb_sch_Admissions");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
-                table: "tb_sch_Admissions");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
+            //    table: "tb_sch_Admissions");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_tb_sch_Admissions_tb_sch_Students_StudentId",
@@ -179,9 +179,9 @@ namespace SchoolManagementSystem.Infrastructure.Migrations
                 name: "FK_tb_sch_Admissions_tb_sch_Shifts_ShiftId",
                 table: "tb_sch_Admissions");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
-                table: "tb_sch_Admissions");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_tb_sch_Admissions_tb_sch_StudentGroups_GroupId",
+            //    table: "tb_sch_Admissions");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_tb_sch_Admissions_tb_sl_StudentInfo_StudentId",

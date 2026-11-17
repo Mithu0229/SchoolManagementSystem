@@ -41,7 +41,7 @@ public class GetBranchListQueryHandler : IHttpRequestHandler<GetBranchListQuery>
                 ContactPerson = x.ContactPerson,
                 ContactNumber = x.ContactNumber,
                 HomeThemeImagePath = x.HomeThemeImagePath,
-                InstituteId = x.InstituteId!.Value,
+                InstituteId = x.InstituteId,
                 InstituteName = x.Institute.InstituteName,
                 IsActive = x.IsActive
             }).ToListAsync(cancellationToken);

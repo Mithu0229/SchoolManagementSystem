@@ -23,80 +23,97 @@ public class GetTrialBalanceQueryHandler : IRequestHandler<GetTrialBalanceQuery,
     public async Task<TrialBalanceReportDto> Handle(GetTrialBalanceQuery request, CancellationToken cancellationToken)
     {
         var result = new TrialBalanceReportDto();
+
+        // Period = [fromDate, toDateExclusive). Opening = everything strictly before fromDate.
         var fromDate = request.FromDate.Date;
-        var toDate = request.ToDate.Date.AddDays(1).AddTicks(-1);
+        var toDateExclusive = request.ToDate.Date.AddDays(1);
 
-        // 1. Bank Book
-        var bankBooks = await _unitOfWork.BankBookRepository.GetAllNoneDeleted().ToListAsync(cancellationToken);
-        var bankOpeningDebit = bankBooks.Where(x => x.TransactionDate < fromDate).Sum(x => x.Debit);
-        var bankOpeningCredit = bankBooks.Where(x => x.TransactionDate < fromDate).Sum(x => x.Credit);
-        
-        var bankTransDebit = bankBooks.Where(x => x.TransactionDate >= fromDate && x.TransactionDate <= toDate).Sum(x => x.Debit);
-        var bankTransCredit = bankBooks.Where(x => x.TransactionDate >= fromDate && x.TransactionDate <= toDate).Sum(x => x.Credit);
+        // 1. Bank Book (by TransactionDate = payment date)
+        var bank = await _unitOfWork.BankBookRepository.GetAllNoneDeleted()
+            .Where(x => x.TransactionDate < toDateExclusive)
+            .GroupBy(x => 1)
+            .Select(g => new
+            {
+                OpeningDebit = g.Where(x => x.TransactionDate < fromDate).Sum(x => (decimal?)x.Debit) ?? 0,
+                OpeningCredit = g.Where(x => x.TransactionDate < fromDate).Sum(x => (decimal?)x.Credit) ?? 0,
+                PeriodDebit = g.Where(x => x.TransactionDate >= fromDate).Sum(x => (decimal?)x.Debit) ?? 0,
+                PeriodCredit = g.Where(x => x.TransactionDate >= fromDate).Sum(x => (decimal?)x.Credit) ?? 0
+            })
+            .FirstOrDefaultAsync(cancellationToken);
 
-        var bankOpeningBalance = bankOpeningDebit - bankOpeningCredit;
-        var bankNetTrans = bankTransDebit - bankTransCredit;
-        var bankClosingBalance = bankOpeningBalance + bankNetTrans;
+        result.Items.Add(BuildItem("Bank Book",
+            // Payment handlers post a Dr (cash in) and a contra Cr of the same amount,
+            // so only the Debit side is the real asset movement.
+            bank?.OpeningDebit ?? 0, 0,
+            bank?.PeriodDebit ?? 0, 0));
 
-        result.Items.Add(new TrialBalanceItemDto
-        {
-            Particulars = "Bank Book",
-            OpeningBalance = bankOpeningBalance,
-            DebitTrans = 0,//bankTransDebit,
-            CreditTrans = bankTransCredit,
-            NetTrans = bankNetTrans,
-            Dr = bankClosingBalance >= 0 ? bankClosingBalance : 0,
-            Cr = bankClosingBalance < 0 ? Math.Abs(bankClosingBalance) : 0
-        });
+        // 2. Cash Book (by TransactionDate = payment date)
+        var cash = await _unitOfWork.CashBookRepository.GetAllNoneDeleted()
+            .Where(x => x.TransactionDate < toDateExclusive)
+            .GroupBy(x => 1)
+            .Select(g => new
+            {
+                OpeningDebit = g.Where(x => x.TransactionDate < fromDate).Sum(x => (decimal?)x.Debit) ?? 0,
+                OpeningCredit = g.Where(x => x.TransactionDate < fromDate).Sum(x => (decimal?)x.Credit) ?? 0,
+                PeriodDebit = g.Where(x => x.TransactionDate >= fromDate).Sum(x => (decimal?)x.Debit) ?? 0,
+                PeriodCredit = g.Where(x => x.TransactionDate >= fromDate).Sum(x => (decimal?)x.Credit) ?? 0
+            })
+            .FirstOrDefaultAsync(cancellationToken);
 
-        // 2. Cash Book
-        var cashBooks = await _unitOfWork.CashBookRepository.GetAllNoneDeleted().ToListAsync(cancellationToken);
-        var cashOpeningDebit = cashBooks.Where(x => x.TransactionDate < fromDate).Sum(x => x.Debit);
-        var cashOpeningCredit = cashBooks.Where(x => x.TransactionDate < fromDate).Sum(x => x.Credit);
-
-        var cashTransDebit = cashBooks.Where(x => x.TransactionDate >= fromDate && x.TransactionDate <= toDate).Sum(x => x.Debit);
-        var cashTransCredit = cashBooks.Where(x => x.TransactionDate >= fromDate && x.TransactionDate <= toDate).Sum(x => x.Credit);
-
-        var cashOpeningBalance = cashOpeningDebit - cashOpeningCredit;
-        var cashNetTrans = cashTransDebit - cashTransCredit;
-        var cashClosingBalance = cashOpeningBalance + cashNetTrans;
-
-        result.Items.Add(new TrialBalanceItemDto
-        {
-            Particulars = "Cash Book",
-            OpeningBalance = cashOpeningBalance,
-            DebitTrans =0,// cashTransDebit,
-            CreditTrans = cashTransCredit,
-            NetTrans = cashNetTrans,
-            Dr = cashClosingBalance >= 0 ? cashClosingBalance : 0,
-            Cr = cashClosingBalance < 0 ? Math.Abs(cashClosingBalance) : 0
-        });
+        result.Items.Add(BuildItem("Cash Book",
+            cash?.OpeningDebit ?? 0, 0,
+            cash?.PeriodDebit ?? 0, 0));
 
         // 3. Account Receivable (Bill Master)
-        var billMasters = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted().ToListAsync(cancellationToken);
-        
-        // Debit is TotalAmount, Credit is CollectionAmount
-        var arOpeningDebit = billMasters.Where(x => x.CreatedDate < fromDate).Sum(x => x.TotalAmount);
-        var arOpeningCredit = billMasters.Where(x => x.CreatedDate < fromDate).Sum(x => x.CollectionAmount);
+        //    Debit  = bills raised   -> TotalAmount by CreatedDate
+        //    Credit = bills collected -> CollectionAmount by PaymentDate
+        var bills = _unitOfWork.BillMasterRepository.GetAllNoneDeleted();
 
-        var arTransDebit = billMasters.Where(x => x.CreatedDate >= fromDate && x.CreatedDate <= toDate).Sum(x => x.TotalAmount);
-        var arTransCredit = billMasters.Where(x => x.PaymentDate >= fromDate && x.PaymentDate <= toDate).Sum(x => x.CollectionAmount);
+        var arOpeningDebit = await bills
+            .Where(x => x.CreatedDate < fromDate)
+            .SumAsync(x => (decimal?)x.TotalAmount, cancellationToken) ?? 0;
 
-        var arOpeningBalance = arOpeningDebit - arOpeningCredit;
-        var arNetTrans = arTransDebit - arTransCredit;
-        var arClosingBalance = arOpeningBalance + arNetTrans;
+        var arPeriodDebit = await bills
+            .Where(x => x.CreatedDate >= fromDate && x.CreatedDate < toDateExclusive)
+            .SumAsync(x => (decimal?)x.TotalAmount, cancellationToken) ?? 0;
 
-        result.Items.Add(new TrialBalanceItemDto
-        {
-            Particulars = "Account Receivable",
-            OpeningBalance = arOpeningBalance,
-            DebitTrans = arTransDebit,
-            CreditTrans = arTransCredit,
-            NetTrans = arNetTrans,
-            Dr = arClosingBalance >= 0 ? arClosingBalance : 0,
-            Cr = arClosingBalance < 0 ? Math.Abs(arClosingBalance) : 0
-        });
+        var arOpeningCredit = await bills
+            .Where(x => x.PaymentDate != null && x.PaymentDate < fromDate)
+            .SumAsync(x => (decimal?)x.CollectionAmount, cancellationToken) ?? 0;
+
+        var arPeriodCredit = await bills
+            .Where(x => x.PaymentDate != null && x.PaymentDate >= fromDate && x.PaymentDate < toDateExclusive)
+            .SumAsync(x => (decimal?)x.CollectionAmount, cancellationToken) ?? 0;
+
+        result.Items.Add(BuildItem("Account Receivable",
+            arOpeningDebit, arOpeningCredit, arPeriodDebit, arPeriodCredit));
+
+        // 4. Fee Income: credit side of every bill raised (balances the trial balance)
+        result.Items.Add(BuildItem("Fee Income",
+            0, arOpeningDebit,
+            0, arPeriodDebit));
 
         return result;
+    }
+
+    private static TrialBalanceItemDto BuildItem(
+        string particulars,
+        decimal openingDebit, decimal openingCredit,
+        decimal periodDebit, decimal periodCredit)
+    {
+        var opening = openingDebit - openingCredit;
+        var net = periodDebit - periodCredit;
+        var closing = opening + net;
+
+        return new TrialBalanceItemDto
+        {
+            Particulars = particulars,
+            OpeningBalance = opening,
+            DebitTrans = periodDebit,
+            CreditTrans = periodCredit,
+            NetTrans = net,
+            Dr = closing >= 0 ? closing : 0,
+            Cr = closing < 0 ? Math.Abs(closing) : 0
+        };
     }
 }
