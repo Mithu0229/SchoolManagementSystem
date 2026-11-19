@@ -1,21 +1,20 @@
 <div class="student-dashboard">
-    <div class="dashboard-blur dashboard-blur-left"></div>
-    <div class="dashboard-blur dashboard-blur-right"></div>
-
     <header class="student-topbar">
+        <div class="brand">
+            <img class="brand-logo" src="assets/Edugates_Logo1.png" alt="Edugates" />
+            <span class="brand-text">Student &amp; Guardian Portal</span>
+        </div>
         <div class="status-links">
-            <button class="status-link" type="button">
-                {{ studentName }}
-            </button>
-            <button class="status-link" type="button" (click)="logout()">
-                Logout
-            </button>
+            <span class="user-chip">
+                <span class="user-avatar">{{ (studentName || 'S').charAt(0).toUpperCase() }}</span>
+                <span class="user-name">{{ studentName }}</span>
+            </span>
+            <button class="logout-btn" type="button" (click)="logout()">Logout</button>
         </div>
     </header>
 
     <div class="dashboard-shell">
         <aside class="side-nav">
-            <div class="portal-title">Student Panel</div>
             <button *ngFor="let item of menuItems; let first = first" class="menu-item" [class.active]="first"
                 type="button">
                 <span class="menu-dot"></span>
@@ -24,6 +23,14 @@
         </aside>
 
         <main class="dashboard-content">
+            <section class="welcome-banner">
+                <div>
+                    <h2>Welcome, {{ studentName }}</h2>
+                    <p>Track fees, results, attendance and notices for your child in one place.</p>
+                </div>
+                <span class="welcome-tag">Student &amp; Guardian Portal</span>
+            </section>
+
             <nav class="content-tabs">
                 <button *ngFor="let tab of tabs" class="tab-item" [class.active]="tab.key === activeTab"
                     (click)="setActiveTab(tab.key)" type="button">
