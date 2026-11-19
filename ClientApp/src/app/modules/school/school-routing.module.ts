@@ -135,7 +135,10 @@ const routes: Routes = [
       {
         path: 'multi-month-bill-collection',
         component: MultiMonthBillCollectionComponent,
-        canActivate: [authGuard, permissionGuard('/multi-month-bill-collection')],
+        canActivate: [
+          authGuard,
+          permissionGuard('/multi-month-bill-collection'),
+        ],
       },
       {
         path: 'student-paid-bills',
@@ -187,6 +190,14 @@ const routes: Routes = [
         component: StudentMarkEntryComponent,
         canActivate: [authGuard],
       },
+      {
+        path: 'knowledge-base',
+        loadComponent: () =>
+          import('../knowledge-base/knowledge-base.component').then(
+            (m) => m.KnowledgeBaseComponent,
+          ),
+        //canActivate: [authGuard],
+      },
       { path: '', redirectTo: 'institute', pathMatch: 'full' },
     ],
   },
@@ -196,4 +207,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class SchoolRoutingModule { }
+export class SchoolRoutingModule {}

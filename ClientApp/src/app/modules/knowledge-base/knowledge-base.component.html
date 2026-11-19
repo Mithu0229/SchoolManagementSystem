@@ -1,0 +1,639 @@
+<div class="kb-container">
+
+  <!-- HERO HEADER -->
+  <div class="kb-hero">
+    <div class="hero-content">
+      <span class="badge-tag"><i class="pi pi-book mr-1"></i> Admin Knowledge Base & Guide</span>
+      <h1>EDUGATES ERP Process Flow & Operations Guide</h1>
+      <p>
+        Step-by-step administrator workflows, interactive visual process diagrams, master setup sequences, automated
+        billing lifecycles, and accounting procedures.
+      </p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-download-primary" (click)="downloadDiagramPdf()" title="Download Diagram Guide PDF">
+        <i class="pi pi-file-pdf"></i> Download Diagram PDF
+      </button>
+      <button class="btn-download-secondary" (click)="downloadManualPdf()" title="Download Full Operations Manual PDF">
+        <i class="pi pi-book"></i> Full Operations Manual
+      </button>
+      <button class="btn-download-secondary" (click)="printGuide()" title="Print this documentation">
+        <i class="pi pi-print"></i> Print
+      </button>
+    </div>
+  </div>
+
+  <!-- NAVIGATION TABS -->
+  <div class="kb-tabs">
+    <button *ngFor="let t of tabs" class="tab-btn" [class.active]="activeTab() === t.id" (click)="setActiveTab(t.id)">
+      <i [class]="t.icon"></i>
+      <span>{{ t.label }}</span>
+    </button>
+  </div>
+
+  <!-- SECTION 1: MASTER HIGH-LEVEL PIPELINE -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'pipeline'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Architecture & Workflow</span>
+        <h2>1. Master Administrator Process Pipeline</h2>
+        <p>End-to-end operational sequence from authentication to examination and accounting.</p>
+      </div>
+    </div>
+
+    <div class="flowchart-pipeline">
+      <!-- Node 1 -->
+      <div class="flow-node">
+        <div class="node-badge">PHASE 01</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Secure Authentication & Campus Selection</h4>
+            <a routerLink="/auth/login" class="node-route">/auth/login</a>
+          </div>
+          <p>Administrator signs in with verified credentials, selects Tenant and Branch campus context.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 2 -->
+      <div class="flow-node">
+        <div class="node-badge blue">PHASE 02</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Master Academic & Financial Configuration</h4>
+            <a routerLink="/school/institute" class="node-route">/school/institute</a>
+          </div>
+          <p>Sequential master setup: Institute ➔ Branch ➔ Financial Year ➔ Session ➔ Class ➔ Section ➔ Shift ➔ Subject
+            ➔ Fee Template.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 3 -->
+      <div class="flow-node">
+        <div class="node-badge purple">PHASE 03</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Student Onboarding & Admission Registry</h4>
+            <a routerLink="/school/admission" class="node-route">/school/admission</a>
+            <a routerLink="/school/student-list" class="node-route">/school/student-list</a>
+          </div>
+          <p>Enroll students via interactive single admission form or bulk Excel upload (TestStudentUpload.xlsx).
+            Auto-generates Roll & Student ID.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 4 -->
+      <div class="flow-node">
+        <div class="node-badge amber">PHASE 04</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Monthly Batch Billing & Bill Updates</h4>
+            <a routerLink="/school/bill-process" class="node-route">/school/bill-process</a>
+            <a routerLink="/school/bill-collection" class="node-route">/school/bill-collection</a>
+          </div>
+          <p>Generate monthly tuition bills in batch by class. Update individual student bills with scholarships,
+            waivers, or extra fees.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 5 -->
+      <div class="flow-node">
+        <div class="node-badge green">PHASE 05</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Fee Collections & 2-Copy Money Receipts</h4>
+            <a routerLink="/school/bill-collection" class="node-route">/school/bill-collection</a>
+            <a routerLink="/school/multi-month-bill-collection"
+              class="node-route">/school/multi-month-bill-collection</a>
+          </div>
+          <p>Process counter cash payments, multi-month advances, or digital bKash payments. Generates instant 2-copy
+            printed Money Receipts.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 6 -->
+      <div class="flow-node">
+        <div class="node-badge teal">PHASE 06</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Real-Time Double-Entry Accounting</h4>
+            <a routerLink="/school/cashbook" class="node-route">/school/cashbook</a>
+            <a routerLink="/school/trial-balance" class="node-route">/school/trial-balance</a>
+          </div>
+          <p>Automated ledger entries: Counter cash ➔ Cashbook; Online payments ➔ Bankbook. Generates real-time Trial
+            Balance, P&L, and Balance Sheet.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 7 -->
+      <div class="flow-node">
+        <div class="node-badge blue">PHASE 07</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Examinations, Mark Entry & Fee-Gated Admit Cards</h4>
+            <a routerLink="/school/student-mark-entry" class="node-route">/school/student-mark-entry</a>
+          </div>
+          <p>Enter CQ/MCQ/Practical scores, calculate GPA, and issue vector-sharp Admit Cards protected by automated
+            tuition fee-cutoff checks.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Node 8 -->
+      <div class="flow-node">
+        <div class="node-badge dark">PHASE 08</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Daily Attendance, Biometrics & SMS Notifications</h4>
+            <a routerLink="/home/gs" class="node-route">/home/gs</a>
+          </div>
+          <p>Biometric device hardware synchronization, automated absence notification SMS to parents, fee due
+            reminders, and RBAC permission rules.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: MASTER SETUP WORKFLOW -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'master'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Master Hierarchy</span>
+        <h2>2. Master Academic Setup Sequence</h2>
+        <p>Strict numerical dependency order for establishing a new school or campus without relational errors.</p>
+      </div>
+    </div>
+
+    <div class="callout-box warning">
+      <h5><i class="pi pi-exclamation-triangle mr-1"></i> Dependency Rule</h5>
+      <p>Classes must be created before Sections. Fee Heads must be created before Fee Templates. Both Classes and Fee
+        Templates must exist before enrolling students or generating bills.</p>
+    </div>
+
+    <div class="kb-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 50px;">Seq</th>
+            <th>Master Entity</th>
+            <th>Web Route</th>
+            <th>Operational Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="seq-badge">01</span></td>
+            <td><strong>Tenant Setup</strong></td>
+            <td><a routerLink="/tenant" class="table-route-link">/tenant</a></td>
+            <td>Define top-level organization/licensee. Associated with root permissions.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">02</span></td>
+            <td><strong>Institute Profile</strong></td>
+            <td><a routerLink="/school/institute" class="table-route-link">/school/institute</a></td>
+            <td>School Name, EIIN, Address, Logo, and primary contact details.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">03</span></td>
+            <td><strong>Branch / Campus</strong></td>
+            <td><a routerLink="/school/branch" class="table-route-link">/school/branch</a></td>
+            <td>Physical campuses operating under the institute (e.g. Main Campus).</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">04</span></td>
+            <td><strong>Financial Year</strong></td>
+            <td><a routerLink="/school/financial-year" class="table-route-link">/school/financial-year</a></td>
+            <td>Define fiscal accounting period (e.g., FY 2026-2027) with date boundaries.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">05</span></td>
+            <td><strong>Academic Session</strong></td>
+            <td><a routerLink="/school/academic-session" class="table-route-link">/school/academic-session</a></td>
+            <td>Active school year (e.g. Session 2026). Drives admissions and promotions.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">06</span></td>
+            <td><strong>Academic Classes</strong></td>
+            <td><a routerLink="/school/academic-class" class="table-route-link">/school/academic-class</a></td>
+            <td>Configure classes offered (Play, Nursery, Class 1 through Class 10).</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">07</span></td>
+            <td><strong>Class Sections</strong></td>
+            <td><a routerLink="/school/section" class="table-route-link">/school/section</a></td>
+            <td>Add classroom divisions (Section A, Section B) per Class.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">08</span></td>
+            <td><strong>School Shifts</strong></td>
+            <td><a routerLink="/school/shift" class="table-route-link">/school/shift</a></td>
+            <td>Define operational timings (Morning Shift, Day Shift).</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">09</span></td>
+            <td><strong>Student Groups</strong></td>
+            <td><a routerLink="/school/student-group" class="table-route-link">/school/student-group</a></td>
+            <td>Academic streams: General for junior grades; Science, Arts, Commerce for high school.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">10</span></td>
+            <td><strong>Subjects & Codes</strong></td>
+            <td><a routerLink="/school/subject" class="table-route-link">/school/subject</a></td>
+            <td>Define curriculum courses (Bangla, English, Math) and link to Classes.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">11</span></td>
+            <td><strong>Grading Scale</strong></td>
+            <td><a routerLink="/school/grading-scale" class="table-route-link">/school/grading-scale</a></td>
+            <td>GPA grade boundaries (A+: 80-100%, GPA 5.0 down to F: &lt;33%, GPA 0.0).</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">12</span></td>
+            <td><strong>Fee Heads</strong></td>
+            <td><a routerLink="/school/fee-head" class="table-route-link">/school/fee-head</a></td>
+            <td>Register revenue categories: Tuition Fee, Admission Fee, Exam Fee, Lab, Transport.</td>
+          </tr>
+          <tr>
+            <td><span class="seq-badge">13</span></td>
+            <td><strong>Fee Templates</strong></td>
+            <td><a routerLink="/school/fee-template" class="table-route-link">/school/fee-template</a></td>
+            <td>Bundle Fee Heads with fixed pricing packages mapped to Class, Shift, and Group.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 3: STUDENT ONBOARDING -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'students'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Student Lifecycle</span>
+        <h2>3. Student Onboarding & Registry Flow</h2>
+        <p>Choose between interactive single admission or bulk onboarding via Excel spreadsheet.</p>
+      </div>
+    </div>
+
+    <div class="branch-grid">
+      <div class="branch-box primary-border">
+        <h4><i class="pi pi-user-plus text-blue-700"></i> Pathway A: Single Admission</h4>
+        <p class="mb-2"><strong>Route:</strong> <a routerLink="/school/admission"
+            class="table-route-link">/school/admission</a></p>
+        <ul>
+          <li>Select Branch, Session, Class, Section, Shift, Group.</li>
+          <li>Enter Student Full Name, Gender, DOB, Blood Group.</li>
+          <li>Enter Father, Mother, Guardian Phone & Address.</li>
+          <li>Upload student photograph (.jpg, .png).</li>
+          <li>Click Save ➔ Auto-generates unique Student ID & Roll.</li>
+        </ul>
+      </div>
+
+      <div class="branch-box teal-border">
+        <h4><i class="pi pi-file-excel text-teal-700"></i> Pathway B: Excel Bulk Import</h4>
+        <p class="mb-2"><strong>Route:</strong> <a routerLink="/school/student-list"
+            class="table-route-link">/school/student-list</a></p>
+        <ul>
+          <li>Click 'Download Sample Excel' (or use TestStudentUpload.xlsx).</li>
+          <li>Populate columns: Name, Roll, Class, Section, Shift, Phone.</li>
+          <li>Click 'Upload Student Excel' button.</li>
+          <li>System validates all rows in a single database transaction.</li>
+          <li>Batch imports 100+ students instantly.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout-box success">
+      <h5><i class="pi pi-check-circle mr-1"></i> Excel Import Rules</h5>
+      <p>Do not alter header column names. Ensure Class Name, Section Name, and Shift Name match database entities
+        exactly (case-sensitive). Guardian phone numbers must be 11-digit mobile numbers for SMS delivery.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: BILLING & COLLECTIONS -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'billing'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Fee Management</span>
+        <h2>4. Billing Lifecycle, Bill Updates & Collections</h2>
+        <p>Complete invoicing cycle from batch generation to payment collection and receipt printing.</p>
+      </div>
+    </div>
+
+    <div class="flowchart-pipeline">
+      <!-- Step 1 -->
+      <div class="flow-node">
+        <div class="node-badge blue">STEP 1</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Batch Monthly Bill Processing</h4>
+            <a routerLink="/school/bill-process" class="node-route">/school/bill-process</a>
+          </div>
+          <p>Admin selects Academic Session, Target Month (e.g. November), and Class. The system pulls amounts from the
+            Fee Template and generates unpaid invoices for all active students.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="flow-node">
+        <div class="node-badge amber">STEP 2</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Decision: Bill Updates or Special Waivers?</h4>
+            <a routerLink="/school/bill-collection" class="node-route">/school/bill-collection (Update Bill)</a>
+          </div>
+          <p>If a student has a scholarship, fee waiver, or penalty, open 'Update Bill' to modify specific fee heads.
+            Otherwise, invoices proceed directly to collection.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Step 3 Channels -->
+      <div class="branch-grid my-2">
+        <div class="branch-box green-border">
+          <h4><i class="pi pi-wallet text-green-700"></i> Counter Collection</h4>
+          <p><strong>/school/bill-collection</strong><br />Search student by ID/Roll. View outstanding dues. Collect
+            cash and click 'Pay Now'.</p>
+        </div>
+        <div class="branch-box purple-border">
+          <h4><i class="pi pi-calendar-plus text-purple-700"></i> Multi-Month Advance</h4>
+          <p><strong>/school/multi-month-bill-collection</strong><br />Collect fees for 3, 6, or 12 consecutive months
+            in a single advance receipt.</p>
+        </div>
+        <div class="branch-box teal-border">
+          <h4><i class="pi pi-credit-card text-teal-700"></i> Online bKash / PayBill</h4>
+          <p>Parents pay remotely via bKash or automated bank bill-pay. The system verifies TxnID and marks bill Paid in
+            real time.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Step 4 Output -->
+      <div class="flow-node">
+        <div class="node-badge green">STEP 4</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Instant 2-Copy Money Receipt & Ledger Post</h4>
+            <a routerLink="/school/student-bill-history" class="node-route">/school/student-bill-history</a>
+          </div>
+          <p>Generates an instant 2-copy printed Money Receipt (Office Copy & Student Copy). Cash automatically debits
+            the Cashbook, clearing student dues and unlocking exam Admit Cards.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ACCOUNTING -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'accounting'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Financial Ledgers</span>
+        <h2>5. Financial Accounting & Audit Statements</h2>
+        <p>Automated double-entry bookkeeping feeding real-time Trial Balance and Balance Sheet.</p>
+      </div>
+    </div>
+
+    <div class="kb-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Report Name</th>
+            <th>Web Route</th>
+            <th>Financial Functionality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Daily Cashbook</strong></td>
+            <td><a routerLink="/school/cashbook" class="table-route-link">/school/cashbook</a></td>
+            <td>Tracks daily counter cash collections, petty cash expenses, cash in hand, and opening/closing balances.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Bankbook</strong></td>
+            <td><a routerLink="/school/bankbook" class="table-route-link">/school/bankbook</a></td>
+            <td>Reconciles digital bKash payments, bank deposits, cheques, bank fees, and institutional bank balances.
+            </td>
+          </tr>
+          <tr>
+            <td><strong>Trial Balance</strong></td>
+            <td><a routerLink="/school/trial-balance" class="table-route-link">/school/trial-balance</a></td>
+            <td>Real-time equilibrium across all accounts. Mathematically guarantees Total Debits = Total Credits.</td>
+          </tr>
+          <tr>
+            <td><strong>Income Statement</strong></td>
+            <td><a routerLink="/school/income-statement" class="table-route-link">/school/income-statement</a></td>
+            <td>Profit & Loss statement: Total tuition revenue minus staff salaries and operational expenses over any
+              date range.</td>
+          </tr>
+          <tr>
+            <td><strong>Balance Sheet</strong></td>
+            <td><a routerLink="/school/balance-sheet" class="table-route-link">/school/balance-sheet</a></td>
+            <td>Institution assets (cash, bank, campus equipment) vs liabilities and accumulated capital as of cutoff
+              date.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION 6: EXAMS & ADMIT CARDS -->
+  <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'exams'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Academic Assessments</span>
+        <h2>6. Examinations, Marks Entry & Fee-Gated Admit Cards</h2>
+        <p>Multi-component mark entry, GPA calculations, and fee-due verification gatekeeper.</p>
+      </div>
+    </div>
+
+    <div class="flowchart-pipeline">
+      <div class="flow-node">
+        <div class="node-badge blue">STAGE 1</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Exam Components & Weights</h4>
+          </div>
+          <p>Define Exam Types (Class Test, Half Yearly, Final Exam) and score distribution: Creative / Theory (CQ),
+            Multiple Choice (MCQ), Practical, Assignment.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <div class="flow-node">
+        <div class="node-badge purple">STAGE 2</div>
+        <div class="node-content">
+          <div class="node-header">
+            <h4>Batch Marks Entry & GPA Calculation</h4>
+            <a routerLink="/school/student-mark-entry" class="node-route">/school/student-mark-entry</a>
+          </div>
+          <p>Teacher enters student component scores. System dynamically calculates Total Marks, Letter Grade (A+, A, B,
+            F), and Grade Point (5.0 to 0.0) automatically.</p>
+        </div>
+      </div>
+      <div class="flow-connector">
+        <div class="connector-line"></div><i class="pi pi-chevron-down"></i>
+      </div>
+
+      <!-- Decision Box -->
+      <div class="decision-card">
+        <div class="decision-title"><i class="pi pi-shield"></i> Gatekeeper Check: Has Student Cleared Tuition Fees?
+        </div>
+        <p>Before issuing or downloading an Admit Card, the system checks whether the student has any outstanding unpaid
+          monthly dues up to the exam cutoff date.</p>
+      </div>
+
+      <div class="branch-grid my-2">
+        <div class="branch-box green-border">
+          <h4><i class="pi pi-check text-green-700"></i> Fee Paid: Issue Admit Card</h4>
+          <p>Vector-sharp PDF generates instantly with student photo, barcode, exam routine, and signature lines. Ready
+            to print.</p>
+        </div>
+        <div class="branch-box red-border">
+          <h4><i class="pi pi-ban text-red-700"></i> Unpaid Dues: Blocked</h4>
+          <p>Download blocked with alert. Student must settle dues at the counter. (Admin override: check
+            <code>IgnoreDueCheck</code>).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: SYSTEM RUN & SETUP -->
+  <!-- <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'system'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">DevOps & Startup</span>
+        <h2>7. How to Run the Whole System (Step-by-Step)</h2>
+        <p>Commands to initialize the SQL database, launch the backend API, and start the Angular web portal.</p>
+      </div>
+    </div>
+
+
+    <div class="mb-4">
+      <h4 class="font-bold text-slate-800 text-sm mb-1">Step 1: Database Setup & Seeding</h4>
+      <p class="text-xs text-slate-600 mb-2">Configure connection string in <code>appsettings.json</code> and run EF
+        Core migrations:</p>
+      <div class="code-box">
+        <button class="copy-btn"
+          (click)="copyToClipboard('dotnet ef database update --project SchoolManagementSystem.Infrastructure --startup-project SchoolManagementSystem.API', 'ef')">
+          {{ copiedCommand() === 'ef' ? 'Copied!' : 'Copy' }}
+        </button>
+        <pre>dotnet ef database update --project SchoolManagementSystem.Infrastructure --startup-project SchoolManagementSystem.API</pre>
+      </div>
+      <p class="text-xs text-slate-600">Then execute seed script:
+        <code>run with insert supper admin showkat4273&#64;gmail.com pass 123456.sql</code> in SSMS.</p>
+      <div class="callout-box success my-2">
+        <h5>Default Super Admin Credentials</h5>
+        <p><strong>Email:</strong> showkat131080&#64;gmail.com (or showkat4273&#64;gmail.com) |
+          <strong>Password:</strong> 123456</p>
+      </div>
+    </div>
+
+
+    <div class="mb-4">
+      <h4 class="font-bold text-slate-800 text-sm mb-1">Step 2: Start Backend Web API</h4>
+      <div class="code-box">
+        <button class="copy-btn" (click)="copyToClipboard('cd SchoolManagementSystem.API && dotnet run', 'api')">
+          {{ copiedCommand() === 'api' ? 'Copied!' : 'Copy' }}
+        </button>
+        <pre>cd SchoolManagementSystem.API
+dotnet run</pre>
+      </div>
+      <p class="text-xs text-slate-600">API will launch at: <strong>http://localhost:5015</strong> (Swagger:
+        <strong>http://localhost:5015/swagger</strong>).</p>
+    </div>
+
+
+    <div class="mb-4">
+      <h4 class="font-bold text-slate-800 text-sm mb-1">Step 3: Start Frontend ClientApp</h4>
+      <div class="code-box">
+        <button class="copy-btn" (click)="copyToClipboard('cd ClientApp && npm install && npm start', 'client')">
+          {{ copiedCommand() === 'client' ? 'Copied!' : 'Copy' }}
+        </button>
+        <pre>cd ClientApp
+npm install
+npm start</pre>
+      </div>
+      <p class="text-xs text-slate-600">Frontend launches at: <strong>http://localhost:4200</strong>.</p>
+    </div>
+  </div> -->
+
+  <!-- SECTION 8: TROUBLESHOOTING -->
+  <!-- <div class="kb-card" *ngIf="activeTab() === 'all' || activeTab() === 'troubleshooting'">
+    <div class="card-header">
+      <div class="header-info">
+        <span class="header-badge">Diagnostics</span>
+        <h2>8. Troubleshooting & Maintenance Guide</h2>
+        <p>Quick diagnostic resolutions for common operational questions and error codes.</p>
+      </div>
+    </div>
+
+    <div class="kb-table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Issue / Error</th>
+            <th>Root Cause</th>
+            <th>Resolution Procedure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong class="text-amber-700">SQL Connection Failed</strong></td>
+            <td>Incorrect server instance or disabled TCP/IP.</td>
+            <td>Verify <code>DefaultConnection</code> in <code>appsettings.json</code>. Enable TCP/IP in SQL Server Configuration Manager.</td>
+          </tr>
+          <tr>
+            <td><strong class="text-amber-700">401 Unauthorized</strong></td>
+            <td>Expired JWT bearer token.</td>
+            <td>Log out and log back in to refresh JWT authentication token.</td>
+          </tr>
+          <tr>
+            <td><strong class="text-amber-700">Port 5015 in Use</strong></td>
+            <td>Previous dotnet process holding socket.</td>
+            <td>Stop orphan process using: <code>Stop-Process -Id (Get-NetTCPConnection -LocalPort 5015).OwningProcess</code></td>
+          </tr>
+          <tr>
+            <td><strong class="text-amber-700">Admit Card Blocked</strong></td>
+            <td>Student has outstanding unpaid tuition dues.</td>
+            <td>Settle dues via Bill Collection, or check <code>IgnoreDueCheck</code> waiver flag.</td>
+          </tr>
+          <tr>
+            <td><strong class="text-amber-700">Excel Upload Error</strong></td>
+            <td>Class, Section, or Shift name mismatch.</td>
+            <td>Ensure spreadsheet entity names match master setup exactly (case-sensitive).</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+
+</div>

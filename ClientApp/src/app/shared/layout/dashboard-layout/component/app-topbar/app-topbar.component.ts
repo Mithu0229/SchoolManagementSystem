@@ -91,6 +91,12 @@ export class AppTopbar implements OnInit {
   private initializeMenuItems(): void {
     const items: MenuItem[] = [
       {
+        label: 'Knowledge Base',
+        icon: 'pi pi-book',
+        command: () => this.router.navigate(['/admin/knowledge-base']),
+      },
+      { separator: true },
+      {
         label: 'User Profile',
         icon: 'pi pi-user',
         command: () => this.showUserProfileDialog(),

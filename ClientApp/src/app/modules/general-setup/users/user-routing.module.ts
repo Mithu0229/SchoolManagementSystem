@@ -43,6 +43,13 @@ const routes: Routes = [
           ),
         //canActivate: [authGuard],
       },
+      {
+        path: 'knowledge-base',
+        loadComponent: () =>
+          import('../../knowledge-base/knowledge-base.component').then(
+            (m) => m.KnowledgeBaseComponent
+          ),
+      },
     ],
   },
 ];
