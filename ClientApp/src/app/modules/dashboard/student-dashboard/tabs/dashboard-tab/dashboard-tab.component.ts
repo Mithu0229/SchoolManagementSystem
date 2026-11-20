@@ -11,6 +11,7 @@ import { StudentService } from '../../../../../core/services/student.service';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
+import { environment } from '../../../../../../environments/environment';
 import { BillMasterService } from '../../../../school/services/bill-master.service';
 
 interface StudentProfileField {
@@ -51,6 +52,9 @@ export class DashboardTabComponent implements OnInit {
   currentReceipt: any = null;
 
   avatarMissing = false;
+  avatarUrl: string | null = null;
+  uploadingPhoto = false;
+  photoError = '';
   studentId: string | null = null;
   isEditing = false;
   studentForm!: FormGroup;
@@ -114,6 +118,8 @@ export class DashboardTabComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess && res.data) {
           this.studentData = res.data;
+          this.avatarUrl = this.getImageUrl(res.data.imagePath);
+          this.avatarMissing = !this.avatarUrl;
           this.student.name = this.studentData.fullName || this.student.name;
           this.student.initials = this.getInitials(this.student.name);
 
@@ -212,8 +218,49 @@ export class DashboardTabComponent implements OnInit {
     });
   }
 
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file || !this.studentId) return;
+
+    this.photoError = '';
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      this.photoError = 'Only JPG or PNG images are allowed.';
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      this.photoError = 'Image must be smaller than 5 MB.';
+      return;
+    }
+
+    this.uploadingPhoto = true;
+    this.studentService.updateStudentPhoto(this.studentId, file).subscribe({
+      next: (res) => {
+        this.uploadingPhoto = false;
+        if (res.isSuccess && res.data) {
+          this.avatarUrl = this.getImageUrl(res.data);
+          this.avatarMissing = false;
+        } else {
+          this.photoError = res.errors?.[0] || 'Failed to upload photo.';
+        }
+      },
+      error: () => {
+        this.uploadingPhoto = false;
+        this.photoError = 'Failed to upload photo.';
+      },
+    });
+  }
+
+  getImageUrl(imagePath: string | null | undefined): string | null {
+    if (!imagePath) return null;
+    if (/^(https?:|data:)/.test(imagePath)) return imagePath;
+    const apiBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
+    return `${apiBaseUrl}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+  }
+
   getInitials(name: string): string {
-    return name
+    return (name || '')
       .split(' ')
       .map((n) => n[0])
       .join('')

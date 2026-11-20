@@ -60,7 +60,7 @@ public class UpdateStudentUserCommandHandler : IHttpRequestHandler<UpdateStudent
                 if (student != null && !string.IsNullOrEmpty(student.StudentPhone))
                 {
                     string passwordToSend = string.IsNullOrEmpty(request.Request.Password) ? "your current password" : request.Request.Password;
-                    string loginUrl = "http://edugates.net/login"; // placeholder, configure as needed
+                    string loginUrl = "https://sms.edugateserp.com/login"; // placeholder, configure as needed
                     string message = $"Dear Student, your username is {student.StdCID} and password is {passwordToSend}. Login at: {loginUrl}";
                     
                     await _smsService.SendSmsAsync(student.StudentPhone, message);

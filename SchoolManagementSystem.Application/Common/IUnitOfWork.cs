@@ -62,6 +62,7 @@ public interface IUnitOfWork : IDisposable
     public IAttendanceDeviceRepository AttendanceDeviceRepository { get; }
     public ITeacherRepository TeacherRepository { get; }
     public ISMSHistoryRepository SMSHistoryRepository { get; }
+    public IAttendanceLogRepository AttendanceLogRepository { get; }
     public IBkashTransactionRepository BkashTransactionRepository { get; }
     public ICashBookRepository CashBookRepository { get; }
     public IBankBookRepository BankBookRepository { get; }

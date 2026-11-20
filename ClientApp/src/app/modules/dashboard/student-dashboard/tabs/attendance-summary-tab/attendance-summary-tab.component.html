@@ -4,21 +4,62 @@
     </header>
 
     <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>Present</th>
-                    <th>Absent</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let row of monthly">
-                    <td>{{ row.month }}</td>
-                    <td>{{ row.present }}</td>
-                    <td>{{ row.absent }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div *ngIf="loading" class="state-msg">Loading attendance...</div>
+        <div *ngIf="!loading && errorMessage" class="state-msg error">{{ errorMessage }}</div>
+        <div *ngIf="!loading && !errorMessage && months.length === 0" class="state-msg">
+            No attendance records found.
+        </div>
+
+        <ng-container *ngIf="!loading && months.length > 0">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span>Total Present Days</span>
+                    <strong>{{ totalPresentDays }}</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Months Recorded</span>
+                    <strong>{{ months.length }}</strong>
+                </div>
+            </div>
+
+            <h4 class="section-title">Monthly Summary</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Present Days</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let m of months" class="clickable" [class.selected]="m.key === selectedMonthKey"
+                        (click)="selectedMonthKey = m.key">
+                        <td>{{ m.label }}</td>
+                        <td>{{ m.presentDays }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <ng-container *ngIf="selectedMonth as sm">
+                <h4 class="section-title">Daily Details &ndash; {{ sm.label }}</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>First Punch</th>
+                            <th>Last Punch</th>
+                            <th>Punches</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let d of sm.days">
+                            <td>{{ d.date | date:'EEE, dd MMM yyyy' }}</td>
+                            <td>{{ d.firstPunch | date:'hh:mm a' }}</td>
+                            <td>{{ d.lastPunch | date:'hh:mm a' }}</td>
+                            <td>{{ d.punchCount }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </ng-container>
+        </ng-container>
     </div>
 </article>

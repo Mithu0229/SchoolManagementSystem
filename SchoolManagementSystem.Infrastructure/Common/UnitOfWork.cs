@@ -417,6 +417,19 @@ namespace SchoolManagementSystem.Infrastructure.Common
             }
         }
 
+        public IAttendanceLogRepository _attendanceLogRepository;
+        public IAttendanceLogRepository AttendanceLogRepository
+        {
+            get
+            {
+                if (this._attendanceLogRepository == null)
+                {
+                    this._attendanceLogRepository = new AttendanceLogRepository(_context, _currentUserService);
+                }
+                return _attendanceLogRepository;
+            }
+        }
+
         public IBkashTransactionRepository _bkashTransactionRepository;
         public IBkashTransactionRepository BkashTransactionRepository
         {

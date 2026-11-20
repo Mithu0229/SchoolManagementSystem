@@ -275,7 +275,7 @@ public class ExamMarkHandlers :
             var targetClassId = request.ClassId != Guid.Empty ? request.ClassId : (admission != null ? admission.ClassId : Guid.Empty);
 
             // 2. Exam Components
-            var components = await _unitOfWork.ExamComponentRepository.GetAllNoneDeleted()
+            var components = await _unitOfWork.ExamComponentRepository.GetAllNoneDeleted(false,true)
                 .Where(x => x.AcademicSessionId == targetSessionId || x.AcademicSessionId == null)
                 .OrderBy(x => x.OrderIndex)
                 .Select(x => new ExamComponentDto
@@ -291,7 +291,7 @@ public class ExamMarkHandlers :
 
             if (components.Count == 0)
             {
-                components = await _unitOfWork.ExamComponentRepository.GetAllNoneDeleted()
+                components = await _unitOfWork.ExamComponentRepository.GetAllNoneDeleted(false, true)
                     .OrderBy(x => x.OrderIndex)
                     .Select(x => new ExamComponentDto
                     {
@@ -306,7 +306,7 @@ public class ExamMarkHandlers :
             }
 
             // 3. Subjects assigned to this class
-            var classSubjectList = await _unitOfWork.ClassSubjectRepository.GetAllNoneDeleted()
+            var classSubjectList = await _unitOfWork.ClassSubjectRepository.GetAllNoneDeleted(false, true)
                 .Where(x => x.ClassId == targetClassId && x.IsActive)
                 .Include(x => x.Subject)
                 .OrderBy(x => x.OrderIndex)
@@ -326,7 +326,7 @@ public class ExamMarkHandlers :
             }
 
             // 4. Grading Scale
-            var gradingScale = await _unitOfWork.GradingScaleRepository.GetAllNoneDeleted()
+            var gradingScale = await _unitOfWork.GradingScaleRepository.GetAllNoneDeleted(false, true)
                 .Include(x => x.Details)
                 .FirstOrDefaultAsync(x => x.IsDefault, cancellationToken)
                 ?? await _unitOfWork.GradingScaleRepository.GetAllNoneDeleted()
@@ -337,7 +337,7 @@ public class ExamMarkHandlers :
 
             // 5. Existing marks scored by the student
             var targetStudentId = admission != null ? admission.StudentId : request.StudentId;
-            var existingMarks = await _unitOfWork.StudentExamMarkRepository.GetAllNoneDeleted()
+            var existingMarks = await _unitOfWork.StudentExamMarkRepository.GetAllNoneDeleted(false, true)
                 .Where(x => (targetSessionId == Guid.Empty || x.AcademicSessionId == targetSessionId) &&
                             (x.StudentId == targetStudentId || (admission != null && x.StudentId == admission.Id)))
                 .ToListAsync(cancellationToken);

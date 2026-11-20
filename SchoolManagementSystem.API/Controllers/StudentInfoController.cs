@@ -126,6 +126,35 @@ namespace SchoolManagementSystem.API.Controllers
             return await Mediator.Send(cmd);
         }
 
+        [HttpPut("update-student-photo/{id}")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(5 * 1024 * 1024)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        public async Task<IResult> UpdateStudentPhoto(Guid id, IFormFile image)
+        {
+            if (image == null || image.Length == 0)
+                return Result.Fail<string>(StatusCodes.Status400BadRequest, "Please select an image.");
+
+            var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+            if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                return Result.Fail<string>(StatusCodes.Status400BadRequest, "Only .jpg, .jpeg or .png images are allowed.");
+
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads/students");
+            Directory.CreateDirectory(uploadFolder);
+
+            var fileName = $"{Guid.NewGuid()}{extension}";
+            using (var stream = new FileStream(Path.Combine(uploadFolder, fileName), FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return await Mediator.Send(new UpdateStudentPhotoCommand
+            {
+                StudentId = id,
+                ImagePath = $"/uploads/students/{fileName}"
+            });
+        }
+
         [HttpDelete("delete-student/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         public async Task<IResult> Delete(Guid id)

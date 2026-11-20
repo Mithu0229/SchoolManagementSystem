@@ -33,4 +33,8 @@ public class StudentController : ProtectedBaseController
     [HttpGet("get-sms-history/{studentId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SMSHistoryResponse>))]
     public async Task<IResult> GetSMSHistory(Guid studentId) => await Mediator.Send(new GetSMSHistoryByStudentIdQuery { StudentId = studentId });
+
+    [HttpGet("get-attendance-summary/{studentId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<SchoolManagementSystem.Application.School.AttendanceLogs.Queries.StudentAttendanceDayResponse>))]
+    public async Task<IResult> GetAttendanceSummary(Guid studentId) => await Mediator.Send(new SchoolManagementSystem.Application.School.AttendanceLogs.Queries.GetStudentAttendanceSummaryQuery { StudentId = studentId });
 }

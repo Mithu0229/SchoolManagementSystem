@@ -1072,5 +1072,10 @@ BEGIN
     ORDER BY pm.SortingOrder;  
 END;  
 
+GO
+
+INSERT INTO [tec] (Id, IsActive, IsDeleted, DeletedById, DeletedDate, CreatedById, CreatedDate, ModifiedById, ModifiedDate, Name, ContactNumber, Address, InstituteId) VALUES
+('0d1969d1-77d6-49a5-b012-6cc8edd18d08', CONVERT(bit, 'True'), CONVERT(bit, 'False'), NULL, NULL, '0d1969d1-77d6-49a5-b012-6cc8edd18d08', CONVERT(DATETIME2, '2026-07-26 20:46:19.1066667', 121), NULL, NULL, N'MR. Rahidm', N'0988899999', N'Dhaka', NULL)
+GO
 
 

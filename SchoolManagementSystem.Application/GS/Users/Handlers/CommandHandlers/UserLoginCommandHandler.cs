@@ -18,8 +18,8 @@ public class UserLoginCommandHandler : IHttpRequestHandler<UserLoginCommand>
         try
         {
             var user = await _unitOfWork.UserRepository
-                .GetAllNoneDeleted(false, true)
-                .Where(u => u.Email == request.LoginUser.Email)
+                .GetAllNoneDeleted(false, true).Include(x=>x.Student)
+                .Where(u => u.Email == request.LoginUser.Email || u.Student!.StdCID == request.LoginUser.Email)
                 .FirstOrDefaultAsync(cancellationToken);
 
 

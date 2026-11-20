@@ -44,6 +44,15 @@ export class StudentService {
       payload,
     );
   }
+  updateStudentPhoto(id: string, file: File): Observable<ApiResponse<string>> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.put<ApiResponse<string>>(
+      `StudentInfo/update-student-photo/${id}`,
+      formData,
+    );
+  }
+
   updateStudentOnly(payload: any): Observable<ApiResponse<any>> {
     return this.http.put<ApiResponse<any>>(
       'StudentInfo/update-student-info',
@@ -66,6 +75,12 @@ export class StudentService {
   getFeeInfoByStudent(studentId: string): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(
       `BillMaster/get-fee-info-by-student/${studentId}`
+    );
+  }
+
+  getAttendanceSummaryByStudent(studentId: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(
+      `Student/get-attendance-summary/${studentId}`
     );
   }
 

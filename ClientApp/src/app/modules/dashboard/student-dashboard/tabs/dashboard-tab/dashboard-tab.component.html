@@ -7,12 +7,16 @@
     <div class="panel-body profile-body">
       <div class="profile-identity">
         <div class="avatar-box">
-          <img *ngIf="!avatarMissing" src="/student.jpeg" alt="Student photo" (error)="avatarMissing = true" />
-          <div *ngIf="avatarMissing" class="avatar-fallback">
+          <img *ngIf="!avatarMissing && avatarUrl" [src]="avatarUrl" alt="Student photo" (error)="avatarMissing = true" />
+          <div *ngIf="avatarMissing || !avatarUrl" class="avatar-fallback">
             {{ student.initials }}
           </div>
         </div>
-        <button class="download-link" type="button">Profile Download</button>
+        <input #photoInput type="file" accept="image/png,image/jpeg" hidden (change)="onPhotoSelected($event)" />
+        <button class="download-link" type="button" [disabled]="uploadingPhoto" (click)="photoInput.click()">
+          {{ uploadingPhoto ? 'Uploading...' : (avatarUrl && !avatarMissing ? 'Change Photo' : 'Upload Photo') }}
+        </button>
+        <span class="photo-error" *ngIf="photoError">{{ photoError }}</span>
       </div>
 
       <div class="profile-info" *ngIf="!isEditing">

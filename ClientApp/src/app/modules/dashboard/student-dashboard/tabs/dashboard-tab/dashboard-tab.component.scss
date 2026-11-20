@@ -94,6 +94,18 @@
   padding: 0;
 }
 
+.download-link:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.photo-error {
+  display: block;
+  margin-top: 6px;
+  color: var(--sd-danger, #dc2626);
+  font-size: 0.78rem;
+}
+
 .download-link:hover {
   text-decoration: underline;
 }
