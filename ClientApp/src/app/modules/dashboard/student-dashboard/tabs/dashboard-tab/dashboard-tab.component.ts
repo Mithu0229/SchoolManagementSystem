@@ -64,16 +64,15 @@ export class DashboardTabComponent implements OnInit {
 
   profileFields: StudentProfileField[] = [
     { label: 'DOB', value: '11/Feb/2015', key: 'dateOfBirth' },
-    { label: 'Student ID', value: '202500580', key: 'stdCID' },
-    { label: 'Class', value: 'Class-5', key: 'classFor' },
-    { label: 'Section', value: 'B', key: 'section' },
-    { label: 'Shift', value: 'Morning', key: 'shift' },
+    { label: 'Student ID', value: '', key: 'stdCID' },
+    { label: 'Class', value: '', key: 'classFor' },
+    { label: 'Section', value: '', key: 'section' },
+    { label: 'Shift', value: '', key: 'shift' },
     // { label: 'Version/Medium', value: 'English', key: 'versionName' },
-    { label: 'Blood Group', value: 'O+', key: 'bloodGroup' },
+    { label: 'Blood Group', value: '', key: 'bloodGroup' },
     // { label: 'Resident', value: 'No', key: 'isResident' },
-    { label: 'Email', value: 'shahincc1@gmail.com', key: 'email' },
-    { label: 'Mobile', value: '01317770224', key: 'mobileNo' },
-    // { label: 'Telephone', value: '-', key: 'telephone' },
+    { label: 'Email', value: '', key: 'email' },
+    { label: 'Mobile', value: '', key: 'mobileNo' },
   ];
 
   feeRows: FeesDueRow[] = [];
@@ -113,6 +112,7 @@ export class DashboardTabComponent implements OnInit {
   }
 
   loadStudentData(): void {
+    debugger;
     if (!this.studentId) return;
     this.studentService.getStudentById(this.studentId).subscribe({
       next: (res) => {

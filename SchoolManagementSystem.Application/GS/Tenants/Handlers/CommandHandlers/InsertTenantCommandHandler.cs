@@ -100,9 +100,18 @@ public class InsertTenantCommandHandler : IHttpRequestHandler<InsertTenantComman
             tenant.IsActive = true;
             await _unitOfWork.TenantRepository.AddAsync(tenant);
 
+            //Fee head monthly fee
+            var feeHeadId = new Guid("28A6E032-647D-40DC-B31D-0754FDE086E8");
+            var existFeeHead = await _unitOfWork.FeeHeadRepository.GetAllNoneDeleted(false, true).FirstOrDefaultAsync(x => x.Id == feeHeadId);
+            if(existFeeHead == null)
+            {
+                var feeHead = new FeeHead() { Id = feeHeadId, FeeHeadName = "Monthly Fee" };
+                feeHead.TenantId = tenant.Id;
+                feeHead.CreatedById = tenant.CreatedById;
+                feeHead.CreatedDate = tenant.CreatedDate;
+                await _unitOfWork.FeeHeadRepository.AddAsync(feeHead);
+            }
             await _unitOfWork.CommitAsync();
-
-
             var response = tenant.Adapt<TenantResponse>();
             return Result.Success(response, "Tenant " + AlertMessage.SaveMessage);
         }
