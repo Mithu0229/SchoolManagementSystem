@@ -28,21 +28,35 @@ public class InsertAdmissionCommandHandler : IHttpRequestHandler<InsertAdmission
             
             if (request.Admission.MonthlyFeeAmount > 0)
             {
-                //entry bill for 12 month
+                var accademicSession = await _unitOfWork.AcademicSessionRepository.GetAllNoneDeleted(false, true)
+                    .Where(x => x.Id == request.Admission.AcademicSessionId)
+                    .FirstOrDefaultAsync(cancellationToken);
 
-                for (int i = 1; i <= 12; i++)
+                if (accademicSession == null)
                 {
+                    return Result.Fail<AdmissionResponse>(StatusCodes.Status404NotFound, "Academic session not found");
+                }
+
+                // entry bill for every month from academic session FromDate to ToDate
+                var now = DateTime.Now;
+                var monthCursor = new DateTime(accademicSession.FromDate.Year, accademicSession.FromDate.Month, 1);
+                var lastMonth = new DateTime(accademicSession.ToDate.Year, accademicSession.ToDate.Month, 1);
+                int voucherSeq = 0;
+
+                for (; monthCursor <= lastMonth; monthCursor = monthCursor.AddMonths(1))
+                {
+                    voucherSeq++;
                     var bill = new BillMaster
                     {
                         Id = Guid.NewGuid(),
                         AdmissionId = entity.Id,
-                        BillMonth = i,
-                        BillYear = DateTime.Now.Year,
+                        BillMonth = monthCursor.Month,
+                        BillYear = monthCursor.Year,
                         TotalAmount = request.Admission.MonthlyFeeAmount,
                         IsActive = false,
                         Details = new List<BillDetail>(),
-                        VoucherNo = i.ToString(),
-                        CreatedDate = new DateTime(DateTime.Now.Year,i,1,DateTime.Now.Hour,DateTime.Now.Minute,DateTime.Now.Second)
+                        VoucherNo = voucherSeq.ToString(),
+                        CreatedDate = new DateTime(monthCursor.Year, monthCursor.Month, 1, now.Hour, now.Minute, now.Second)
                     };
 
 

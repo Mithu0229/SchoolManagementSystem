@@ -16,7 +16,7 @@ public class GetSMSHistoryByStudentIdQueryHandler : IRequestHandler<GetSMSHistor
 
     public async Task<IResult<List<SMSHistoryResponse>>> Handle(GetSMSHistoryByStudentIdQuery request, CancellationToken cancellationToken)
     {
-        var history = await _unitOfWork.SMSHistoryRepository.GetAll()
+        var history = await _unitOfWork.SMSHistoryRepository.GetAllNoneDeleted(false,true)
             .Where(x => x.StudentId == request.StudentId)
             .OrderByDescending(x => x.CreatedDate)
             .Select(x => new SMSHistoryResponse

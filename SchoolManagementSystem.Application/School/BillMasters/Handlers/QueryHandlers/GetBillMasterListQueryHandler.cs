@@ -16,9 +16,9 @@ public class GetBillMasterListQueryHandler : IHttpRequestHandler<GetBillMasterLi
             var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true).Where(x => !x.IsPaid);
             
             // Filter out future months
-            int currentYear = DateTime.Now.Year;
-            int currentMonth = DateTime.Now.Month;
-            query = query.Where(x => x.BillYear < currentYear || (x.BillYear == currentYear && x.BillMonth <= currentMonth));
+            //int currentYear = DateTime.Now.Year;
+            //int currentMonth = DateTime.Now.Month;
+            //query = query.Where(x => x.BillYear < currentYear || (x.BillYear == currentYear && x.BillMonth <= currentMonth));
 
             if (!string.IsNullOrWhiteSpace(pagedRequest.Search))
             {

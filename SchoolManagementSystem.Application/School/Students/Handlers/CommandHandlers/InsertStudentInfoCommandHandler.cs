@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Application.Common;
 using SchoolManagementSystem.Application.School.Students.Commands;
 using SchoolManagementSystem.Application.School.Students.Helpers;
@@ -79,7 +80,8 @@ public class InsertStudentInfoCommandHandler : IHttpRequestHandler<InsertStudent
             // Generate PDF and send email
             try
             {
-                var classFor =await _unitOfWork.AcademicClassRepository.GetSingleAsync(x => x.Id == Guid.Parse(studentInfo.ApplicationForClass));
+                //var classFor =await _unitOfWork.AcademicClassRepository.GetSingleAsync(x => x.Id == Guid.Parse(studentInfo.ApplicationForClass));
+                var classFor =await _unitOfWork.AcademicClassRepository.GetAllNoneDeleted(false,true).FirstOrDefaultAsync (x => x.Id == Guid.Parse(studentInfo.ApplicationForClass));
                 if(classFor != null) { studentInfo.ApplicationForClass = classFor.ClassName; }
 
                 var pdfBytes = StudentApplicationPdfBuilder.GeneratePdf(studentInfo);
