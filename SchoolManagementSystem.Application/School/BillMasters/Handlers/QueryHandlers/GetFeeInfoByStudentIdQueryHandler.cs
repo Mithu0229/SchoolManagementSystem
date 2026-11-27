@@ -20,7 +20,7 @@ public class GetFeeInfoByStudentIdQueryHandler : IHttpRequestHandler<GetFeeInfoB
         try
         {
             // Get all bills for this student
-            var bills = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true)
+            var bills = await _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false, true)
                 .Include(x => x.Admission)
                 .Include(x => x.Details).ThenInclude(d => d.FeeHead)
                 .Where(x => x.Admission.StudentId == request.StudentId)

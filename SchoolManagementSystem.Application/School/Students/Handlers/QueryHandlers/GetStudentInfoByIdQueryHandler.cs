@@ -31,7 +31,7 @@ public class GetStudentInfoByIdQueryHandler : IHttpRequestHandler<GetStudentInfo
                 {
                     return Result.Fail<StudentInfoResponse>(StatusCodes.Status404NotFound, "Student not found.");
                 }
-                var admission = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted()
+                var admission = await _unitOfWork.AdmissionRepository.GetAllNoneDeleted(false,true)
                     .Include(x => x.Section)
                     .Include(x => x.Class)
                     .Include(x => x.Shift)

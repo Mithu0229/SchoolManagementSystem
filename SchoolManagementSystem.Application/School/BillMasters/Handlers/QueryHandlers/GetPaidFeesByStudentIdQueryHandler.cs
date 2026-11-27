@@ -18,7 +18,7 @@ public class GetPaidFeesByStudentIdQueryHandler : IHttpRequestHandler<GetPaidFee
     {
         try
         {
-            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(true)
+            var query = _unitOfWork.BillMasterRepository.GetAllNoneDeleted(false,true)
                 .Include(x => x.Admission)
                 .Where(x => x.Admission.StudentId == request.StudentId && x.IsPaid == true);//&& x.IsActive == request.IsActive
 
